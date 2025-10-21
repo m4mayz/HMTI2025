@@ -1,4 +1,11 @@
 <?php
+function hmti_theme_setup()
+{
+    add_theme_support('post-thumbnails');
+}
+add_action('after_setup_theme', 'hmti_theme_setup');
+
+require get_template_directory() . '/inc/customizer.php';
 function hmti_theme_styles()
 {
     // Memanggil file style.css utama

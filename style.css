@@ -19,7 +19,9 @@ Text Domain: hmtitheme
    ========================================================================== */
 :root {
     --primary-color: #3498db;
+    --primary-dark: #2f7db2;
     --secondary-color: #c9cc2e;
+    --secondary-dark: #b0b32e;
     --font-color: #333;
     --body-text: "Darker Grotesque", sans-serif;
     --title-text: "Cormorant Garamond", serif;
@@ -32,10 +34,12 @@ body {
 }
 
 .container {
-    max-width: 1300px;
+    /* max-width: 1300px; */
+    position: relative;
     margin: 0 auto;
-    padding: 20px;
+    /* padding: 20px; */
     /* border: 1px solid black; */
+    z-index: 2;
 }
 
 /* ==========================================================================
@@ -43,7 +47,7 @@ body {
    ========================================================================== */
 .site-header {
     background-color: white;
-    padding: 0 20px;
+    padding: 0 120px;
     border-bottom: 1px solid #eaeaea;
     height: 80px;
     position: sticky;
@@ -133,11 +137,27 @@ body {
 /* ==========================================================================
    Front Page: Hero Section
    ========================================================================== */
+.hero-bg {
+    padding: 0 100px;
+    background-size: cover;
+    background-position: center;
+}
+
+.hero-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5); /* Warna hitam transparan */
+    z-index: 1;
+}
+
 .hero-section {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 40px 0;
+    z-index: 2;
 }
 
 .hero-content-left {
@@ -152,7 +172,7 @@ body {
 .hero-content-left p {
     font-size: 20px;
     font-weight: 500;
-    color: #555;
+    color: white;
     line-height: 1.6;
     max-width: 450px;
 }
@@ -171,7 +191,7 @@ body {
     gap: 10px;
     text-decoration: none;
     font-weight: 700;
-    color: var(--font-color);
+    color: white;
     font-size: 18px;
 }
 
@@ -195,16 +215,16 @@ body {
 .hero-headline .headline-text {
     position: relative;
     z-index: 2;
-    color: black;
+    color: white;
 }
 
 .hero-headline .headline-highlighter {
     position: absolute;
-    bottom: 0;
+    bottom: 20%;
     left: 0;
     width: 100%;
-    height: 60%;
-    background-color: var(--primary-color);
+    height: 40%;
+    background-color: var(--primary-dark);
     z-index: 1;
     transform-origin: left;
     transform: scaleX(0);
@@ -242,17 +262,179 @@ body {
     transition: all 0.3s ease-in-out;
 }
 
-@media (max-width: 992px) {
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.site-footer {
+    background-color: #222;
+    color: #ccc;
+    font-size: 18px;
+}
+
+.site-footer .container {
+    border: none;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.footer-main {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 40px;
+    padding: 60px 100px;
+}
+
+.widget-title {
+    font-family: var(--title-text);
+    font-size: 24px;
+    color: white;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.footer-logo img {
+    max-height: 45px;
+    width: auto;
+}
+
+.footer-brand-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: white;
+}
+
+.footer-description {
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.footer-social-media {
+    display: flex;
+    gap: 15px;
+}
+
+.footer-social-media a {
+    color: #ccc;
+    transition: color 0.3s ease;
+}
+
+.footer-social-media a:hover {
+    color: var(--primary-color);
+}
+
+.footer-links ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    text-decoration: none;
+    color: #ccc;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: var(--primary-color);
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.contact-item svg {
+    width: 20px;
+    height: 20px;
+    color: var(--primary-color);
+    flex-shrink: 0;
+}
+
+.contact-item a {
+    color: #ccc;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.contact-item a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+.footer-contact p {
+    margin-bottom: 20px;
+}
+
+.footer-contact a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.footer-contact a:hover {
+    text-decoration: underline;
+}
+
+.footer-bottom-bar {
+    border-top: 1px solid #444;
+    text-align: center;
+    padding: 25px 0;
+}
+
+.footer-bottom-bar p {
+    margin: 0;
+    font-size: 14px;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .footer-main {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 40px 50px;
+    }
+}
+
+@media (max-width: 1300px) {
+    .hero-headline {
+        font-size: 100px;
+    }
+}
+
+@media (max-width: 985px) {
+    .footer-main {
+        grid-template-columns: 1fr 1fr;
+    }
+    .footer-about {
+        grid-column: 1 / -1;
+    }
+    .site-header {
+        padding: 0 20px;
+    }
+
     .hero-section {
         flex-direction: column-reverse;
         text-align: center;
         min-height: auto;
-        padding: 60px 0;
     }
 
     .hero-headline {
-        font-size: 60px;
-        margin-bottom: 40px;
+        font-size: 64px;
     }
 
     .hero-content-left {
@@ -263,6 +445,14 @@ body {
 
     .hero-content-left p {
         font-size: 18px;
+    }
+
+    .hero-content-right {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        white-space: nowrap;
     }
 
     .menu-toggle {
