@@ -11,7 +11,7 @@ Tags: custom-theme, hmti
 Text Domain: hmtitheme
 */
 
-@import url("https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@300..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@500&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Darker+Grotesque:wght@300..900&display=swap");
 
 /* ==========================================================================
@@ -50,10 +50,21 @@ body {
     padding: 0 120px;
     border-bottom: 1px solid #eaeaea;
     height: 80px;
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 1000;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease-in-out;
+}
+
+.site-header.header-hidden {
+    transform: translateY(-100%);
+}
+
+.site-header.header-visible {
+    transform: translateY(0);
 }
 
 .site-header .container {
@@ -135,10 +146,17 @@ body {
 }
 
 /* ==========================================================================
+   Main Content
+   ========================================================================== */
+.site-content {
+    padding-top: 80px;
+}
+
+/* ==========================================================================
    Front Page: Hero Section
    ========================================================================== */
 .hero-bg {
-    padding: 0 100px;
+    padding: 100px 100px;
     position: relative;
     background-size: cover;
     background-position: center;
@@ -455,10 +473,10 @@ body {
 }
 
 .news-article-card {
+    border-top: 4px solid var(--primary-color);
     background-color: white;
     padding-bottom: 20px;
     position: relative;
-    border-top: 4px solid var(--primary-color);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -479,6 +497,26 @@ body {
     padding: 25px;
     position: relative;
     z-index: 2;
+}
+
+.card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+    color: #777;
+    font-size: 14px;
+}
+
+.card-meta svg {
+    width: 16px;
+    height: 16px;
+    color: var(--primary-color);
+}
+
+.post-date {
+    font-weight: 600;
+    color: #555;
 }
 
 .card-content h3 {

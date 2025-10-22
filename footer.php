@@ -53,7 +53,7 @@
             </div>
 
             <div class="footer-widget footer-contact">
-                <h4 class="widget-title">Hubungi Kami</h4>
+                <h4 class="widget-title">Kontak</h4>
                 <p>Sekretariat HMTI<br>Universitas Nusa Putra<br>Jl. Raya Cibolang No. 21, Sukabumi, Jawa Barat 43152
                 </p>
 

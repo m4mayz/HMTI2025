@@ -72,7 +72,20 @@
                         </a>
                     </div>
                     <div class="card-content">
-                        <h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+                        <div class="card-meta">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2" />
+                                <path d="M16 2V6M8 2V6M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                            </svg>
+                            <span class="post-date"><?php echo get_the_date('d M Y'); ?></span>
+                        </div>
+                        <?php
+                        $title = get_the_title();
+                        $max_length = 50; // Adjust character limit as needed
+                        $trimmed_title = (mb_strlen($title) > $max_length) ? mb_substr($title, 0, $max_length) . '...' : $title;
+                        ?>
+                        <h3><a href="<?php the_permalink(); ?>"><?php echo $trimmed_title; ?></a>
+                        </h3>
                         <div class="card-excerpt">
                             <p><?php echo wp_trim_words(get_the_excerpt(), 18, '...'); ?></p>
                         </div>
