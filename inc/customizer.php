@@ -292,6 +292,24 @@ function hmti_customize_register($wp_customize)
             'label' => "Icon Divisi $i",
             'section' => 'hmti_divisi_section',
         ]));
+
+        // Anggota Divisi (one per line)
+        $wp_customize->add_setting("divisi_{$i}_anggota");
+        $wp_customize->add_control("divisi_{$i}_anggota", [
+            'label' => "Anggota Divisi $i (satu nama per baris)",
+            'section' => 'hmti_divisi_section',
+            'type' => 'textarea',
+            'description' => 'Tulis satu nama per baris',
+        ]);
+
+        // Program Kerja Divisi (one per line)
+        $wp_customize->add_setting("divisi_{$i}_proker");
+        $wp_customize->add_control("divisi_{$i}_proker", [
+            'label' => "Program Kerja Divisi $i (satu program per baris)",
+            'section' => 'hmti_divisi_section',
+            'type' => 'textarea',
+            'description' => 'Tulis satu program kerja per baris',
+        ]);
     }
 
 }
