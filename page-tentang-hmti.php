@@ -6,22 +6,32 @@
 get_header();
 ?>
 
-<!-- Tentang Kami Section -->
-<section class="tentang-kami-section">
-    <div class="tentang-kami-container">
-        <div class="tentang-kami-content">
-            <!-- Logo HMTI -->
-            <div class="tentang-logo">
-                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/logo.png" alt="Logo HMTI">
-            </div>
+<!-- Hero Section -->
+<?php $about_hero_bg = get_theme_mod('about_hero_background_image'); ?>
+<section class="about-hero-section" style="<?php if ($about_hero_bg)
+    echo 'background-image: url(' . esc_url($about_hero_bg) . ');'; ?>">
+    <div class="about-hero-content">
+        <h1 class="about-hero-title">
+            <span class="hero-text">Tentang</span>
+            <span class="hero-text-highlight">HMTI</span>
+        </h1>
+        <p class="about-hero-subtitle">Mengenal lebih dekat Himpunan Mahasiswa Teknik Informatika</p>
+    </div>
+</section>
 
-            <!-- Konten Teks -->
-            <div class="tentang-text">
-                <h1 class="tentang-title">Tentang Kami</h1>
-                <div class="tentang-description">
-                    <?php echo wpautop(get_theme_mod('sejarah_hmti_text', 'Mangcoding adalah sebuah agen pengembangan web yang berbasis di Sukabumi, Jawa Barat, Indonesia. Kami membantu berbagai bisnis, baik besar maupun kecil, untuk tampil maksimal dengan menghadirkan aplikasi web kustom yang tepat. Kami mengutamakan mendengarkan kebutuhan klien terlebih dahulu, mendorong kreativitas, dan berkomitmen untuk menyelesaikan proyek-proyek yang mampu menarik perhatian.')); ?>
-                </div>
+<!-- Sejarah HMTI Section -->
+<section class="sejarah-section">
+    <div class="sejarah-container">
+        <h2 class="sejarah-section-title">Sejarah<span class="highlight"> HMTI</span></h2>
+        <div class="sejarah-content">
+            <div class="sejarah-text">
+                <?php echo wpautop(get_theme_mod('sejarah_hmti_text', 'Himpunan Mahasiswa Teknik Informatika (HMTI) Universitas Nusa Putra didirikan sebagai wadah bagi mahasiswa untuk mengembangkan potensi, meningkatkan kualitas akademik, dan membangun solidaritas antar mahasiswa. Dari masa ke masa, HMTI terus berkembang dan berinovasi dalam menjalankan program-program yang bermanfaat bagi mahasiswa Teknik Informatika.')); ?>
             </div>
+            <?php if (get_theme_mod('sejarah_hmti_image')): ?>
+                <div class="sejarah-image">
+                    <img src="<?php echo esc_url(get_theme_mod('sejarah_hmti_image')); ?>" alt="Sejarah HMTI">
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </section>
@@ -29,7 +39,7 @@ get_header();
 <!-- Divider -->
 <div class="section-divider"></div>
 
-<!-- Visi & Misi -->
+<!-- Visi & Misi Section -->
 <section class="visi-misi-section">
     <div class="visi-misi-container">
         <h2 class="visi-misi-section-title">Visi &<span class="highlight"> Misi</span></h2>
@@ -37,7 +47,7 @@ get_header();
             <!-- Visi -->
             <div class="visi-box">
                 <div class="box-icon">
-                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
                             fill="currentColor" />
@@ -52,7 +62,7 @@ get_header();
             <!-- Misi -->
             <div class="misi-box">
                 <div class="box-icon">
-                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor" />
                     </svg>
                 </div>
