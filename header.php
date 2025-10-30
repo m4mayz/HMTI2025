@@ -14,6 +14,7 @@
             <div class="logo">
                 <a href="<?php echo home_url('/'); ?>">
                     <img src="<?php echo get_template_directory_uri(); ?>/assets/images/logo.png" alt="Logo HMTI">
+                    <span class="logo-text">HMTI Universitas Nusa Putra</span>
                 </a>
             </div>
 
@@ -35,11 +36,23 @@
                     </li>
                     <li class="<?php if (is_home() || is_single() || is_archive())
                         echo 'active-menu'; ?>">
-                        <a href="<?php echo home_url('/berita-artikel'); ?>">Berita & Artikel</a>
+                        <a href="<?php echo home_url('/berita-publikasi'); ?>">Berita & Publikasi</a>
                     </li>
-                    <li class="<?php if (is_page('dokumentasi'))
+                    <li class="<?php if (is_page('program-kegiatan'))
                         echo 'active-menu'; ?>">
-                        <a href="<?php echo home_url('/dokumentasi'); ?>">Dokumentasi / Galeri</a>
+                        <a href="<?php echo home_url('/program-kegiatan'); ?>">Program & Kegiatan</a>
+                    </li>
+                    <li class="<?php if (is_page('galeri'))
+                        echo 'active-menu'; ?>">
+                        <a href="<?php echo home_url('/galeri'); ?>">Galeri</a>
+                    </li>
+                    <li class="<?php if (is_page('arsip'))
+                        echo 'active-menu'; ?>">
+                        <a href="<?php echo home_url('/arsip'); ?>">Arsip & Unduhan</a>
+                    </li>
+                    <li class="<?php if (is_page('kontak'))
+                        echo 'active-menu'; ?>">
+                        <a href="<?php echo home_url('/kontak'); ?>">Kontak</a>
                     </li>
                 </ul>
             </nav>
