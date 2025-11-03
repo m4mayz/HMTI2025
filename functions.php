@@ -1,6 +1,10 @@
 <?php
 function hmti_theme_setup()
 {
+    // Dukungan untuk title tag otomatis dari WordPress
+    add_theme_support('title-tag');
+
+    // Dukungan untuk featured images
     add_theme_support('post-thumbnails');
 }
 add_action('after_setup_theme', 'hmti_theme_setup');

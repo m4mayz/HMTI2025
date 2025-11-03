@@ -4,7 +4,6 @@
 <head>
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php wp_title('|', true, 'right'); ?></title>
     <?php wp_head(); // Hook penting, jangan dihapus ?>
 </head>
 
@@ -18,7 +17,7 @@
                 </a>
             </div>
 
-            <button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false">
+            <button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false" aria-label="Toggle Menu">
                 <span class="line"></span>
                 <span class="line"></span>
                 <span class="line"></span>

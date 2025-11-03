@@ -48,8 +48,10 @@
                 <ul>
                     <li><a href="<?php echo home_url('/'); ?>">Beranda</a></li>
                     <li><a href="<?php echo home_url('/tentang-hmti'); ?>">Tentang HMTI</a></li>
-                    <li><a href="<?php echo home_url('/berita-artikel'); ?>">Berita & Artikel</a></li>
-                    <li><a href="<?php echo home_url('/dokumentasi'); ?>">Dokumentasi / Galeri</a></li>
+                    <li><a href="<?php echo home_url('/berita-publikasi'); ?>">Berita & Publikasi</a></li>
+                    <li><a href="<?php echo home_url('/program-kegiatan'); ?>">Program & Kegiatan</a></li>
+                    <li><a href="<?php echo home_url('/galeri'); ?>">Galeri</a></li>
+                    <li><a href="<?php echo home_url('/arsip'); ?>">Arsip & Unduhan</a></li>
                 </ul>
             </div>
 

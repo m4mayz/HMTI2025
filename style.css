@@ -127,7 +127,7 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    gap: 30px;
+    gap: 15px;
 }
 
 .main-navigation li {
@@ -295,6 +295,75 @@ body {
 }
 
 /* ==========================================================================
+   Reusable Highlight Animation for All Titles
+   ========================================================================== */
+
+/* Base class for any title with highlight animation */
+.title-with-highlight {
+    position: relative;
+    display: inline-block;
+}
+
+.title-with-highlight .highlight-text {
+    position: relative;
+    z-index: 2;
+}
+
+.title-with-highlight .highlight-bar {
+    position: absolute;
+    bottom: 15%;
+    left: 0;
+    width: 100%;
+    height: 35%;
+    z-index: 1;
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+/* Primary color highlight (blue) */
+.title-with-highlight .highlight-bar.primary {
+    background-color: var(--primary-dark);
+}
+
+/* Secondary color highlight (yellow/green) */
+.title-with-highlight .highlight-bar.secondary {
+    background-color: var(--secondary-dark);
+}
+
+/* Trigger animation when element is visible */
+.title-with-highlight.animate-highlight .highlight-bar {
+    transform: scaleX(1);
+}
+
+/* Optional: immediate animation without scroll trigger */
+.title-with-highlight.animate-immediate .highlight-bar {
+    animation: highlight-swipe 2s cubic-bezier(0.645, 0.045, 0.355, 1) 0.5s
+        forwards;
+}
+
+/* Ensure title-with-highlight works well in centered layouts */
+h1.about-hero-title .title-with-highlight,
+h2 .title-with-highlight {
+    display: inline-block;
+}
+
+/* Responsive adjustments for highlight bar */
+@media (max-width: 768px) {
+    .title-with-highlight .highlight-bar {
+        bottom: 10%;
+        height: 30%;
+    }
+}
+
+@media (max-width: 480px) {
+    .title-with-highlight .highlight-bar {
+        bottom: 8%;
+        height: 28%;
+    }
+}
+
+/* ==========================================================================
    Greeting Section
    ========================================================================== */
 .greeting-section {
@@ -448,11 +517,22 @@ body {
     border: none;
     cursor: pointer;
     padding: 10px;
-    z-index: 1001;
+    z-index: 1002;
     flex-direction: column;
     gap: 5px;
     justify-content: center;
     align-items: center;
+    position: relative;
+}
+
+.menu-toggle:hover {
+    opacity: 0.8;
+}
+
+.menu-toggle:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 3px;
+    border-radius: 4px;
 }
 
 .menu-toggle .line {
@@ -460,6 +540,197 @@ body {
     height: 3px;
     background-color: var(--font-color);
     transition: all 0.3s ease-in-out;
+    border-radius: 2px;
+}
+
+/* ==========================================================================
+   Header Responsive Breakpoints
+   ========================================================================== */
+
+/* Extra Large Screens */
+@media (max-width: 1400px) {
+    .site-header {
+        padding: 0 80px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .site-header {
+        padding: 0 60px;
+    }
+
+    .site-header .logo-text {
+        font-size: 16px;
+    }
+
+    .main-navigation a {
+        font-size: 16px;
+        padding: 10px 3px;
+    }
+
+    .main-navigation ul {
+        gap: 10px;
+    }
+}
+
+/* Tablet and Below - Show Mobile Menu */
+@media (max-width: 1024px) {
+    .site-header {
+        padding: 0 40px;
+        height: 70px;
+    }
+
+    .site-header .logo img {
+        max-height: 45px;
+    }
+
+    .site-header .logo-text {
+        font-size: 15px;
+    }
+
+    .site-content {
+        padding-top: 70px;
+    }
+
+    .menu-toggle {
+        display: flex;
+    }
+
+    .main-navigation {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(10px);
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1001;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    body.menu-open .main-navigation {
+        transform: translateX(0);
+    }
+
+    body.menu-open {
+        overflow: hidden;
+    }
+
+    .main-navigation ul {
+        flex-direction: column;
+        text-align: center;
+        gap: 25px;
+        padding: 20px;
+    }
+
+    .main-navigation a {
+        font-size: 24px;
+        font-weight: 700;
+        display: block;
+        padding: 12px 20px;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+    }
+
+    .main-navigation a:hover {
+        background-color: rgba(52, 152, 219, 0.1);
+    }
+
+    .main-navigation li.active-menu a {
+        background-color: rgba(52, 152, 219, 0.15);
+    }
+
+    body.menu-open .menu-toggle .line:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 6px);
+    }
+
+    body.menu-open .menu-toggle .line:nth-child(2) {
+        opacity: 0;
+    }
+
+    body.menu-open .menu-toggle .line:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -6px);
+    }
+}
+
+/* Medium Mobile */
+@media (max-width: 768px) {
+    .site-header {
+        padding: 0 25px;
+        height: 65px;
+    }
+
+    .site-header .logo img {
+        max-height: 40px;
+    }
+
+    .site-header .logo-text {
+        font-size: 14px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .site-content {
+        padding-top: 65px;
+    }
+
+    .main-navigation a {
+        font-size: 22px;
+    }
+
+    .main-navigation ul {
+        gap: 20px;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 640px) {
+    .site-header {
+        padding: 0 20px;
+        height: 60px;
+    }
+
+    .site-header .logo img {
+        max-height: 35px;
+    }
+
+    .site-header .logo-text {
+        display: none;
+    }
+
+    .site-content {
+        padding-top: 60px;
+    }
+
+    .menu-toggle .line {
+        width: 22px;
+        height: 2.5px;
+    }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 480px) {
+    .site-header {
+        padding: 0 15px;
+    }
+
+    .site-header .logo a {
+        gap: 10px;
+    }
+
+    .main-navigation a {
+        font-size: 20px;
+    }
+
+    .main-navigation ul {
+        gap: 18px;
+    }
 }
 
 /* ==========================================================================
@@ -662,10 +933,6 @@ body {
     line-height: 1.1;
     margin: 0;
     color: var(--font-color);
-}
-
-.news-section-title .highlight {
-    color: var(--primary-color);
 }
 
 .news-categories {
@@ -900,10 +1167,6 @@ body {
     margin: 0;
     color: var(--font-color);
     text-align: right;
-}
-
-.event-section-title .highlight {
-    color: var(--secondary-color);
 }
 
 .event-categories {
@@ -1241,9 +1504,6 @@ body {
     .footer-about {
         grid-column: 1 / -1;
     }
-    .site-header {
-        padding: 0 20px;
-    }
 
     .hero-bg {
         padding: 80px 20px;
@@ -1338,60 +1598,6 @@ body {
         text-align: center;
         white-space: nowrap;
     }
-
-    .menu-toggle {
-        display: flex;
-    }
-
-    .site-header .logo-text {
-        font-size: 16px;
-    }
-
-    .main-navigation {
-        position: fixed;
-        top: 0;
-        right: 0;
-        width: 100%;
-        height: 100vh;
-        background-color: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        transform: translateX(100%);
-        transition: transform 0.3s ease-in-out;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    body.menu-open .main-navigation {
-        transform: translateX(0);
-    }
-
-    body.menu-open {
-        overflow: hidden;
-    }
-
-    .main-navigation ul {
-        flex-direction: column;
-        text-align: center;
-        gap: 20px;
-    }
-
-    .main-navigation a {
-        font-size: 28px;
-        font-weight: 700;
-    }
-
-    body.menu-open .menu-toggle .line:nth-child(1) {
-        transform: rotate(45deg) translate(5px, 6px);
-    }
-
-    body.menu-open .menu-toggle .line:nth-child(2) {
-        opacity: 0;
-    }
-
-    body.menu-open .menu-toggle .line:nth-child(3) {
-        transform: rotate(-45deg) translate(5px, -6px);
-    }
 }
 
 /* ==========================================================================
@@ -1450,10 +1656,6 @@ body {
     margin: 0 0 60px 0;
     color: white;
     text-align: center;
-}
-
-.gallery-section-title .highlight {
-    color: var(--secondary-color);
 }
 
 .gallery-grid {
@@ -1854,79 +2056,69 @@ body {
    Page: Tentang HMTI
    ========================================================================== */
 
-/* Tentang Kami Section */
-.tentang-kami-section {
-    padding: 120px 100px;
-    background: linear-gradient(135deg, #0a3d3d 0%, #0d5252 50%, #0a3d3d 100%);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
+/* Hero Section - About Page */
+.about-hero-section {
+    padding: 180px 100px 120px;
     position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: var(--dark-bg);
+    overflow: hidden;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    box-sizing: border-box;
 }
 
-.tentang-kami-container {
-    max-width: 1400px;
+.about-hero-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1;
+}
+
+.about-hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 1200px;
     margin: 0 auto;
-    width: 100%;
 }
 
-.tentang-kami-content {
-    display: flex;
-    align-items: center;
-    gap: 100px;
-}
-
-.tentang-logo {
-    flex: 0 0 400px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.tentang-logo img {
-    width: 100%;
-    height: auto;
-    max-width: 400px;
-    filter: drop-shadow(0 20px 60px rgba(0, 0, 0, 0.3));
-}
-
-.tentang-text {
-    flex: 1;
-    color: white;
-}
-
-.tentang-title {
+.about-hero-title {
     font-family: var(--title-text);
-    font-size: 72px;
+    font-size: 120px;
     font-weight: 800;
-    color: white;
-    margin: 0 0 40px 0;
     line-height: 1.1;
+    margin: 0 0 30px 0;
 }
 
-.tentang-description {
-    font-size: 22px;
+.about-hero-title .hero-text {
+    color: white;
+    display: block;
+}
+
+.about-hero-title .hero-text-highlight {
+    color: var(--primary-color);
+    display: block;
+}
+
+.about-hero-subtitle {
+    font-size: 24px;
     font-weight: 500;
-    line-height: 1.8;
-    color: rgba(255, 255, 255, 0.95);
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
 }
 
-.tentang-description p {
-    margin-bottom: 24px;
-}
-
-.tentang-description p:last-child {
-    margin-bottom: 0;
-}
-
-/* Sejarah Section - Tidak digunakan lagi, diganti dengan Tentang Kami */
+/* Sejarah Section */
 .sejarah-section {
     padding: 80px 100px;
     background-color: white;
 }
 
 .sejarah-container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
 }
 
@@ -1962,11 +2154,21 @@ body {
     margin-bottom: 20px;
 }
 
+.sejarah-text p:last-child {
+    margin-bottom: 0;
+}
+
 .sejarah-image {
     position: relative;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sejarah-image:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
 }
 
 .sejarah-image img {
@@ -2369,41 +2571,483 @@ body {
     transform: translateX(5px);
 }
 
-/* Responsive - Tentang HMTI */
+/* ==========================================================================
+   Page: Divisi Detail
+   ========================================================================== */
+
+/* Hero Section - Divisi Detail */
+.divisi-detail-hero {
+    padding: 180px 100px 100px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #222 100%);
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+.divisi-detail-hero::before {
+    content: "";
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 500px;
+    height: 500px;
+    background-image: url("assets/images/elements/2.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.2;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.divisi-hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.divisi-icon-large {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.05) 100%
+    );
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 30px;
+    color: var(--secondary-color);
+}
+
+.divisi-icon-large img {
+    width: 70px;
+    height: 70px;
+}
+
+.divisi-hero-title {
+    font-family: var(--title-text);
+    font-size: 72px;
+    font-weight: 800;
+    color: white;
+    margin: 0 0 20px 0;
+    line-height: 1.1;
+}
+
+.divisi-hero-subtitle {
+    font-size: 22px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0 0 40px 0;
+    line-height: 1.6;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--secondary-color);
+    font-size: 18px;
+    font-weight: 600;
+    transition: gap 0.3s ease;
+}
+
+.back-button:hover {
+    gap: 15px;
+}
+
+/* Leader Section */
+.divisi-leader-section {
+    padding: 80px 100px;
+    background-color: white;
+}
+
+.divisi-leader-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-title-center {
+    font-family: var(--title-text);
+    font-size: 64px;
+    font-weight: 700;
+    color: var(--font-color);
+    text-align: center;
+    margin: 0 0 60px 0;
+    line-height: 1.1;
+}
+
+.section-title-center .highlight {
+    color: var(--primary-color);
+}
+
+.leader-card-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.leader-card {
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    max-width: 350px;
+    border-top: 4px solid var(--secondary-color);
+}
+
+.leader-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.leader-photo {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 25px;
+    border: 4px solid #f0f0f0;
+}
+
+.leader-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.leader-name {
+    font-family: var(--title-text);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--font-color);
+    margin: 0 0 10px 0;
+}
+
+.leader-position {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--secondary-color);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+/* Members Section */
+.divisi-members-section {
+    padding: 80px 100px;
+    background-color: var(--dark-bg);
+    position: relative;
+    overflow: hidden;
+}
+
+.divisi-members-section::before {
+    content: "";
+    position: absolute;
+    top: -50px;
+    left: -50px;
+    width: 500px;
+    height: 500px;
+    background-image: url("assets/images/elements/1.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.divisi-members-section .section-title-center {
+    color: white;
+    position: relative;
+    z-index: 1;
+}
+
+.divisi-members-section .section-title-center .highlight {
+    color: var(--secondary-color);
+}
+
+.divisi-members-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.members-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 25px;
+}
+
+.member-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 30px 20px;
+    border-radius: 12px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.member-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--secondary-color);
+    box-shadow: 0 10px 30px rgba(201, 204, 46, 0.2);
+}
+
+.member-avatar {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: var(--secondary-color);
+}
+
+.member-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Program Kerja Section */
+.divisi-proker-section {
+    padding: 80px 100px;
+    background-color: white;
+}
+
+.divisi-proker-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.proker-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.proker-item {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border-left: 4px solid var(--primary-color);
+}
+
+.proker-item:hover {
+    transform: translateX(10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-left-color: var(--secondary-color);
+}
+
+.proker-number {
+    font-family: var(--title-text);
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--primary-color);
+    line-height: 1;
+    min-width: 80px;
+    text-align: center;
+}
+
+.proker-content {
+    flex: 1;
+}
+
+.proker-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--font-color);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.no-data {
+    text-align: center;
+    font-size: 20px;
+    color: #999;
+    padding: 40px 20px;
+    font-style: italic;
+}
+
+/* Responsive - Divisi Detail */
 @media (max-width: 985px) {
-    .tentang-kami-section {
-        padding: 80px 40px;
+    .divisi-detail-hero {
+        padding: 140px 40px 80px;
     }
 
-    .tentang-kami-content {
-        gap: 60px;
-    }
-
-    .tentang-logo {
-        flex: 0 0 300px;
-    }
-
-    .tentang-logo img {
-        max-width: 300px;
-    }
-
-    .tentang-title {
+    .divisi-hero-title {
         font-size: 56px;
     }
 
-    .tentang-description {
+    .divisi-hero-subtitle {
         font-size: 20px;
     }
 
-    .page-hero-section {
-        padding: 100px 40px 60px;
+    .divisi-leader-section,
+    .divisi-members-section,
+    .divisi-proker-section {
+        padding: 60px 40px;
     }
 
-    .page-hero-title {
-        font-size: 56px;
+    .section-title-center {
+        font-size: 48px;
     }
 
-    .page-hero-subtitle {
+    .members-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 20px;
+    }
+
+    .proker-item {
+        gap: 20px;
+        padding: 25px;
+    }
+
+    .proker-number {
+        font-size: 40px;
+        min-width: 60px;
+    }
+
+    .proker-title {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .divisi-detail-hero {
+        padding: 120px 20px 60px;
+    }
+
+    .divisi-icon-large {
+        width: 100px;
+        height: 100px;
+    }
+
+    .divisi-icon-large img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .divisi-hero-title {
+        font-size: 42px;
+    }
+
+    .divisi-hero-subtitle {
+        font-size: 18px;
+    }
+
+    .back-button {
+        font-size: 16px;
+    }
+
+    .divisi-leader-section,
+    .divisi-members-section,
+    .divisi-proker-section {
+        padding: 50px 20px;
+    }
+
+    .section-title-center {
+        font-size: 36px;
+        margin-bottom: 40px;
+    }
+
+    .leader-photo {
+        width: 150px;
+        height: 150px;
+    }
+
+    .leader-name {
+        font-size: 24px;
+    }
+
+    .members-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
+
+    .member-card {
+        padding: 25px 15px;
+    }
+
+    .member-avatar {
+        width: 70px;
+        height: 70px;
+    }
+
+    .member-name {
+        font-size: 16px;
+    }
+
+    .proker-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .proker-number {
+        min-width: auto;
+    }
+
+    .proker-title {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .divisi-detail-hero {
+        padding: 100px 15px 50px;
+    }
+
+    .divisi-hero-title {
+        font-size: 36px;
+    }
+
+    .divisi-hero-subtitle {
+        font-size: 16px;
+    }
+
+    .divisi-leader-section,
+    .divisi-members-section,
+    .divisi-proker-section {
+        padding: 40px 15px;
+    }
+
+    .section-title-center {
+        font-size: 32px;
+    }
+
+    .members-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+}
+
+/* Responsive - Tentang HMTI */
+@media (max-width: 985px) {
+    .about-hero-section {
+        padding: 140px 40px 80px;
+    }
+
+    .about-hero-title {
+        font-size: 80px;
+    }
+
+    .about-hero-subtitle {
         font-size: 20px;
     }
 
@@ -2414,7 +3058,10 @@ body {
         padding: 60px 40px;
     }
 
-    .section-title {
+    .sejarah-section-title,
+    .visi-misi-section-title,
+    .struktur-section-title,
+    .departemen-section-title {
         font-size: 48px;
     }
 
@@ -2440,41 +3087,15 @@ body {
 }
 
 @media (max-width: 768px) {
-    .tentang-kami-section {
-        padding: 60px 20px;
-        min-height: auto;
+    .about-hero-section {
+        padding: 120px 20px 60px;
     }
 
-    .tentang-kami-content {
-        flex-direction: column;
-        gap: 50px;
+    .about-hero-title {
+        font-size: 56px;
     }
 
-    .tentang-logo {
-        flex: 0 0 auto;
-    }
-
-    .tentang-logo img {
-        max-width: 250px;
-    }
-
-    .tentang-title {
-        font-size: 42px;
-    }
-
-    .tentang-description {
-        font-size: 18px;
-    }
-
-    .page-hero-section {
-        padding: 80px 20px 50px;
-    }
-
-    .page-hero-title {
-        font-size: 42px;
-    }
-
-    .page-hero-subtitle {
+    .about-hero-subtitle {
         font-size: 18px;
     }
 
@@ -2485,12 +3106,16 @@ body {
         padding: 50px 20px;
     }
 
-    .section-title {
+    .sejarah-section-title,
+    .visi-misi-section-title,
+    .struktur-section-title,
+    .departemen-section-title {
         font-size: 36px;
+        margin-bottom: 40px;
     }
 
-    .section-header {
-        margin-bottom: 40px;
+    .sejarah-text {
+        font-size: 18px;
     }
 
     .visi-box,
@@ -2500,6 +3125,10 @@ body {
 
     .box-title {
         font-size: 28px;
+    }
+
+    .box-content {
+        font-size: 17px;
     }
 
     .top-structure,
@@ -2527,35 +3156,29 @@ body {
 }
 
 @media (max-width: 480px) {
-    .tentang-kami-section {
-        padding: 50px 20px;
+    .about-hero-section {
+        padding: 100px 15px 50px;
     }
 
-    .tentang-kami-content {
-        gap: 40px;
+    .about-hero-title {
+        font-size: 42px;
     }
 
-    .tentang-logo img {
-        max-width: 200px;
-    }
-
-    .tentang-title {
-        font-size: 36px;
-    }
-
-    .tentang-description {
+    .about-hero-subtitle {
         font-size: 16px;
     }
 
-    .page-hero-title {
-        font-size: 36px;
+    .sejarah-section,
+    .visi-misi-section,
+    .struktur-section,
+    .departemen-section {
+        padding: 40px 15px;
     }
 
-    .page-hero-subtitle {
-        font-size: 16px;
-    }
-
-    .section-title {
+    .sejarah-section-title,
+    .visi-misi-section-title,
+    .struktur-section-title,
+    .departemen-section-title {
         font-size: 32px;
     }
 
@@ -2576,5 +3199,407 @@ body {
 
     .departemen-card {
         padding: 35px 25px;
+    }
+}
+
+/* ==========================================================================
+   New Page: Tentang HMTI (Redesigned)
+   ========================================================================== */
+
+/* Hero Section - New Design */
+.about-new-hero-section {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--dark-bg) 100%);
+    position: relative;
+    overflow: hidden;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    box-sizing: border-box;
+}
+
+.about-new-hero-section::before {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 75%;
+    background-image: url("assets/images/logo.png");
+    background-size: cover;
+    background-position: center right;
+    background-repeat: no-repeat;
+    opacity: 0.15;
+    z-index: 1;
+    mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(0, 0, 0, 0.3) 25%,
+        rgba(0, 0, 0, 0.6) 50%,
+        rgba(0, 0, 0, 0.8) 75%,
+        rgba(0, 0, 0, 1) 100%
+    );
+    -webkit-mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(0, 0, 0, 0.3) 25%,
+        rgba(0, 0, 0, 0.6) 50%,
+        rgba(0, 0, 0, 0.8) 75%,
+        rgba(0, 0, 0, 1) 100%
+    );
+}
+
+.about-new-hero-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 100px 100px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.about-new-hero-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.about-new-hero-headline {
+    font-family: var(--title-text);
+    font-size: 120px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin: 0;
+    color: white;
+    position: relative;
+}
+
+.about-new-hero-headline .headline-text {
+    position: relative;
+    display: inline-block;
+}
+
+.about-new-hero-headline .text-content {
+    position: relative;
+    z-index: 2;
+}
+
+.about-new-hero-headline .headline-highlighter {
+    position: absolute;
+    bottom: 20%;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    background-color: var(--primary-dark);
+    z-index: 1;
+    transform-origin: left;
+    transform: scaleX(0);
+    animation: highlight-swipe 2s cubic-bezier(0.645, 0.045, 0.355, 1) 0.5s
+        forwards;
+}
+
+.about-new-hero-right {
+    /* Empty as requested */
+    min-height: 300px;
+}
+
+/* Sejarah HMTI Section - New Design */
+.sejarah-new-section {
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    box-sizing: border-box;
+    background-color: white;
+    padding: 80px 0;
+}
+
+.sejarah-new-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 100px;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: 60px;
+    align-items: start;
+}
+
+.sejarah-new-logo {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    position: sticky;
+    top: 100px;
+}
+
+.sejarah-new-logo img {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    display: block;
+}
+
+.sejarah-new-text {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.8;
+    color: #555;
+}
+
+.sejarah-new-text p {
+    margin: 0 0 25px 0;
+}
+
+.sejarah-new-text p:last-child {
+    margin-bottom: 0;
+}
+
+/* Visi & Misi Section - New Design */
+.visimisi-new-section {
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    box-sizing: border-box;
+    background-color: #f8f9fa;
+    padding: 80px 0;
+}
+
+.visimisi-new-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.visimisi-new-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 60px;
+    padding: 60px 0;
+    border-top: 2px solid #ddd;
+}
+
+.visimisi-new-left {
+    display: flex;
+    align-items: flex-start;
+}
+
+.visimisi-new-label {
+    font-family: var(--title-text);
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--font-color);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.visimisi-new-right {
+    display: flex;
+    align-items: flex-start;
+}
+
+.visimisi-new-right p {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.8;
+    color: #555;
+    margin: 0;
+}
+
+/* Responsive - New About Page */
+@media (max-width: 1380px) {
+    .about-new-hero-headline {
+        font-size: 100px;
+    }
+}
+
+@media (max-width: 985px) {
+    .about-new-hero-container {
+        padding: 80px 40px;
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .about-new-hero-headline {
+        font-size: 72px;
+    }
+
+    .about-new-hero-right {
+        display: none;
+    }
+
+    .about-new-hero-section::before {
+        width: 100%;
+        opacity: 0.08;
+        mask-image: radial-gradient(
+            ellipse 100% 80% at 50% 50%,
+            rgba(0, 0, 0, 0.6) 0%,
+            rgba(0, 0, 0, 0.3) 40%,
+            transparent 70%
+        );
+        -webkit-mask-image: radial-gradient(
+            ellipse 100% 80% at 50% 50%,
+            rgba(0, 0, 0, 0.6) 0%,
+            rgba(0, 0, 0, 0.3) 40%,
+            transparent 70%
+        );
+    }
+
+    .sejarah-new-container {
+        padding: 0 40px;
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .sejarah-new-logo {
+        position: static;
+        justify-content: flex-start;
+    }
+
+    .sejarah-new-logo img {
+        max-width: 150px;
+    }
+
+    .sejarah-new-text {
+        font-size: 18px;
+    }
+
+    .visimisi-new-container {
+        padding: 0 40px;
+    }
+
+    .visimisi-new-item {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 50px 0;
+    }
+
+    .visimisi-new-item:first-child {
+        padding-top: 0;
+    }
+
+    .visimisi-new-label {
+        font-size: 32px;
+    }
+
+    .visimisi-new-right p {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-new-hero-section {
+        min-height: 80vh;
+    }
+
+    .about-new-hero-container {
+        padding: 60px 20px;
+    }
+
+    .about-new-hero-headline {
+        font-size: 56px;
+    }
+
+    .sejarah-new-section {
+        padding: 60px 0;
+    }
+
+    .sejarah-new-container {
+        padding: 0 20px;
+        gap: 30px;
+    }
+
+    .sejarah-new-logo img {
+        max-width: 120px;
+    }
+
+    .sejarah-new-text {
+        font-size: 17px;
+    }
+
+    .sejarah-new-text p {
+        margin-bottom: 20px;
+    }
+
+    .visimisi-new-section {
+        padding: 60px 0;
+    }
+
+    .visimisi-new-container {
+        padding: 0 20px;
+    }
+
+    .visimisi-new-item {
+        padding: 40px 0;
+        gap: 25px;
+    }
+
+    .visimisi-new-label {
+        font-size: 28px;
+    }
+
+    .visimisi-new-right p {
+        font-size: 17px;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-new-hero-section {
+        min-height: 70vh;
+    }
+
+    .about-new-hero-container {
+        padding: 50px 15px;
+    }
+
+    .about-new-hero-headline {
+        font-size: 42px;
+    }
+
+    .sejarah-new-section {
+        padding: 50px 0;
+    }
+
+    .sejarah-new-container {
+        padding: 0 15px;
+        gap: 25px;
+    }
+
+    .sejarah-new-logo img {
+        max-width: 100px;
+    }
+
+    .sejarah-new-text {
+        font-size: 16px;
+        line-height: 1.7;
+    }
+
+    .sejarah-new-text p {
+        margin-bottom: 18px;
+    }
+
+    .visimisi-new-section {
+        padding: 50px 0;
+    }
+
+    .visimisi-new-container {
+        padding: 0 15px;
+    }
+
+    .visimisi-new-item {
+        padding: 35px 0;
+        gap: 20px;
+    }
+
+    .visimisi-new-label {
+        font-size: 24px;
+    }
+
+    .visimisi-new-right p {
+        font-size: 16px;
+        line-height: 1.7;
     }
 }

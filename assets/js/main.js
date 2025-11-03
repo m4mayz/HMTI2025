@@ -1,9 +1,61 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Menu Toggle
     const menuToggle = document.querySelector(".menu-toggle");
+    const mainNavigation = document.querySelector(".main-navigation");
+    
     if (menuToggle) {
         menuToggle.addEventListener("click", function () {
-            document.body.classList.toggle("menu-open");
+            const isOpen = document.body.classList.toggle("menu-open");
+            menuToggle.setAttribute("aria-expanded", isOpen);
+        });
+    }
+    
+    // Close menu when clicking navigation links
+    if (mainNavigation) {
+        const navLinks = mainNavigation.querySelectorAll("a");
+        navLinks.forEach(link => {
+            link.addEventListener("click", function () {
+                document.body.classList.remove("menu-open");
+                if (menuToggle) {
+                    menuToggle.setAttribute("aria-expanded", "false");
+                }
+            });
+        });
+    }
+    
+    // Close menu when clicking outside
+    if (mainNavigation) {
+        mainNavigation.addEventListener("click", function (e) {
+            if (e.target === mainNavigation) {
+                document.body.classList.remove("menu-open");
+                if (menuToggle) {
+                    menuToggle.setAttribute("aria-expanded", "false");
+                }
+            }
+        });
+    }
+
+    // Highlight Animation on Scroll
+    const highlightTitles = document.querySelectorAll(".title-with-highlight");
+    
+    if (highlightTitles.length > 0) {
+        const observerOptions = {
+            threshold: 0.3, // Trigger when 30% of element is visible
+            rootMargin: "0px 0px -50px 0px"
+        };
+        
+        const highlightObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("animate-highlight");
+                    // Optional: stop observing after animation triggered once
+                    // highlightObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        highlightTitles.forEach(title => {
+            highlightObserver.observe(title);
         });
     }
 

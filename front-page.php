@@ -34,7 +34,14 @@
 <section class="greeting-section">
     <div class="greeting-container">
 
-        <h2 class="greeting-section-title">Sambutan Singkat</h2>
+        <h2 class="greeting-section-title">
+            Sambutan
+            <span class="title-with-highlight">
+                <span class="highlight-text">Singkat</span>
+                <span class="highlight-bar primary"></span>
+            </span>
+        </h2>
+
 
         <!-- Sambutan Pembina HMTI -->
         <?php if (get_theme_mod('greeting_pembina_photo') || get_theme_mod('greeting_pembina_message')): ?>
@@ -96,10 +103,6 @@
             </div>
         <?php endif; ?>
 
-
-
-
-
     </div>
 </section>
 
@@ -108,7 +111,11 @@
 
         <div class="news-title-block">
             <h2 class="news-section-title">
-                Berita & Publikasi<span class="highlight"> Terbaru</span>
+                Berita & Publikasi
+                <span class="title-with-highlight">
+                    <span class="highlight-text highlight"> Terbaru</span>
+                    <span class="highlight-bar primary"></span>
+                </span>
             </h2>
             <p class="news-categories">ARTIKEL / TIPS & TRIK / PRESTASI / DLL</p>
             <a href="<?php echo home_url('/berita-publikasi'); ?>" class="view-more-button">
@@ -125,7 +132,7 @@
             $latest_posts = new WP_Query([
                 'post_type' => 'post',
                 'posts_per_page' => 10,
-                'category_name' => 'berita, artikel, informasi',
+                'category_name' => 'berita, artikel, informasi, prestasi',
             ]);
 
             $post_counter = 1;
@@ -197,7 +204,7 @@
             <?php
             $latest_events = new WP_Query([
                 'post_type' => 'post',
-                'category_name' => 'event',
+                'category_name' => 'event, lomba, seminar, workshop',
                 'posts_per_page' => 10,
             ]);
 
@@ -258,10 +265,14 @@
 
         <div class="event-title-block">
             <h2 class="event-section-title">
-                Event<span class="highlight"> Terdekat</span>
+                Event
+                <span class="title-with-highlight">
+                    <span class="highlight-text highlight"> Terdekat</span>
+                    <span class="highlight-bar secondary"></span>
+                </span>
             </h2>
-            <p class="event-categories">SEMINAR / WORKSHOP / KOMPETISI / DLL</p>
-            <a href="<?php echo home_url('/event'); ?>" class="view-more-button">
+            <p class="event-categories">SEMINAR / WORKSHOP / LOMBA / DLL</p>
+            <a href="<?php echo home_url('/program-kegiatan'); ?>" class="view-more-button">
                 <span>Lihat Selengkapnya</span>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="12" cy="12" r="12" fill="#3498DB" />
@@ -281,7 +292,11 @@
 <section class="gallery-section">
     <div class="gallery-container">
         <h2 class="gallery-section-title">
-            Sekilas<span class="highlight"> Galeri</span>
+            Sekilas
+            <span class="title-with-highlight">
+                <span class="highlight-text highlight"> Galeri</span>
+                <span class="highlight-bar secondary"></span>
+            </span>
         </h2>
 
         <div class="gallery-grid">
@@ -358,7 +373,13 @@
 <section class="cta-section">
     <div class="cta-container">
         <div class="cta-content">
-            <h2 class="cta-title">Ingin Tahu Lebih Lanjut?</h2>
+            <h2 class="cta-title">
+                Ingin Tahu Lebih
+                <span class="title-with-highlight">
+                    <span class="highlight-text">Lanjut?</span>
+                    <span class="highlight-bar primary"></span>
+                </span>
+            </h2>
             <p class="cta-description">Lihat program kerja kami dan temukan berbagai kegiatan menarik yang telah kami
                 rencanakan untuk mengembangkan potensi mahasiswa Teknik Informatika.</p>
             <a href="<?php echo home_url('/program-kegiatan'); ?>" class="cta-button">
