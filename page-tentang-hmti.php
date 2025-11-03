@@ -72,15 +72,56 @@ get_header();
                 <h3 class="visimisi-new-label">Misi</h3>
             </div>
             <div class="visimisi-new-right">
-                <p>Menyelenggarakan program kerja yang berkualitas dan berkelanjutan untuk meningkatkan kompetensi
-                    mahasiswa Teknik Informatika. Membangun ekosistem pembelajaran yang kolaboratif dan inovatif melalui
-                    berbagai kegiatan akademik, pelatihan, seminar, dan workshop. Mengembangkan jaringan kerjasama
-                    dengan industri, institusi pendidikan, dan komunitas teknologi untuk memberikan peluang pengembangan
-                    karir. Memfasilitasi mahasiswa dalam mengembangkan soft skills, leadership, dan entrepreneurship
-                    untuk persiapan masa depan yang lebih baik.</p>
+                <ol class="visimisi-list">
+                    <li>Menyelenggarakan program kerja yang berkualitas dan berkelanjutan untuk meningkatkan kompetensi
+                        mahasiswa Teknik Informatika.</li>
+                    <li>Membangun ekosistem pembelajaran yang kolaboratif dan inovatif melalui berbagai kegiatan
+                        akademik, pelatihan, seminar, dan workshop.</li>
+                    <li>Mengembangkan jaringan kerjasama dengan industri, institusi pendidikan, dan komunitas teknologi
+                        untuk memberikan peluang pengembangan karir.</li>
+                    <li>Memfasilitasi mahasiswa dalam mengembangkan soft skills, leadership, dan entrepreneurship untuk
+                        persiapan masa depan yang lebih baik.</li>
+                </ol>
             </div>
         </div>
 
+    </div>
+</section>
+
+<!-- Pengurus HMTI Section -->
+<section class="pengurus-section">
+    <div class="pengurus-container">
+        <h2 class="pengurus-section-title">Pengurus HMTI Periode 2025/2026</h2>
+
+        <div class="pengurus-grid">
+            <?php
+            // Contoh data pengurus - nanti bisa diganti dengan dynamic data
+            $pengurus_list = array(
+                array('nama' => 'Nama Pengurus 1', 'jabatan' => 'Ketua Umum', 'foto' => get_template_directory_uri() . '/assets/images/logo.png'),
+                array('nama' => 'Nama Pengurus 2', 'jabatan' => 'Wakil Ketua', 'foto' => get_template_directory_uri() . '/assets/images/logo.png'),
+                array('nama' => 'Nama Pengurus 3', 'jabatan' => 'Sekretaris', 'foto' => get_template_directory_uri() . '/assets/images/logo.png'),
+                array('nama' => 'Nama Pengurus 4', 'jabatan' => 'Bendahara', 'foto' => get_template_directory_uri() . '/assets/images/logo.png'),
+                array('nama' => 'Nama Pengurus 5', 'jabatan' => 'Divisi Humas', 'foto' => get_template_directory_uri() . '/assets/images/logo.png'),
+                array('nama' => 'Nama Pengurus 6', 'jabatan' => 'Divisi Acara', 'foto' => get_template_directory_uri() . '/assets/images/logo.png'),
+                array('nama' => 'Nama Pengurus 7', 'jabatan' => 'Divisi Media', 'foto' => get_template_directory_uri() . '/assets/images/logo.png'),
+                array('nama' => 'Nama Pengurus 8', 'jabatan' => 'Divisi Kreatif', 'foto' => get_template_directory_uri() . '/assets/images/logo.png'),
+                // Tambahkan lebih banyak data sesuai kebutuhan (max 70)
+            );
+
+            foreach ($pengurus_list as $pengurus):
+                ?>
+                <div class="pengurus-cell">
+                    <div class="pengurus-photo">
+                        <img src="<?php echo esc_url($pengurus['foto']); ?>"
+                            alt="<?php echo esc_attr($pengurus['nama']); ?>">
+                    </div>
+                    <div class="pengurus-info">
+                        <h4 class="pengurus-nama"><?php echo esc_html($pengurus['nama']); ?></h4>
+                        <p class="pengurus-jabatan"><?php echo esc_html($pengurus['jabatan']); ?></p>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
     </div>
 </section>
 
