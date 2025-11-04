@@ -35,73 +35,66 @@
     <div class="greeting-container">
 
         <h2 class="greeting-section-title">
-            Sambutan
+            Sambutan dari
             <span class="title-with-highlight">
-                <span class="highlight-text">Singkat</span>
-                <span class="highlight-bar primary"></span>
+                <span class="highlight-text highlight"> mereka</span>
+                <span class="highlight-bar primary-dark"></span>
             </span>
         </h2>
 
+        <div class="greeting-items-wrapper">
+            <!-- Sambutan Pembina HMTI -->
+            <?php if (get_theme_mod('greeting_pembina_photo') || get_theme_mod('greeting_pembina_message')): ?>
+                <div class="greeting-item">
+                    <div class="greeting-photo">
+                        <?php if (get_theme_mod('greeting_pembina_photo')): ?>
+                            <img src="<?php echo esc_url(get_theme_mod('greeting_pembina_photo')); ?>"
+                                alt="<?php echo esc_attr(get_theme_mod('greeting_pembina_name', 'Pembina HMTI')); ?>">
+                        <?php endif; ?>
+                    </div>
+                    <div class="greeting-content">
+                        <div class="greeting-header">
+                            <h3 class="greeting-name">
+                                <?php echo esc_html(get_theme_mod('greeting_pembina_name', 'Nama Pembina HMTI')); ?>
+                            </h3>
+                            <p class="greeting-position">
+                                <?php echo esc_html(get_theme_mod('greeting_pembina_position', 'Pembina HMTI')); ?>
+                            </p>
+                        </div>
+                        <div class="greeting-message">
+                            <p><?php echo nl2br(esc_html(get_theme_mod('greeting_pembina_message', 'Selamat bergabung di HMTI.'))); ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
 
-        <!-- Sambutan Pembina HMTI -->
-        <?php if (get_theme_mod('greeting_pembina_photo') || get_theme_mod('greeting_pembina_message')): ?>
-            <div class="greeting-item">
-                <div class="greeting-photo">
-                    <?php if (get_theme_mod('greeting_pembina_photo')): ?>
-                        <img src="<?php echo esc_url(get_theme_mod('greeting_pembina_photo')); ?>"
-                            alt="<?php echo esc_attr(get_theme_mod('greeting_pembina_name', 'Pembina HMTI')); ?>">
-                    <?php endif; ?>
-                </div>
-                <div class="greeting-content">
-                    <div class="greeting-header">
-                        <h3 class="greeting-name">
-                            <?php echo esc_html(get_theme_mod('greeting_pembina_name', 'Nama Pembina HMTI')); ?>
-                        </h3>
-                        <p class="greeting-position">
-                            <?php echo esc_html(get_theme_mod('greeting_pembina_position', 'Pembina HMTI')); ?>
-                        </p>
+            <!-- Sambutan Ketua HMTI -->
+            <?php if (get_theme_mod('greeting_ketua_photo') || get_theme_mod('greeting_ketua_message')): ?>
+                <div class="greeting-item">
+                    <div class="greeting-photo">
+                        <?php if (get_theme_mod('greeting_ketua_photo')): ?>
+                            <img src="<?php echo esc_url(get_theme_mod('greeting_ketua_photo')); ?>"
+                                alt="<?php echo esc_attr(get_theme_mod('greeting_ketua_name', 'Ketua HMTI')); ?>">
+                        <?php endif; ?>
                     </div>
-                    <div class="greeting-message">
-                        <p><?php echo nl2br(esc_html(get_theme_mod('greeting_pembina_message', 'Selamat bergabung di HMTI.'))); ?>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
-
-        <!-- Separator Line -->
-        <?php if (
-            (get_theme_mod('greeting_ketua_photo') || get_theme_mod('greeting_ketua_message')) &&
-            (get_theme_mod('greeting_pembina_photo') || get_theme_mod('greeting_pembina_message'))
-        ): ?>
-            <hr class="greeting-separator">
-        <?php endif; ?>
-
-        <!-- Sambutan Ketua HMTI -->
-        <?php if (get_theme_mod('greeting_ketua_photo') || get_theme_mod('greeting_ketua_message')): ?>
-            <div class="greeting-item">
-                <div class="greeting-photo">
-                    <?php if (get_theme_mod('greeting_ketua_photo')): ?>
-                        <img src="<?php echo esc_url(get_theme_mod('greeting_ketua_photo')); ?>"
-                            alt="<?php echo esc_attr(get_theme_mod('greeting_ketua_name', 'Ketua HMTI')); ?>">
-                    <?php endif; ?>
-                </div>
-                <div class="greeting-content">
-                    <div class="greeting-header">
-                        <h3 class="greeting-name">
-                            <?php echo esc_html(get_theme_mod('greeting_ketua_name', 'Nama Ketua HMTI')); ?>
-                        </h3>
-                        <p class="greeting-position">
-                            <?php echo esc_html(get_theme_mod('greeting_ketua_position', 'Ketua HMTI')); ?>
-                        </p>
-                    </div>
-                    <div class="greeting-message">
-                        <p><?php echo nl2br(esc_html(get_theme_mod('greeting_ketua_message', 'Selamat datang di website resmi HMTI Universitas Nusa Putra.'))); ?>
-                        </p>
+                    <div class="greeting-content">
+                        <div class="greeting-header">
+                            <h3 class="greeting-name">
+                                <?php echo esc_html(get_theme_mod('greeting_ketua_name', 'Nama Ketua HMTI')); ?>
+                            </h3>
+                            <p class="greeting-position">
+                                <?php echo esc_html(get_theme_mod('greeting_ketua_position', 'Ketua HMTI')); ?>
+                            </p>
+                        </div>
+                        <div class="greeting-message">
+                            <p><?php echo nl2br(esc_html(get_theme_mod('greeting_ketua_message', 'Selamat datang di website resmi HMTI Universitas Nusa Putra.'))); ?>
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        <?php endif; ?>
+            <?php endif; ?>
+        </div>
 
     </div>
 </section>
@@ -295,7 +288,7 @@
             Sekilas
             <span class="title-with-highlight">
                 <span class="highlight-text highlight"> Galeri</span>
-                <span class="highlight-bar secondary"></span>
+                <span class="highlight-bar secondary-dark"></span>
             </span>
         </h2>
 

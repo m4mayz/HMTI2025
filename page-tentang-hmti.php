@@ -11,11 +11,11 @@ get_header();
     <div class="about-new-hero-container">
         <div class="about-new-hero-left">
             <h1 class="about-new-hero-headline">
-                <span class="headline-text">The story that</span>
+                <span class="headline-text">The Story that</span>
             </h1>
             <h1 class="about-new-hero-headline">
                 <span class="headline-text">
-                    <span class="text-content">built us</span>
+                    <span class="text-content">Built Us</span>
                     <span class="headline-highlighter"></span>
                 </span>
             </h1>
@@ -91,7 +91,13 @@ get_header();
 <!-- Pengurus HMTI Section -->
 <section class="pengurus-section">
     <div class="pengurus-container">
-        <h2 class="pengurus-section-title">Pengurus HMTI Periode 2025/2026</h2>
+        <h2 class="pengurus-section-title">
+            Kepemimpinan dan<br>
+            <span class="title-with-highlight">
+                <span class="highlight-text highlight">Struktur Kami</span>
+                <span class="highlight-bar primary"></span>
+            </span>
+        </h2>
 
         <div class="pengurus-grid">
             <?php

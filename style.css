@@ -323,14 +323,18 @@ body {
 
 /* Primary color highlight (blue) */
 .title-with-highlight .highlight-bar.primary {
+    background-color: var(--primary-color);
+}
+.title-with-highlight .highlight-bar.primary-dark {
     background-color: var(--primary-dark);
 }
-
 /* Secondary color highlight (yellow/green) */
 .title-with-highlight .highlight-bar.secondary {
+    background-color: var(--secondary-color);
+}
+.title-with-highlight .highlight-bar.secondary-dark {
     background-color: var(--secondary-dark);
 }
-
 /* Trigger animation when element is visible */
 .title-with-highlight.animate-highlight .highlight-bar {
     transform: scaleX(1);
@@ -383,7 +387,7 @@ h2 .title-with-highlight {
     background-image: url("assets/images/elements/1.png");
     background-size: contain;
     background-repeat: no-repeat;
-    opacity: 0.5;
+    opacity: 0.2;
     pointer-events: none;
     z-index: 0;
 }
@@ -398,14 +402,13 @@ h2 .title-with-highlight {
     background-image: url("assets/images/elements/1.png");
     background-size: contain;
     background-repeat: no-repeat;
-    opacity: 0.5;
+    opacity: 0.2;
     pointer-events: none;
     z-index: 0;
     transform: rotate(180deg);
 }
 
 .greeting-container {
-    max-width: 1000px;
     margin: 0 auto;
     position: relative;
     z-index: 1;
@@ -413,39 +416,36 @@ h2 .title-with-highlight {
 
 .greeting-section-title {
     font-family: var(--title-text);
-    font-size: 56px;
+    font-size: 64px;
     font-weight: 700;
     color: white;
-    text-align: center;
+    text-align: left;
     margin: 0 0 60px 0;
-    position: relative;
+    line-height: 1.1;
 }
 
-.greeting-section-title::after {
-    content: "";
-    position: absolute;
-    bottom: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 3px;
-    background-color: var(--primary-color);
+.greeting-items-wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 60px;
 }
 
 .greeting-item {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 40px;
-    align-items: start;
-    margin-bottom: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 30px;
 }
 
 .greeting-photo {
     width: 200px;
+    min-width: 200px;
+    height: auto;
     aspect-ratio: 3/4;
     overflow: hidden;
     border-radius: 10px;
     box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+    flex-shrink: 0;
 }
 
 .greeting-photo img {
@@ -456,10 +456,10 @@ h2 .title-with-highlight {
 }
 
 .greeting-content {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    height: 100%;
+    justify-content: flex-start;
 }
 
 .greeting-header {
@@ -498,13 +498,6 @@ h2 .title-with-highlight {
 
 .greeting-message p:last-child {
     margin-bottom: 0;
-}
-
-.greeting-separator {
-    border: none;
-    height: 1px;
-    background-color: #444;
-    margin: 40px 0;
 }
 
 /* ==========================================================================
@@ -1297,25 +1290,23 @@ h2 .title-with-highlight {
     }
 
     .greeting-section-title {
-        font-size: 36px;
-        margin-bottom: 40px;
+        font-size: 48px;
+        margin-bottom: 50px;
     }
 
-    .greeting-section-title::after {
-        width: 60px;
-        height: 2px;
-        bottom: -15px;
+    .greeting-items-wrapper {
+        grid-template-columns: 1fr;
+        gap: 50px;
     }
 
     .greeting-item {
-        grid-template-columns: 1fr;
-        gap: 25px;
-        text-align: center;
+        flex-direction: column;
+        gap: 20px;
     }
 
     .greeting-photo {
         width: 100%;
-        max-width: 200px;
+        max-width: 250px;
         margin: 0 auto;
     }
 
@@ -1325,22 +1316,15 @@ h2 .title-with-highlight {
 
     .greeting-name {
         font-size: 28px;
-        text-align: center;
     }
 
     .greeting-position {
         font-size: 16px;
-        text-align: center;
     }
 
     .greeting-message {
-        font-size: 16px;
+        font-size: 18px;
         line-height: 1.7;
-        text-align: center;
-    }
-
-    .greeting-separator {
-        margin: 35px 0;
     }
 }
 
@@ -1376,22 +1360,23 @@ h2 .title-with-highlight {
     }
 
     .greeting-section-title {
-        font-size: 32px;
-        margin-bottom: 35px;
+        font-size: 36px;
+        margin-bottom: 40px;
     }
 
-    .greeting-section-title::after {
-        width: 50px;
-        height: 2px;
-        bottom: -12px;
+    .greeting-items-wrapper {
+        gap: 40px;
     }
 
     .greeting-item {
-        gap: 20px;
+        flex-direction: column;
+        gap: 15px;
     }
 
     .greeting-photo {
+        width: 100%;
         max-width: 200px;
+        margin: 0 auto;
     }
 
     .greeting-header {
@@ -1407,12 +1392,8 @@ h2 .title-with-highlight {
     }
 
     .greeting-message {
-        font-size: 15px;
+        font-size: 16px;
         line-height: 1.6;
-    }
-
-    .greeting-separator {
-        margin: 30px 0;
     }
 }
 
@@ -1540,16 +1521,19 @@ h2 .title-with-highlight {
         margin-bottom: 50px;
     }
 
-    .greeting-item {
+    .greeting-items-wrapper {
         grid-template-columns: 1fr;
-        gap: 30px;
-        text-align: center;
+        gap: 40px;
+    }
+
+    .greeting-item {
+        flex-direction: row;
+        gap: 20px;
     }
 
     .greeting-photo {
-        width: 100%;
-        max-width: 200px;
-        margin: 0 auto;
+        width: 150px;
+        min-width: 150px;
     }
 
     .greeting-header {
@@ -1558,23 +1542,15 @@ h2 .title-with-highlight {
 
     .greeting-name {
         font-size: 30px;
-        text-align: center;
     }
 
     .greeting-position {
         font-size: 17px;
-        text-align: center;
     }
 
     .greeting-message {
-        font-size: 17px;
-        text-align: center;
+        font-size: 18px;
         line-height: 1.7;
-    }
-
-    .greeting-separator {
-        margin: 45px auto;
-        max-width: 80%;
     }
 
     .hero-headline {
@@ -3506,7 +3482,7 @@ h2 .title-with-highlight {
     font-size: 48px;
     font-weight: 700;
     color: var(--font-color);
-    text-align: center;
+    text-align: left;
     margin: 0 0 60px 0;
     line-height: 1.2;
 }
