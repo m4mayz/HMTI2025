@@ -311,10 +311,10 @@ body {
 
 .title-with-highlight .highlight-bar {
     position: absolute;
-    bottom: 15%;
+    bottom: 20%;
     left: 0;
     width: 100%;
-    height: 35%;
+    height: 40%;
     z-index: 1;
     transform-origin: left;
     transform: scaleX(0);
@@ -350,21 +350,6 @@ body {
 h1.about-hero-title .title-with-highlight,
 h2 .title-with-highlight {
     display: inline-block;
-}
-
-/* Responsive adjustments for highlight bar */
-@media (max-width: 768px) {
-    .title-with-highlight .highlight-bar {
-        bottom: 10%;
-        height: 30%;
-    }
-}
-
-@media (max-width: 480px) {
-    .title-with-highlight .highlight-bar {
-        bottom: 8%;
-        height: 28%;
-    }
 }
 
 /* ==========================================================================
@@ -3192,6 +3177,7 @@ h2 .title-with-highlight {
     width: 100vw;
     margin-left: calc(-50vw + 50%);
     box-sizing: border-box;
+    padding: 100px 100px;
 }
 
 .about-new-hero-section::before {
@@ -3201,11 +3187,11 @@ h2 .title-with-highlight {
     top: 0;
     bottom: 0;
     width: 75%;
-    background-image: url("assets/images/logo.png");
+    background-image: url("assets/images/bg-about.jpg");
     background-size: cover;
     background-position: center right;
     background-repeat: no-repeat;
-    opacity: 0.15;
+    opacity: 0.5;
     z-index: 1;
     mask-image: linear-gradient(
         to right,
@@ -3229,7 +3215,7 @@ h2 .title-with-highlight {
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 100px 100px;
+    padding: 40px 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 60px;
@@ -3318,7 +3304,7 @@ h2 .title-with-highlight {
 }
 
 .sejarah-new-text {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 500;
     line-height: 1.8;
     color: #555;
@@ -3353,7 +3339,7 @@ h2 .title-with-highlight {
     background-image: url("assets/images/elements/1.png");
     background-size: contain;
     background-repeat: no-repeat;
-    opacity: 0.3;
+    opacity: 0.1;
     pointer-events: none;
     z-index: 0;
 }
@@ -3368,7 +3354,7 @@ h2 .title-with-highlight {
     background-image: url("assets/images/elements/1.png");
     background-size: contain;
     background-repeat: no-repeat;
-    opacity: 0.3;
+    opacity: 0.1;
     pointer-events: none;
     z-index: 0;
     transform: rotate(180deg);
@@ -3734,15 +3720,24 @@ h2 .title-with-highlight {
 /* Responsive - New About Page */
 @media (max-width: 1380px) {
     .about-new-hero-headline {
-        font-size: 100px;
+        font-size: 90px;
     }
 }
 
 @media (max-width: 985px) {
+    .about-new-hero-section {
+        padding: 80px 20px;
+    }
+
     .about-new-hero-container {
-        padding: 80px 40px;
+        padding: 20px 0;
         grid-template-columns: 1fr;
         gap: 40px;
+    }
+
+    .about-new-hero-left {
+        text-align: center;
+        align-items: center;
     }
 
     .about-new-hero-headline {
@@ -3755,7 +3750,7 @@ h2 .title-with-highlight {
 
     .about-new-hero-section::before {
         width: 100%;
-        opacity: 0.08;
+        opacity: 0.5;
         mask-image: radial-gradient(
             ellipse 100% 80% at 50% 50%,
             rgba(0, 0, 0, 0.6) 0%,
@@ -3771,14 +3766,15 @@ h2 .title-with-highlight {
     }
 
     .sejarah-new-container {
-        padding: 0 40px;
+        padding: 0 100px;
         grid-template-columns: 1fr;
         gap: 40px;
+        text-align: center;
     }
 
     .sejarah-new-logo {
         position: static;
-        justify-content: flex-start;
+        justify-content: center;
     }
 
     .sejarah-new-logo img {
@@ -3786,7 +3782,7 @@ h2 .title-with-highlight {
     }
 
     .sejarah-new-text {
-        font-size: 18px;
+        font-size: 20px;
     }
 
     .visimisi-new-container {
@@ -3797,10 +3793,6 @@ h2 .title-with-highlight {
         grid-template-columns: 1fr;
         gap: 30px;
         padding: 50px 0;
-    }
-
-    .visimisi-new-item:first-child {
-        padding-top: 0;
     }
 
     .visimisi-new-label {
@@ -3818,11 +3810,11 @@ h2 .title-with-highlight {
 
 @media (max-width: 768px) {
     .about-new-hero-section {
-        min-height: 80vh;
+        padding: 60px 20px;
     }
 
     .about-new-hero-container {
-        padding: 60px 20px;
+        padding: 20px 0;
     }
 
     .about-new-hero-headline {
@@ -3834,16 +3826,12 @@ h2 .title-with-highlight {
     }
 
     .sejarah-new-container {
-        padding: 0 20px;
+        padding: 0 50px;
         gap: 30px;
     }
 
     .sejarah-new-logo img {
         max-width: 120px;
-    }
-
-    .sejarah-new-text {
-        font-size: 17px;
     }
 
     .sejarah-new-text p {
@@ -3887,11 +3875,11 @@ h2 .title-with-highlight {
 
 @media (max-width: 480px) {
     .about-new-hero-section {
-        min-height: 70vh;
+        padding: 60px 15px;
     }
 
     .about-new-hero-container {
-        padding: 50px 15px;
+        padding: 20px 0;
     }
 
     .about-new-hero-headline {
@@ -3903,17 +3891,12 @@ h2 .title-with-highlight {
     }
 
     .sejarah-new-container {
-        padding: 0 15px;
+        padding: 0 20px;
         gap: 25px;
     }
 
     .sejarah-new-logo img {
         max-width: 100px;
-    }
-
-    .sejarah-new-text {
-        font-size: 16px;
-        line-height: 1.7;
     }
 
     .sejarah-new-text p {

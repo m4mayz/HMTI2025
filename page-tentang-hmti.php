@@ -33,18 +33,17 @@ get_header();
             <img src="<?php echo get_template_directory_uri(); ?>/assets/images/logo.png" alt="Logo HMTI">
         </div>
         <div class="sejarah-new-text">
-            <p>Himpunan Mahasiswa Teknik Informatika (HMTI) Universitas Nusa Putra merupakan organisasi kemahasiswaan
-                resmi yang mewadahi seluruh mahasiswa Program Studi Teknik Informatika. Didirikan dengan tujuan untuk
-                mengembangkan potensi mahasiswa baik dalam bidang akademik maupun non-akademik.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+                ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+                fugiat nulla pariatur.</p>
 
-            <p>Sejak awal berdirinya, HMTI telah berkomitmen untuk menciptakan lingkungan yang kondusif bagi mahasiswa
-                dalam mengembangkan kemampuan teknis, soft skills, dan jiwa kepemimpinan. Melalui berbagai program kerja
-                dan kegiatan, HMTI terus berinovasi untuk memberikan manfaat terbaik bagi seluruh anggotanya.</p>
+            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
+                laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
+                laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae
+                vitae dicta sunt explicabo.</p>
 
-            <p>Dengan semangat kebersamaan dan kolaborasi, HMTI tidak hanya fokus pada pengembangan internal organisasi,
-                tetapi juga aktif dalam membangun jaringan dengan berbagai pihak eksternal, baik industri, akademisi,
-                maupun komunitas teknologi lainnya. Hal ini bertujuan untuk memberikan exposure yang lebih luas kepada
-                mahasiswa Teknik Informatika dalam menghadapi dunia kerja dan perkembangan teknologi yang dinamis.</p>
+
         </div>
     </div>
 </section>
@@ -53,37 +52,62 @@ get_header();
 <section class="visimisi-new-section">
     <div class="visimisi-new-container">
 
-        <!-- Visi -->
-        <div class="visimisi-new-item">
-            <div class="visimisi-new-left">
-                <h3 class="visimisi-new-label">Visi</h3>
-            </div>
-            <div class="visimisi-new-right">
-                <p>Menjadi organisasi kemahasiswaan yang unggul, inovatif, dan berdaya saing tinggi dalam bidang Teknik
-                    Informatika. Kami berkomitmen untuk menciptakan lingkungan yang mendorong pengembangan potensi
-                    mahasiswa secara optimal, baik dalam aspek akademik, profesional, maupun sosial, sehingga mampu
-                    menghasilkan lulusan yang kompeten dan siap berkontribusi dalam era digital.</p>
-            </div>
-        </div>
+        <?php
+        // Query untuk mengambil data Visi & Misi dari Custom Post Type
+        $visimisi_query = new WP_Query([
+            'post_type' => 'visimisi',
+            'posts_per_page' => 1,
+        ]);
 
-        <!-- Misi -->
-        <div class="visimisi-new-item">
-            <div class="visimisi-new-left">
-                <h3 class="visimisi-new-label">Misi</h3>
-            </div>
-            <div class="visimisi-new-right">
-                <ol class="visimisi-list">
-                    <li>Menyelenggarakan program kerja yang berkualitas dan berkelanjutan untuk meningkatkan kompetensi
-                        mahasiswa Teknik Informatika.</li>
-                    <li>Membangun ekosistem pembelajaran yang kolaboratif dan inovatif melalui berbagai kegiatan
-                        akademik, pelatihan, seminar, dan workshop.</li>
-                    <li>Mengembangkan jaringan kerjasama dengan industri, institusi pendidikan, dan komunitas teknologi
-                        untuk memberikan peluang pengembangan karir.</li>
-                    <li>Memfasilitasi mahasiswa dalam mengembangkan soft skills, leadership, dan entrepreneurship untuk
-                        persiapan masa depan yang lebih baik.</li>
-                </ol>
-            </div>
-        </div>
+        if ($visimisi_query->have_posts()):
+            while ($visimisi_query->have_posts()):
+                $visimisi_query->the_post();
+                $visi = get_post_meta(get_the_ID(), '_visimisi_visi', true);
+                $misi = get_post_meta(get_the_ID(), '_visimisi_misi', true);
+                ?>
+
+                <!-- Visi -->
+                <?php if ($visi): ?>
+                    <div class="visimisi-new-item">
+                        <div class="visimisi-new-left">
+                            <h3 class="visimisi-new-label">Visi</h3>
+                        </div>
+                        <div class="visimisi-new-right">
+                            <p><?php echo nl2br(esc_html($visi)); ?></p>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <!-- Misi -->
+                <?php if ($misi):
+                    // Split misi by newlines and filter empty lines
+                    $misi_lines = array_filter(array_map('trim', explode("\n", $misi)));
+
+                    if (!empty($misi_lines)):
+                        ?>
+                        <div class="visimisi-new-item">
+                            <div class="visimisi-new-left">
+                                <h3 class="visimisi-new-label">Misi</h3>
+                            </div>
+                            <div class="visimisi-new-right">
+                                <ol class="visimisi-list">
+                                    <?php foreach ($misi_lines as $misi_item): ?>
+                                        <li><?php echo esc_html($misi_item); ?></li>
+                                    <?php endforeach; ?>
+                                </ol>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                <?php endif; ?>
+
+                <?php
+            endwhile;
+            wp_reset_postdata();
+        else:
+            ?>
+            <p style="text-align: center; width: 100%; color: #999; padding: 40px 20px;">Belum ada data Visi & Misi. Silakan
+                tambahkan di menu Visi & Misi di dashboard WordPress.</p>
+        <?php endif; ?>
 
     </div>
 </section>
@@ -101,32 +125,42 @@ get_header();
 
         <div class="pengurus-grid">
             <?php
-            // Contoh data pengurus - nanti bisa diganti dengan dynamic data
-            $pengurus_list = array(
-                array('nama' => 'Nama Pengurus 1', 'jabatan' => 'Ketua Umum', 'foto' => get_template_directory_uri() . '/assets/images/logo.png'),
-                array('nama' => 'Nama Pengurus 2', 'jabatan' => 'Wakil Ketua', 'foto' => get_template_directory_uri() . '/assets/images/logo.png'),
-                array('nama' => 'Nama Pengurus 3', 'jabatan' => 'Sekretaris', 'foto' => get_template_directory_uri() . '/assets/images/logo.png'),
-                array('nama' => 'Nama Pengurus 4', 'jabatan' => 'Bendahara', 'foto' => get_template_directory_uri() . '/assets/images/logo.png'),
-                array('nama' => 'Nama Pengurus 5', 'jabatan' => 'Divisi Humas', 'foto' => get_template_directory_uri() . '/assets/images/logo.png'),
-                array('nama' => 'Nama Pengurus 6', 'jabatan' => 'Divisi Acara', 'foto' => get_template_directory_uri() . '/assets/images/logo.png'),
-                array('nama' => 'Nama Pengurus 7', 'jabatan' => 'Divisi Media', 'foto' => get_template_directory_uri() . '/assets/images/logo.png'),
-                array('nama' => 'Nama Pengurus 8', 'jabatan' => 'Divisi Kreatif', 'foto' => get_template_directory_uri() . '/assets/images/logo.png'),
-                // Tambahkan lebih banyak data sesuai kebutuhan (max 70)
-            );
+            // Query untuk mengambil data pengurus dari Custom Post Type
+            $pengurus_query = new WP_Query([
+                'post_type' => 'pengurus',
+                'posts_per_page' => -1,
+                'meta_key' => '_pengurus_urutan',
+                'orderby' => 'meta_value_num',
+                'order' => 'ASC',
+            ]);
 
-            foreach ($pengurus_list as $pengurus):
+            if ($pengurus_query->have_posts()):
+                while ($pengurus_query->have_posts()):
+                    $pengurus_query->the_post();
+                    $jabatan = get_post_meta(get_the_ID(), '_pengurus_jabatan', true);
+                    ?>
+                    <div class="pengurus-cell">
+                        <div class="pengurus-photo">
+                            <?php if (has_post_thumbnail()): ?>
+                                <?php the_post_thumbnail('medium'); ?>
+                            <?php else: ?>
+                                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/logo.png"
+                                    alt="<?php the_title(); ?>">
+                            <?php endif; ?>
+                        </div>
+                        <div class="pengurus-info">
+                            <h4 class="pengurus-nama"><?php the_title(); ?></h4>
+                            <p class="pengurus-jabatan"><?php echo esc_html($jabatan); ?></p>
+                        </div>
+                    </div>
+                    <?php
+                endwhile;
+                wp_reset_postdata();
+            else:
                 ?>
-                <div class="pengurus-cell">
-                    <div class="pengurus-photo">
-                        <img src="<?php echo esc_url($pengurus['foto']); ?>"
-                            alt="<?php echo esc_attr($pengurus['nama']); ?>">
-                    </div>
-                    <div class="pengurus-info">
-                        <h4 class="pengurus-nama"><?php echo esc_html($pengurus['nama']); ?></h4>
-                        <p class="pengurus-jabatan"><?php echo esc_html($pengurus['jabatan']); ?></p>
-                    </div>
-                </div>
-            <?php endforeach; ?>
+                <p style="text-align: center; width: 100%; color: #999;">Belum ada data pengurus. Silakan tambahkan di menu
+                    Pengurus HMTI di dashboard WordPress.</p>
+            <?php endif; ?>
         </div>
     </div>
 </section>

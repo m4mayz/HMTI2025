@@ -189,6 +189,90 @@
 <!-- Divider -->
 <div class="section-divider"></div>
 
+<!-- Gallery Section -->
+<section class="gallery-section">
+    <div class="gallery-container">
+        <h2 class="gallery-section-title">
+            Sekilas
+            <span class="title-with-highlight">
+                <span class="highlight-text highlight"> Galeri</span>
+                <span class="highlight-bar secondary-dark"></span>
+            </span>
+        </h2>
+
+        <div class="gallery-grid">
+            <?php
+            // Get all images first
+            $all_images = new WP_Query([
+                'post_type' => 'attachment',
+                'post_mime_type' => 'image',
+                'post_status' => 'inherit',
+                'posts_per_page' => 50, // Get more to filter from
+                'orderby' => 'date',
+                'order' => 'DESC'
+            ]);
+
+            $landscape_images = [];
+
+            // Filter only landscape images
+            if ($all_images->have_posts()):
+                while ($all_images->have_posts()):
+                    $all_images->the_post();
+                    $metadata = wp_get_attachment_metadata(get_the_ID());
+
+                    // Check if image is landscape (width > height)
+                    if (isset($metadata['width']) && isset($metadata['height'])) {
+                        if ($metadata['width'] > $metadata['height']) {
+                            $landscape_images[] = get_the_ID();
+
+                            // Stop when we have 9 landscape images
+                            if (count($landscape_images) >= 9) {
+                                break;
+                            }
+                        }
+                    }
+                endwhile;
+                wp_reset_postdata();
+            endif;
+
+            // Display the landscape images
+            if (!empty($landscape_images)):
+                $counter = 0;
+                foreach ($landscape_images as $image_id):
+                    $counter++;
+                    $image_url = wp_get_attachment_image_url($image_id, 'large');
+                    $image_alt = get_post_meta($image_id, '_wp_attachment_image_alt', true);
+                    ?>
+                    <div class="gallery-item gallery-item-<?php echo $counter; ?>">
+                        <div>
+                            <img src="<?php echo esc_url($image_url); ?>"
+                                alt="<?php echo esc_attr($image_alt ? $image_alt : 'Gallery Image ' . $counter); ?>">
+                        </div>
+                    </div>
+                    <?php
+                endforeach;
+            else:
+                ?>
+                <p class="no-gallery">Belum ada foto landscape di galeri.</p>
+                <?php
+            endif;
+            ?>
+        </div>
+
+        <a href="<?php echo home_url('/galeri'); ?>" class="view-more-button gallery-view-more">
+            <span>Lihat Semua Galeri</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="12" fill="#c9cc2e" />
+                <path d="M10.5 16.5L15 12L10.5 7.5" stroke="#222" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+        </a>
+    </div>
+</section>
+
+<!-- Divider -->
+<div class="section-divider"></div>
+
 <!-- Event Section -->
 <section class="event-section">
     <div class="event-grid">
@@ -275,114 +359,6 @@
             </a>
         </div>
 
-    </div>
-</section>
-
-<!-- Divider -->
-<div class="section-divider"></div>
-
-<!-- Gallery Section -->
-<section class="gallery-section">
-    <div class="gallery-container">
-        <h2 class="gallery-section-title">
-            Sekilas
-            <span class="title-with-highlight">
-                <span class="highlight-text highlight"> Galeri</span>
-                <span class="highlight-bar secondary-dark"></span>
-            </span>
-        </h2>
-
-        <div class="gallery-grid">
-            <?php
-            // Get all images first
-            $all_images = new WP_Query([
-                'post_type' => 'attachment',
-                'post_mime_type' => 'image',
-                'post_status' => 'inherit',
-                'posts_per_page' => 50, // Get more to filter from
-                'orderby' => 'date',
-                'order' => 'DESC'
-            ]);
-
-            $landscape_images = [];
-
-            // Filter only landscape images
-            if ($all_images->have_posts()):
-                while ($all_images->have_posts()):
-                    $all_images->the_post();
-                    $metadata = wp_get_attachment_metadata(get_the_ID());
-
-                    // Check if image is landscape (width > height)
-                    if (isset($metadata['width']) && isset($metadata['height'])) {
-                        if ($metadata['width'] > $metadata['height']) {
-                            $landscape_images[] = get_the_ID();
-
-                            // Stop when we have 9 landscape images
-                            if (count($landscape_images) >= 9) {
-                                break;
-                            }
-                        }
-                    }
-                endwhile;
-                wp_reset_postdata();
-            endif;
-
-            // Display the landscape images
-            if (!empty($landscape_images)):
-                $counter = 0;
-                foreach ($landscape_images as $image_id):
-                    $counter++;
-                    $image_url = wp_get_attachment_image_url($image_id, 'large');
-                    $image_alt = get_post_meta($image_id, '_wp_attachment_image_alt', true);
-                    ?>
-                    <div class="gallery-item gallery-item-<?php echo $counter; ?>">
-                        <div>
-                            <img src="<?php echo esc_url($image_url); ?>"
-                                alt="<?php echo esc_attr($image_alt ? $image_alt : 'Gallery Image ' . $counter); ?>">
-                        </div>
-                    </div>
-                    <?php
-                endforeach;
-            else:
-                ?>
-                <p class="no-gallery">Belum ada foto landscape di galeri.</p>
-                <?php
-            endif;
-            ?>
-        </div>
-
-        <a href="<?php echo home_url('/galeri'); ?>" class="view-more-button gallery-view-more">
-            <span>Lihat Semua Galeri</span>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="12" fill="#c9cc2e" />
-                <path d="M10.5 16.5L15 12L10.5 7.5" stroke="#222" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" />
-            </svg>
-        </a>
-    </div>
-</section>
-
-<!-- CTA Section -->
-<section class="cta-section">
-    <div class="cta-container">
-        <div class="cta-content">
-            <h2 class="cta-title">
-                Ingin Tahu Lebih
-                <span class="title-with-highlight">
-                    <span class="highlight-text">Lanjut?</span>
-                    <span class="highlight-bar primary"></span>
-                </span>
-            </h2>
-            <p class="cta-description">Lihat program kerja kami dan temukan berbagai kegiatan menarik yang telah kami
-                rencanakan untuk mengembangkan potensi mahasiswa Teknik Informatika.</p>
-            <a href="<?php echo home_url('/program-kegiatan'); ?>" class="cta-button">
-                <span>Lihat Program Kerja Kami</span>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                </svg>
-            </a>
-        </div>
     </div>
 </section>
 
