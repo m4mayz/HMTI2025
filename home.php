@@ -1,7 +1,7 @@
 <?php get_header(); ?>
 
 <div class="archive-page">
-    <h1 class="archive-title">Berita & Artikel</h1>
+    <h1 class="archive-title">Berita & Publikasi</h1>
 
     <div class="archive-grid">
         <?php
