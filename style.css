@@ -10,7 +10,8 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: custom-theme, hmti
 Text Domain: hmtitheme
 */
-
+@import "tailwindcss";
+@plugin "daisyui";
 @import url("https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@500&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Darker+Grotesque:wght@300..900&display=swap");
 

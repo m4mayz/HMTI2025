@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+/* Import Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Darker+Grotesque:wght@300;400;500;600;700;800;900&display=swap");
+
+/* Tailwind v4 Custom Theme */
+@theme {
+    /* Custom Colors */
+    --color-primary: #3498db;
+    --color-primary-dark: #2f7db2;
+    --color-secondary: #c9cc2e;
+    --color-secondary-dark: #b0b32e;
+    --color-dark-bg: #222;
+
+    /* Font Families */
+    --font-title: "Cormorant Garamond", serif;
+    --font-body: "Darker Grotesque", sans-serif;
+}
+
+/* Custom CSS */
+
+/* Font Classes - Explicit Definition */
+.font-title {
+    font-family: var(--font-title) !important;
+}
+
+.font-body {
+    font-family: var(--font-body) !important;
+}
+
+/* Custom Color Classes */
+.text-dark-bg {
+    color: var(--color-dark-bg);
+}
+
+.bg-dark-bg {
+    background-color: var(--color-dark-bg);
+}
+
+.text-primary {
+    color: var(--color-primary);
+}
+
+.bg-primary {
+    background-color: var(--color-primary);
+}
+
+.bg-primary-dark {
+    background-color: var(--color-primary-dark);
+}
+
+.text-secondary {
+    color: var(--color-secondary);
+}
+
+.bg-secondary {
+    background-color: var(--color-secondary);
+}
+
+.border-primary {
+    border-color: var(--color-primary);
+}
+
+.border-dark-bg {
+    border-color: var(--color-dark-bg);
+}
+
+/* Search Bar Container - Ensure dropdown is visible */
+.search-bar-container {
+    position: relative;
+    z-index: 50;
+}
+
+/* Search Bar Dropdown Animation */
+.dropdown-cat-wrapper {
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-cat-wrapper:not(.hidden) {
+    animation: dropdownSlide 0.2s ease-out;
+}
+
+@keyframes dropdownSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Search Bar Focus States */
+.search-input:focus {
+    outline: none;
+}
+
+/* Smooth scrollbar for dropdown */
+.dropdown-cat-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.dropdown-cat-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.dropdown-cat-wrapper::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.dropdown-cat-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

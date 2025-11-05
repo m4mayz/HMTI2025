@@ -192,18 +192,32 @@ function hmti_save_visimisi_meta($post_id)
 add_action('save_post_visimisi', 'hmti_save_visimisi_meta');
 
 require get_template_directory() . '/inc/customizer.php';
+
 function hmti_theme_styles()
 {
-    // Memanggil file style.css utama
+    // Load Google Fonts
     wp_enqueue_style(
-        'hmti-main-style',
-        get_stylesheet_uri(), // Ini akan otomatis mengambil style.css di root tema
-        [], // Dependensi (jika ada)
-        '1.0' // Versi
+        'hmti-google-fonts',
+        'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Darker+Grotesque:wght@300;400;500;600;700;800;900&display=swap',
+        [],
+        null
     );
 
-    // Jika Anda punya file CSS lain, panggil di sini
-    // wp_enqueue_style('hmti-custom-style', get_template_directory_uri() . '/assets/css/custom.css');
+    // Load Tailwind CSS (output dari build)
+    wp_enqueue_style(
+        'hmti-tailwind',
+        get_template_directory_uri() . '/assets/output.css',
+        ['hmti-google-fonts'], // Load setelah Google Fonts
+        filemtime(get_template_directory() . '/assets/output.css') // Cache busting
+    );
+
+    // Memanggil file style.css utama untuk custom CSS tambahan
+    wp_enqueue_style(
+        'hmti-main-style',
+        get_stylesheet_uri(),
+        array('hmti-tailwind'), // Load setelah Tailwind
+        '1.0'
+    );
 }
 
 // Memberitahu WordPress untuk menjalankan fungsi di atas

@@ -1,0 +1,35 @@
+{
+    "name": "hmti2025",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build:css": "postcss app.css -o assets/output.css",
+        "watch:css": "postcss app.css -o assets/output.css --watch",
+        "build": "npm run build:css"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/m4mayz/HMTI2025.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs",
+    "bugs": {
+        "url": "https://github.com/m4mayz/HMTI2025/issues"
+    },
+    "homepage": "https://github.com/m4mayz/HMTI2025#readme",
+    "devDependencies": {
+        "autoprefixer": "^10.4.21",
+        "daisyui": "^5.4.4",
+        "postcss": "^8.5.6",
+        "tailwindcss": "^4.1.16"
+    },
+    "dependencies": {
+        "@tailwindcss/line-clamp": "^0.4.4",
+        "@tailwindcss/postcss": "^4.1.16",
+        "postcss-cli": "^11.0.1"
+    }
+}

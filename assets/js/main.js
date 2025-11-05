@@ -2,18 +2,18 @@ document.addEventListener("DOMContentLoaded", function () {
     // Menu Toggle
     const menuToggle = document.querySelector(".menu-toggle");
     const mainNavigation = document.querySelector(".main-navigation");
-    
+
     if (menuToggle) {
         menuToggle.addEventListener("click", function () {
             const isOpen = document.body.classList.toggle("menu-open");
             menuToggle.setAttribute("aria-expanded", isOpen);
         });
     }
-    
+
     // Close menu when clicking navigation links
     if (mainNavigation) {
         const navLinks = mainNavigation.querySelectorAll("a");
-        navLinks.forEach(link => {
+        navLinks.forEach((link) => {
             link.addEventListener("click", function () {
                 document.body.classList.remove("menu-open");
                 if (menuToggle) {
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
     }
-    
+
     // Close menu when clicking outside
     if (mainNavigation) {
         mainNavigation.addEventListener("click", function (e) {
@@ -37,15 +37,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Highlight Animation on Scroll
     const highlightTitles = document.querySelectorAll(".title-with-highlight");
-    
+
     if (highlightTitles.length > 0) {
         const observerOptions = {
             threshold: 0.3, // Trigger when 30% of element is visible
-            rootMargin: "0px 0px -50px 0px"
+            rootMargin: "0px 0px -50px 0px",
         };
-        
+
         const highlightObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
+            entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add("animate-highlight");
                     // Optional: stop observing after animation triggered once
@@ -53,8 +53,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
         }, observerOptions);
-        
-        highlightTitles.forEach(title => {
+
+        highlightTitles.forEach((title) => {
             highlightObserver.observe(title);
         });
     }
@@ -97,4 +97,25 @@ document.addEventListener("DOMContentLoaded", function () {
             ticking = true;
         }
     });
+
+    // Dropdown Kategori Toggle
+    const btnDropdownCat = document.querySelector(".btn-dropdown-cat");
+    const dropdownCatWrapper = document.querySelector(".dropdown-cat-wrapper");
+
+    if (btnDropdownCat && dropdownCatWrapper) {
+        btnDropdownCat.addEventListener("click", function (e) {
+            e.preventDefault();
+            dropdownCatWrapper.classList.toggle("hidden");
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener("click", function (e) {
+            if (
+                !btnDropdownCat.contains(e.target) &&
+                !dropdownCatWrapper.contains(e.target)
+            ) {
+                dropdownCatWrapper.classList.add("hidden");
+            }
+        });
+    }
 });
