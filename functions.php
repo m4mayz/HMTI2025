@@ -191,6 +191,203 @@ function hmti_save_visimisi_meta($post_id)
 }
 add_action('save_post_visimisi', 'hmti_save_visimisi_meta');
 
+// Register Custom Post Type untuk Program Unggulan
+function hmti_register_program_unggulan_post_type()
+{
+    $labels = array(
+        'name' => 'Program Unggulan',
+        'singular_name' => 'Program Unggulan',
+        'menu_name' => 'Program Unggulan',
+        'add_new' => 'Tambah Program',
+        'add_new_item' => 'Tambah Program Unggulan Baru',
+        'edit_item' => 'Edit Program Unggulan',
+        'new_item' => 'Program Unggulan Baru',
+        'view_item' => 'Lihat Program Unggulan',
+        'search_items' => 'Cari Program Unggulan',
+        'not_found' => 'Program Unggulan tidak ditemukan',
+    );
+
+    $args = array(
+        'labels' => $labels,
+        'public' => false,
+        'has_archive' => false,
+        'publicly_queryable' => false,
+        'show_ui' => true,
+        'show_in_menu' => true,
+        'menu_icon' => 'dashicons-star-filled',
+        'supports' => array('title', 'thumbnail'),
+        'rewrite' => false,
+    );
+
+    register_post_type('program_unggulan', $args);
+}
+add_action('init', 'hmti_register_program_unggulan_post_type');
+
+// Add Meta Boxes for Program Unggulan
+function hmti_add_program_unggulan_meta_boxes()
+{
+    add_meta_box(
+        'program_unggulan_details',
+        'Detail Program Unggulan',
+        'hmti_program_unggulan_details_callback',
+        'program_unggulan',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'hmti_add_program_unggulan_meta_boxes');
+
+function hmti_program_unggulan_details_callback($post)
+{
+    wp_nonce_field('hmti_save_program_unggulan_data', 'hmti_program_unggulan_nonce');
+    $tanggal = get_post_meta($post->ID, '_program_unggulan_tanggal', true);
+    $lokasi = get_post_meta($post->ID, '_program_unggulan_lokasi', true);
+    $deskripsi = get_post_meta($post->ID, '_program_unggulan_deskripsi', true);
+
+    echo '<p><label><strong>Tanggal Program:</strong></label></p>';
+    echo '<input type="date" name="program_unggulan_tanggal" value="' . esc_attr($tanggal) . '" class="widefat">';
+    echo '<p class="description">Status akan otomatis ditentukan berdasarkan tanggal (hari ini = berlangsung, sebelum = selesai, setelah = akan datang).</p>';
+
+    echo '<p style="margin-top:15px;"><label><strong>Lokasi:</strong></label></p>';
+    echo '<input type="text" name="program_unggulan_lokasi" value="' . esc_attr($lokasi) . '" class="widefat" placeholder="Contoh: Aula Kampus">';
+
+    echo '<p style="margin-top:15px;"><label><strong>Deskripsi Singkat:</strong></label></p>';
+    echo '<textarea name="program_unggulan_deskripsi" class="widefat" rows="3" maxlength="310" placeholder="Deskripsi singkat program (maksimal 310 karakter)" oninput="document.getElementById(\'char-count-program\').textContent = this.value.length">' . esc_textarea($deskripsi) . '</textarea>';
+    echo '<p class="description"><span id="char-count-program">' . strlen($deskripsi) . '</span>/310 karakter</p>';
+}
+
+function hmti_save_program_unggulan_meta($post_id)
+{
+    if (!isset($_POST['hmti_program_unggulan_nonce']) || !wp_verify_nonce($_POST['hmti_program_unggulan_nonce'], 'hmti_save_program_unggulan_data')) {
+        return;
+    }
+
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    if (isset($_POST['program_unggulan_tanggal'])) {
+        update_post_meta($post_id, '_program_unggulan_tanggal', sanitize_text_field($_POST['program_unggulan_tanggal']));
+    }
+
+    if (isset($_POST['program_unggulan_lokasi'])) {
+        update_post_meta($post_id, '_program_unggulan_lokasi', sanitize_text_field($_POST['program_unggulan_lokasi']));
+    }
+
+    if (isset($_POST['program_unggulan_deskripsi'])) {
+        $deskripsi = substr(sanitize_textarea_field($_POST['program_unggulan_deskripsi']), 0, 310);
+        update_post_meta($post_id, '_program_unggulan_deskripsi', $deskripsi);
+    }
+}
+add_action('save_post_program_unggulan', 'hmti_save_program_unggulan_meta');
+
+// Register Custom Post Type untuk Acara Terbuka
+function hmti_register_acara_terbuka_post_type()
+{
+    $labels = array(
+        'name' => 'Acara Terbuka',
+        'singular_name' => 'Acara Terbuka',
+        'menu_name' => 'Acara Terbuka',
+        'add_new' => 'Tambah Acara',
+        'add_new_item' => 'Tambah Acara Terbuka Baru',
+        'edit_item' => 'Edit Acara Terbuka',
+        'new_item' => 'Acara Terbuka Baru',
+        'view_item' => 'Lihat Acara Terbuka',
+        'search_items' => 'Cari Acara Terbuka',
+        'not_found' => 'Acara Terbuka tidak ditemukan',
+    );
+
+    $args = array(
+        'labels' => $labels,
+        'public' => false,
+        'has_archive' => false,
+        'publicly_queryable' => false,
+        'show_ui' => true,
+        'show_in_menu' => true,
+        'menu_icon' => 'dashicons-calendar-alt',
+        'supports' => array('title', 'thumbnail'),
+        'rewrite' => false,
+    );
+
+    register_post_type('acara_terbuka', $args);
+}
+add_action('init', 'hmti_register_acara_terbuka_post_type');
+
+// Add Meta Boxes for Acara Terbuka
+function hmti_add_acara_terbuka_meta_boxes()
+{
+    add_meta_box(
+        'acara_terbuka_details',
+        'Detail Acara Terbuka',
+        'hmti_acara_terbuka_details_callback',
+        'acara_terbuka',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'hmti_add_acara_terbuka_meta_boxes');
+
+function hmti_acara_terbuka_details_callback($post)
+{
+    wp_nonce_field('hmti_save_acara_terbuka_data', 'hmti_acara_terbuka_nonce');
+    $tanggal = get_post_meta($post->ID, '_acara_terbuka_tanggal', true);
+    $lokasi = get_post_meta($post->ID, '_acara_terbuka_lokasi', true);
+    $link_daftar = get_post_meta($post->ID, '_acara_terbuka_link_daftar', true);
+    $deskripsi = get_post_meta($post->ID, '_acara_terbuka_deskripsi', true);
+
+    echo '<p><label><strong>Tanggal Acara:</strong></label></p>';
+    echo '<input type="date" name="acara_terbuka_tanggal" value="' . esc_attr($tanggal) . '" class="widefat">';
+    echo '<p class="description">Status akan otomatis ditentukan berdasarkan tanggal (hari ini = berlangsung, sebelum = selesai, setelah = akan datang).</p>';
+
+    echo '<p style="margin-top:15px;"><label><strong>Lokasi:</strong></label></p>';
+    echo '<input type="text" name="acara_terbuka_lokasi" value="' . esc_attr($lokasi) . '" class="widefat" placeholder="Contoh: Aula Kampus">';
+
+    echo '<p style="margin-top:15px;"><label><strong>Deskripsi Singkat:</strong></label></p>';
+    echo '<textarea name="acara_terbuka_deskripsi" class="widefat" rows="3" maxlength="200" placeholder="Deskripsi singkat acara (maksimal 200 karakter)" oninput="document.getElementById(\'char-count-acara\').textContent = this.value.length">' . esc_textarea($deskripsi) . '</textarea>';
+    echo '<p class="description"><span id="char-count-acara">' . strlen($deskripsi) . '</span>/200 karakter</p>';
+
+    echo '<p style="margin-top:15px;"><label><strong>Link Pendaftaran:</strong></label></p>';
+    echo '<input type="url" name="acara_terbuka_link_daftar" value="' . esc_url($link_daftar) . '" class="widefat" placeholder="https://..." required>';
+    echo '<p class="description">Link pendaftaran wajib diisi untuk acara terbuka.</p>';
+}
+
+function hmti_save_acara_terbuka_meta($post_id)
+{
+    if (!isset($_POST['hmti_acara_terbuka_nonce']) || !wp_verify_nonce($_POST['hmti_acara_terbuka_nonce'], 'hmti_save_acara_terbuka_data')) {
+        return;
+    }
+
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    if (isset($_POST['acara_terbuka_tanggal'])) {
+        update_post_meta($post_id, '_acara_terbuka_tanggal', sanitize_text_field($_POST['acara_terbuka_tanggal']));
+    }
+
+    if (isset($_POST['acara_terbuka_lokasi'])) {
+        update_post_meta($post_id, '_acara_terbuka_lokasi', sanitize_text_field($_POST['acara_terbuka_lokasi']));
+    }
+
+    if (isset($_POST['acara_terbuka_deskripsi'])) {
+        $deskripsi = substr(sanitize_textarea_field($_POST['acara_terbuka_deskripsi']), 0, 200);
+        update_post_meta($post_id, '_acara_terbuka_deskripsi', $deskripsi);
+    }
+
+    if (isset($_POST['acara_terbuka_link_daftar'])) {
+        update_post_meta($post_id, '_acara_terbuka_link_daftar', esc_url_raw($_POST['acara_terbuka_link_daftar']));
+    }
+}
+add_action('save_post_acara_terbuka', 'hmti_save_acara_terbuka_meta');
+
 require get_template_directory() . '/inc/customizer.php';
 
 function hmti_theme_styles()
@@ -222,6 +419,127 @@ function hmti_theme_styles()
 
 // Memberitahu WordPress untuk menjalankan fungsi di atas
 add_action('wp_enqueue_scripts', 'hmti_theme_styles');
+
+// Custom Pagination Styles
+function hmti_pagination_styles()
+{
+    ?>
+    <style>
+        /* Pagination Wrapper */
+        .navigation.pagination {
+            margin-top: 3rem;
+        }
+
+        /* Pagination List */
+        .page-numbers {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Pagination Items */
+        .page-numbers li {
+            list-style: none;
+        }
+
+        /* Pagination Links */
+        .page-numbers a,
+        .page-numbers span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 2.5rem;
+            height: 2.5rem;
+            padding: 0 0.75rem;
+            font-family: 'Darker Grotesque', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #1f2937;
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        /* Hover State */
+        .page-numbers a:hover {
+            background-color: #0ea5e9;
+            color: #ffffff;
+            border-color: #0ea5e9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Current Page */
+        .page-numbers .current {
+            background-color: #0ea5e9;
+            color: #ffffff;
+            border-color: #0ea5e9;
+            font-weight: 600;
+            cursor: default;
+        }
+
+        /* Dots */
+        .page-numbers .dots {
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            cursor: default;
+            min-width: auto;
+            padding: 0 0.25rem;
+        }
+
+        .page-numbers .dots:hover {
+            background: transparent;
+            border: none;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Prev/Next Buttons */
+        .page-numbers .prev,
+        .page-numbers .next {
+            font-weight: 600;
+            padding: 0 1rem;
+        }
+
+        /* Disabled Prev/Next */
+        .page-numbers .prev.disabled,
+        .page-numbers .next.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .page-numbers {
+                gap: 0.25rem;
+            }
+
+            .page-numbers a,
+            .page-numbers span {
+                min-width: 2rem;
+                height: 2rem;
+                font-size: 0.875rem;
+                padding: 0 0.5rem;
+            }
+
+            .page-numbers .prev,
+            .page-numbers .next {
+                padding: 0 0.75rem;
+            }
+        }
+    </style>
+    <?php
+}
+add_action('wp_head', 'hmti_pagination_styles');
+
 function hmti_theme_scripts()
 {
     wp_enqueue_script(

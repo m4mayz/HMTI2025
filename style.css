@@ -53,11 +53,8 @@ body {
 }
 
 .container {
-    /* max-width: 1300px; */
     position: relative;
     margin: 0 auto;
-    /* padding: 20px; */
-    /* border: 1px solid black; */
     z-index: 2;
     overflow-x: hidden;
 }
@@ -3188,7 +3185,7 @@ h2 .title-with-highlight {
     top: 0;
     bottom: 0;
     width: 75%;
-    background-image: url("assets/images/bg-about.jpg");
+    background-image: url("assets/images/bg-kegiatan.jpg");
     background-size: cover;
     background-position: center right;
     background-repeat: no-repeat;
