@@ -115,3 +115,32 @@
 .dropdown-cat-wrapper::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+/* Event Banner Responsive Aspect Ratio */
+.event-banner-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.event-banner-wrapper::before {
+    content: "";
+    display: block;
+    padding-bottom: 70%;
+}
+
+@media (min-width: 1024px) {
+    .event-banner-wrapper::before {
+        padding-bottom: 50%;
+    }
+}
+
+@media (min-width: 1440px) {
+    .event-banner-wrapper::before {
+        padding-bottom: 33.33%; /* Desktop: 3:1 aspect ratio */
+    }
+}
+
+.event-banner-content {
+    position: absolute;
+    inset: 0;
+}

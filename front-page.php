@@ -111,14 +111,7 @@
                 </span>
             </h2>
             <p class="news-categories">ARTIKEL / TIPS & TRIK / PRESTASI / DLL</p>
-            <a href="<?php echo home_url('/berita-publikasi'); ?>" class="view-more-button">
-                <span>Lihat Selengkapnya</span>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="12" cy="12" r="12" fill="#3498DB" />
-                    <path d="M10.5 16.5L15 12L10.5 7.5" stroke="white" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                </svg>
-            </a>
+
         </div>
         <div class="news-articles-wrapper">
             <?php
@@ -147,12 +140,14 @@
                         </div>
                         <div class="card-content">
                             <div class="card-meta">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2" />
-                                    <path d="M16 2V6M8 2V6M3 10H21" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" />
-                                </svg>
-                                <span class="post-date"><?php echo get_the_date('d M Y'); ?></span>
+                                <?php
+                                $categories = get_the_category();
+                                if (!empty($categories)):
+                                    ?>
+                                    <span class="post-category"><?php echo esc_html($categories[0]->name); ?></span>
+                                    <span class="meta-separator">•</span>
+                                <?php endif; ?>
+                                <span class="post-date"><?php echo hmti_time_ago(get_the_time('U')); ?></span>
                             </div>
                             <?php
                             $title = get_the_title();
@@ -182,7 +177,14 @@
             endif;
             ?>
         </div>
-
+        <a href="<?php echo home_url('/berita-publikasi'); ?>" class="view-more-button">
+            <span>Lihat Selengkapnya</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="12" fill="#3498DB" />
+                <path d="M10.5 16.5L15 12L10.5 7.5" stroke="white" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+        </a>
     </div>
 </section>
 
@@ -270,96 +272,170 @@
     </div>
 </section>
 
-<!-- Divider -->
-<div class="section-divider"></div>
+<!-- Acara Terdekat Section -->
+<section class="py-8 sm:py-12 md:py-16 px-0 bg-white circuit-bg">
+    <?php
+    // Query untuk mendapatkan 1 acara terdekat dari custom post "acara_terbuka"
+    $upcoming_event = new WP_Query([
+        'post_type' => 'acara_terbuka',
+        'posts_per_page' => 1,
+        'meta_query' => [
+            [
+                'key' => '_acara_terbuka_tanggal',
+                'value' => date('Y-m-d'),
+                'compare' => '>=',
+                'type' => 'DATE'
+            ]
+        ],
+        'orderby' => 'meta_value',
+        'meta_key' => '_acara_terbuka_tanggal',
+        'order' => 'ASC'
+    ]);
 
-<!-- Event Section -->
-<section class="event-section">
-    <div class="event-grid">
-
-        <div class="event-articles-wrapper">
-            <?php
-            $latest_events = new WP_Query([
-                'post_type' => 'post',
-                'category_name' => 'event, lomba, seminar, workshop',
-                'posts_per_page' => 10,
-            ]);
-
-            $event_counter = 1;
-
-            if ($latest_events->have_posts()):
-                while ($latest_events->have_posts()):
-                    $latest_events->the_post();
-                    ?>
-                    <article class="event-article-card">
-                        <div class="card-image">
-                            <a href="<?php the_permalink(); ?>">
-                                <?php if (has_post_thumbnail()): ?>
-                                    <?php the_post_thumbnail('medium_large'); ?>
-                                <?php else: ?>
-                                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/placeholder.png"
-                                        alt="Placeholder">
-                                <?php endif; ?>
-                            </a>
-                        </div>
-                        <div class="card-content">
-                            <div class="card-meta">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2" />
-                                    <path d="M16 2V6M8 2V6M3 10H21" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" />
-                                </svg>
-                                <span class="post-date"><?php echo get_the_date('d M Y'); ?></span>
-                            </div>
-                            <?php
-                            $title = get_the_title();
-                            $max_length = 50;
-                            $trimmed_title = (mb_strlen($title) > $max_length) ? mb_substr($title, 0, $max_length) . '...' : $title;
-                            ?>
-                            <h3><a href="<?php the_permalink(); ?>"><?php echo $trimmed_title; ?></a>
-                            </h3>
-                            <div class="card-excerpt">
-                                <p><?php echo wp_trim_words(get_the_excerpt(), 18, '...'); ?></p>
-                            </div>
-                            <a href="<?php the_permalink(); ?>" class="read-more-link">
-                                <span>Baca Selengkapnya</span>
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="12" cy="12" r="11.5" stroke="#333" />
-                                    <path d="M10.5 16.5L15 12L10.5 7.5" stroke="#333" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" />
-                                </svg>
-                            </a>
-                        </div>
-                        <span class="post-number"><?php echo '0' . $event_counter; ?></span>
-                    </article>
-                    <?php
-                    $event_counter++;
-                endwhile;
-                wp_reset_postdata();
-            endif;
+    if ($upcoming_event->have_posts()):
+        while ($upcoming_event->have_posts()):
+            $upcoming_event->the_post();
+            $tanggal = get_post_meta(get_the_ID(), '_acara_terbuka_tanggal', true);
+            $lokasi = get_post_meta(get_the_ID(), '_acara_terbuka_lokasi', true);
+            $link = get_post_meta(get_the_ID(), '_acara_terbuka_link', true);
+            $is_pendaftaran = get_post_meta(get_the_ID(), '_acara_terbuka_is_pendaftaran', true);
+            $deskripsi = get_post_meta(get_the_ID(), '_acara_terbuka_deskripsi', true);
+            $kategori = get_post_meta(get_the_ID(), '_acara_terbuka_kategori', true);
             ?>
-        </div>
+            <!-- Header -->
+            <div class="flex flex-row justify-between items-start gap-4 p-4 sm:p-6 lg:p-8 mb-4">
+                <h2 class="font-title text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold text-dark-bg">
+                    Acara
+                    <span class="title-with-highlight">
+                        <span class="highlight-text highlight">Terdekat</span>
+                        <span class="highlight-bar primary"></span>
+                    </span>
+                </h2>
+            </div>
 
-        <div class="event-title-block">
-            <h2 class="event-section-title">
-                Event
+            <!-- Banner Image with Overlay Content -->
+            <div class="relative mx-4 sm:mx-6 lg:mx-8 mb-4 sm:mb-6 lg:mb-8 rounded-lg sm:rounded-xl overflow-hidden">
+                <!-- Container dengan aspect ratio responsif -->
+                <div class="event-banner-wrapper">
+                    <div class="event-banner-content">
+                        <?php if (has_post_thumbnail()): ?>
+                            <?php the_post_thumbnail('full', ['class' => 'w-full h-full object-cover']); ?>
+                        <?php else: ?>
+                            <div class="w-full h-full bg-gradient-to-br from-primary to-secondary"></div>
+                        <?php endif; ?>
+
+                        <!-- Dark Overlay -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/30"></div>
+
+                        <!-- Content Overlay -->
+                        <div class="absolute inset-0 p-4 md:p-6 lg:p-8 xl:p-10 flex flex-col justify-end text-white">
+                            <!-- Kategori Badge -->
+                            <?php if ($kategori): ?>
+                                <div class="mb-2 sm:mb-3">
+                                    <span
+                                        class="inline-block bg-secondary text-dark-bg px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-xs sm:text-sm font-body font-bold uppercase tracking-wide">
+                                        <?php echo esc_html($kategori); ?>
+                                    </span>
+                                </div>
+                            <?php endif; ?>
+
+                            <!-- Title -->
+                            <h3
+                                class="font-title text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2 sm:mb-3 lg:mb-4 leading-tight">
+                                <?php the_title(); ?>
+                            </h3>
+
+                            <!-- Meta Info -->
+                            <div
+                                class="flex flex-wrap gap-2 sm:gap-3 md:gap-4 lg:gap-6 mb-3 sm:mb-4 text-xs sm:text-sm lg:text-base">
+                                <?php if ($tanggal): ?>
+                                    <div class="flex items-center gap-1.5 sm:gap-2">
+                                        <svg class="w-4 h-4 sm:w-5 sm:h-5 shrink-0" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <span
+                                            class="font-body font-semibold"><?php echo date('d F Y', strtotime($tanggal)); ?></span>
+                                    </div>
+                                <?php endif; ?>
+                                <?php if ($lokasi): ?>
+                                    <div class="flex items-center gap-1.5 sm:gap-2">
+                                        <svg class="w-4 h-4 sm:w-5 sm:h-5 shrink-0" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        </svg>
+                                        <span class="font-body font-semibold"><?php echo esc_html($lokasi); ?></span>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Description -->
+                            <?php if ($deskripsi): ?>
+                                <p
+                                    class="hidden sm:block font-body font-medium text-sm sm:text-base lg:text-lg mb-4 sm:mb-5 lg:mb-6 max-w-3xl line-clamp-2 sm:line-clamp-3">
+                                    <?php echo esc_html($deskripsi); ?>
+                                </p>
+                            <?php endif; ?>
+
+                            <!-- CTA Button -->
+                            <?php if ($link): ?>
+                                <div>
+                                    <a href="<?php echo esc_url($link); ?>" target="_blank"
+                                        class="inline-flex items-center gap-2 sm:gap-3 bg-white hover:bg-gray-100 text-dark-bg font-body font-bold px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 lg:py-4 rounded-full text-sm sm:text-base transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                                        <span><?php echo $is_pendaftaran ? 'Daftar Sekarang' : 'Lihat Detail'; ?></span>
+                                        <svg class="w-4 h-4 sm:w-5 sm:h-5 shrink-0" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-center px-4 sm:px-6 lg:px-8">
+                <a href="<?php echo home_url('/program-kegiatan#acara-terbuka'); ?>" class="view-more-button-event">
+                    <span class="hidden sm:inline">Lihat Semua Acara</span>
+                    <span class="sm:hidden">Lihat Semua</span>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="12" fill="#3498DB" />
+                        <path d="M10.5 16.5L15 12L10.5 7.5" stroke="white" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </a>
+            </div>
+            <?php
+        endwhile;
+        wp_reset_postdata();
+    else:
+        ?>
+        <!-- No Upcoming Events -->
+        <div class="p-4 sm:p-6 lg:p-8">
+            <h2 class="font-title text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold text-dark-bg mb-6 sm:mb-8">
+                Acara
                 <span class="title-with-highlight">
-                    <span class="highlight-text highlight"> Terdekat</span>
-                    <span class="highlight-bar secondary"></span>
+                    <span class="highlight-text highlight">Terdekat</span>
+                    <span class="highlight-bar primary"></span>
                 </span>
             </h2>
-            <p class="event-categories">SEMINAR / WORKSHOP / LOMBA / DLL</p>
-            <a href="<?php echo home_url('/program-kegiatan'); ?>" class="view-more-button">
-                <span>Lihat Selengkapnya</span>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="12" cy="12" r="12" fill="#3498DB" />
-                    <path d="M10.5 16.5L15 12L10.5 7.5" stroke="white" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
+            <div class="text-center py-12 sm:py-16 bg-gray-50 rounded-xl sm:rounded-2xl mx-4 sm:mx-6 lg:mx-8">
+                <svg class="w-16 h-16 sm:w-20 sm:h-20 text-gray-300 mx-auto mb-4 sm:mb-6" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-            </a>
+                <h3 class="font-title text-xl sm:text-2xl font-semibold text-gray-600 mb-2">Belum Ada Acara Terdekat</h3>
+                <p class="font-body font-medium text-sm sm:text-base text-gray-500">Pantau terus untuk informasi acara
+                    mendatang!</p>
+            </div>
         </div>
-
-    </div>
+        <?php
+    endif;
+    ?>
 </section>
 
 <?php get_footer(); ?>

@@ -46,9 +46,9 @@ add_action('init', 'hmti_register_pengurus_post_type');
 function hmti_add_pengurus_meta_boxes()
 {
     add_meta_box(
-        'pengurus_jabatan',
-        'Jabatan',
-        'hmti_pengurus_jabatan_callback',
+        'pengurus_details',
+        'Detail Pengurus',
+        'hmti_pengurus_details_callback',
         'pengurus',
         'normal',
         'high'
@@ -65,13 +65,35 @@ function hmti_add_pengurus_meta_boxes()
 }
 add_action('add_meta_boxes', 'hmti_add_pengurus_meta_boxes');
 
-function hmti_pengurus_jabatan_callback($post)
+function hmti_pengurus_details_callback($post)
 {
     wp_nonce_field('hmti_save_pengurus_data', 'hmti_pengurus_nonce');
+    $divisi = get_post_meta($post->ID, '_pengurus_divisi', true);
     $jabatan = get_post_meta($post->ID, '_pengurus_jabatan', true);
-    echo '<input type="text" name="pengurus_jabatan" value="' . esc_attr($jabatan) . '" class="widefat" placeholder="Contoh: Ketua Umum, Wakil Ketua, Sekretaris, dll.">';
-}
 
+    // Get all existing divisi from database
+    global $wpdb;
+    $existing_divisi = $wpdb->get_col("
+        SELECT DISTINCT meta_value 
+        FROM {$wpdb->postmeta} 
+        WHERE meta_key = '_pengurus_divisi' 
+        AND meta_value != '' 
+        ORDER BY meta_value ASC
+    ");
+
+    echo '<p><label><strong>Divisi:</strong></label></p>';
+    echo '<input type="text" name="pengurus_divisi" value="' . esc_attr($divisi) . '" class="widefat" list="divisi-suggestions" required placeholder="Ketik atau pilih divisi...">';
+    echo '<datalist id="divisi-suggestions">';
+    foreach ($existing_divisi as $existing) {
+        echo '<option value="' . esc_attr($existing) . '">';
+    }
+    echo '</datalist>';
+    echo '<p class="description">Ketik nama divisi baru atau pilih dari yang sudah ada. Contoh: Badan Pengurus Harian, Keilmuan, Kewirausahaan, dll.</p>';
+
+    echo '<p style="margin-top:15px;"><label><strong>Jabatan:</strong></label></p>';
+    echo '<input type="text" name="pengurus_jabatan" value="' . esc_attr($jabatan) . '" class="widefat" placeholder="Contoh: Ketua Umum, Wakil Ketua, Sekretaris, dll.">';
+    echo '<p class="description">Jabatan dalam divisi yang dipilih.</p>';
+}
 function hmti_pengurus_urutan_callback($post)
 {
     $urutan = get_post_meta($post->ID, '_pengurus_urutan', true);
@@ -92,6 +114,10 @@ function hmti_save_pengurus_meta($post_id)
 
     if (!current_user_can('edit_post', $post_id)) {
         return;
+    }
+
+    if (isset($_POST['pengurus_divisi'])) {
+        update_post_meta($post_id, '_pengurus_divisi', sanitize_text_field($_POST['pengurus_divisi']));
     }
 
     if (isset($_POST['pengurus_jabatan'])) {
@@ -336,10 +362,23 @@ function hmti_acara_terbuka_details_callback($post)
     wp_nonce_field('hmti_save_acara_terbuka_data', 'hmti_acara_terbuka_nonce');
     $tanggal = get_post_meta($post->ID, '_acara_terbuka_tanggal', true);
     $lokasi = get_post_meta($post->ID, '_acara_terbuka_lokasi', true);
-    $link_daftar = get_post_meta($post->ID, '_acara_terbuka_link_daftar', true);
+    $kategori = get_post_meta($post->ID, '_acara_terbuka_kategori', true);
+    $link = get_post_meta($post->ID, '_acara_terbuka_link', true);
+    $is_pendaftaran = get_post_meta($post->ID, '_acara_terbuka_is_pendaftaran', true);
     $deskripsi = get_post_meta($post->ID, '_acara_terbuka_deskripsi', true);
 
-    echo '<p><label><strong>Tanggal Acara:</strong></label></p>';
+    echo '<p><label><strong>Kategori Acara:</strong></label></p>';
+    echo '<select name="acara_terbuka_kategori" class="widefat" required>';
+    echo '<option value="">-- Pilih Kategori --</option>';
+    echo '<option value="lomba"' . selected($kategori, 'lomba', false) . '>Lomba</option>';
+    echo '<option value="seminar"' . selected($kategori, 'seminar', false) . '>Seminar</option>';
+    echo '<option value="workshop"' . selected($kategori, 'workshop', false) . '>Workshop</option>';
+    echo '<option value="kegiatan sosial"' . selected($kategori, 'kegiatan sosial', false) . '>Kegiatan Sosial</option>';
+    echo '<option value="event lainnya"' . selected($kategori, 'event lainnya', false) . '>Event Lainnya</option>';
+    echo '</select>';
+    echo '<p class="description">Kategori acara wajib dipilih.</p>';
+
+    echo '<p style="margin-top:15px;"><label><strong>Tanggal Acara:</strong></label></p>';
     echo '<input type="date" name="acara_terbuka_tanggal" value="' . esc_attr($tanggal) . '" class="widefat">';
     echo '<p class="description">Status akan otomatis ditentukan berdasarkan tanggal (hari ini = berlangsung, sebelum = selesai, setelah = akan datang).</p>';
 
@@ -350,9 +389,14 @@ function hmti_acara_terbuka_details_callback($post)
     echo '<textarea name="acara_terbuka_deskripsi" class="widefat" rows="3" maxlength="200" placeholder="Deskripsi singkat acara (maksimal 200 karakter)" oninput="document.getElementById(\'char-count-acara\').textContent = this.value.length">' . esc_textarea($deskripsi) . '</textarea>';
     echo '<p class="description"><span id="char-count-acara">' . strlen($deskripsi) . '</span>/200 karakter</p>';
 
-    echo '<p style="margin-top:15px;"><label><strong>Link Pendaftaran:</strong></label></p>';
-    echo '<input type="url" name="acara_terbuka_link_daftar" value="' . esc_url($link_daftar) . '" class="widefat" placeholder="https://..." required>';
-    echo '<p class="description">Link pendaftaran wajib diisi untuk acara terbuka.</p>';
+    echo '<p style="margin-top:15px;"><label><strong>Link:</strong></label></p>';
+    echo '<input type="url" name="acara_terbuka_link" value="' . esc_url($link) . '" class="widefat" placeholder="https://...">';
+    echo '<p class="description">Link ke halaman detail acara atau formulir pendaftaran (opsional).</p>';
+
+    echo '<p style="margin-top:10px;">';
+    echo '<label><input type="checkbox" name="acara_terbuka_is_pendaftaran" value="1"' . checked($is_pendaftaran, '1', false) . '> Link ini adalah link pendaftaran</label>';
+    echo '</p>';
+    echo '<p class="description">Centang jika link di atas adalah link untuk mendaftar acara. Jika tidak dicentang, link akan ditampilkan sebagai "Lihat Detail".</p>';
 }
 
 function hmti_save_acara_terbuka_meta($post_id)
@@ -369,6 +413,10 @@ function hmti_save_acara_terbuka_meta($post_id)
         return;
     }
 
+    if (isset($_POST['acara_terbuka_kategori'])) {
+        update_post_meta($post_id, '_acara_terbuka_kategori', sanitize_text_field($_POST['acara_terbuka_kategori']));
+    }
+
     if (isset($_POST['acara_terbuka_tanggal'])) {
         update_post_meta($post_id, '_acara_terbuka_tanggal', sanitize_text_field($_POST['acara_terbuka_tanggal']));
     }
@@ -382,8 +430,16 @@ function hmti_save_acara_terbuka_meta($post_id)
         update_post_meta($post_id, '_acara_terbuka_deskripsi', $deskripsi);
     }
 
-    if (isset($_POST['acara_terbuka_link_daftar'])) {
-        update_post_meta($post_id, '_acara_terbuka_link_daftar', esc_url_raw($_POST['acara_terbuka_link_daftar']));
+    if (isset($_POST['acara_terbuka_link'])) {
+        update_post_meta($post_id, '_acara_terbuka_link', esc_url_raw($_POST['acara_terbuka_link']));
+    } else {
+        update_post_meta($post_id, '_acara_terbuka_link', '');
+    }
+
+    if (isset($_POST['acara_terbuka_is_pendaftaran'])) {
+        update_post_meta($post_id, '_acara_terbuka_is_pendaftaran', '1');
+    } else {
+        update_post_meta($post_id, '_acara_terbuka_is_pendaftaran', '0');
     }
 }
 add_action('save_post_acara_terbuka', 'hmti_save_acara_terbuka_meta');
@@ -551,5 +607,33 @@ function hmti_theme_scripts()
     );
 }
 add_action('wp_enqueue_scripts', 'hmti_theme_scripts');
+
+// Function to get time ago
+function hmti_time_ago($time)
+{
+    $time_difference = time() - $time;
+
+    if ($time_difference < 1) {
+        return 'baru saja';
+    }
+
+    $condition = array(
+        12 * 30 * 24 * 60 * 60 => 'tahun',
+        30 * 24 * 60 * 60 => 'bulan',
+        24 * 60 * 60 => 'hari',
+        60 * 60 => 'jam',
+        60 => 'menit',
+        1 => 'detik'
+    );
+
+    foreach ($condition as $secs => $str) {
+        $d = $time_difference / $secs;
+
+        if ($d >= 1) {
+            $t = round($d);
+            return $t . ' ' . $str . ' lalu';
+        }
+    }
+}
 
 ?>

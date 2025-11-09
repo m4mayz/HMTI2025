@@ -49,10 +49,6 @@
                         echo 'active-menu'; ?>">
                         <a href="<?php echo home_url('/arsip'); ?>">Arsip & Unduhan</a>
                     </li>
-                    <li class="<?php if (is_page('kontak'))
-                        echo 'active-menu'; ?>">
-                        <a href="<?php echo home_url('/kontak'); ?>">Kontak</a>
-                    </li>
                 </ul>
             </nav>
         </div>

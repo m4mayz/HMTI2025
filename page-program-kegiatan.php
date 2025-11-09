@@ -6,7 +6,7 @@ get_header();
 ?>
 
 <!-- Hero Section -->
-<section class="about-new-hero-section">
+<section class="kegiatan-new-hero-section">
     <div class="about-new-hero-container">
         <div class="about-new-hero-left">
             <h1 class="about-new-hero-headline">
@@ -383,7 +383,7 @@ get_header();
 </section>
 
 <!-- Pendaftaran Acara Section -->
-<section class="py-16 px-6 lg:px-24 bg-white">
+<section id="acara-terbuka" class="py-16 px-6 lg:px-24 bg-white">
     <div class="mb-12">
         <h2 class="font-title text-4xl lg:text-5xl font-bold text-dark-bg mb-4">
             Acara
@@ -420,7 +420,10 @@ get_header();
                 $open_events->the_post();
                 $tanggal = get_post_meta(get_the_ID(), '_acara_terbuka_tanggal', true);
                 $lokasi = get_post_meta(get_the_ID(), '_acara_terbuka_lokasi', true);
-                $link_daftar = get_post_meta(get_the_ID(), '_acara_terbuka_link_daftar', true);
+                $kategori = get_post_meta(get_the_ID(), '_acara_terbuka_kategori', true);
+                $link = get_post_meta(get_the_ID(), '_acara_terbuka_link', true);
+                $is_pendaftaran = get_post_meta(get_the_ID(), '_acara_terbuka_is_pendaftaran', true);
+                $deskripsi = get_post_meta(get_the_ID(), '_acara_terbuka_deskripsi', true);
 
                 // Determine status based on date
                 $status = '';
@@ -455,6 +458,15 @@ get_header();
                                 </span>
                             <?php endif; ?>
                         </div>
+                        <!-- Kategori Badge -->
+                        <?php if ($kategori): ?>
+                            <div class="absolute top-4 left-4">
+                                <span
+                                    class="bg-secondary text-dark-bg px-3 py-1 rounded-full text-xs font-body font-bold uppercase">
+                                    <?php echo esc_html($kategori); ?>
+                                </span>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     <div class="p-6">
                         <h3 class="font-title text-xl font-bold text-dark-bg mb-3 line-clamp-2">
@@ -478,18 +490,15 @@ get_header();
                                 <span class="line-clamp-1"><?php echo esc_html($lokasi); ?></span>
                             </div>
                         <?php endif; ?>
-                        <?php
-                        $deskripsi = get_post_meta(get_the_ID(), '_acara_terbuka_deskripsi', true);
-                        if ($deskripsi):
-                            ?>
+                        <?php if ($deskripsi): ?>
                             <p class="font-body font-medium text-gray-600 text-sm mb-4 line-clamp-3">
                                 <?php echo esc_html($deskripsi); ?>
                             </p>
                         <?php endif; ?>
-                        <?php if ($link_daftar): ?>
-                            <a href="<?php echo esc_url($link_daftar); ?>" target="_blank"
+                        <?php if ($link): ?>
+                            <a href="<?php echo esc_url($link); ?>" target="_blank"
                                 class="inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-white font-body font-bold px-6 py-3 rounded-full transition-colors duration-300 w-full justify-center">
-                                <span>Daftar Sekarang</span>
+                                <span><?php echo $is_pendaftaran ? 'Daftar Sekarang' : 'Lihat Detail'; ?></span>
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -509,8 +518,7 @@ get_header();
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            <p class="font-body font-medium text-gray-500 text-lg">Belum ada acara yang dibuka untuk pendaftaran saat
-                ini.</p>
+            <p class="font-body font-medium text-gray-500 text-lg">Belum ada acara yang dibuka untuk saat ini.</p>
             <p class="font-body font-medium text-gray-400 text-sm mt-2">Pantau terus untuk informasi acara mendatang!
             </p>
         </div>
