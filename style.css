@@ -2130,7 +2130,7 @@ h2 .title-with-highlight {
     top: 0;
     bottom: 0;
     width: 75%;
-    background-image: url("assets/images/bg-about.jpg");
+    background-image: url("assets/images/bg-kegiatan.jpg");
     background-size: cover;
     background-position: center right;
     background-repeat: no-repeat;
@@ -2152,6 +2152,11 @@ h2 .title-with-highlight {
         rgba(0, 0, 0, 0.8) 75%,
         rgba(0, 0, 0, 1) 100%
     );
+}
+
+/* Override background for Tentang HMTI page */
+.page-template-page-tentang-hmti .about-new-hero-section::before {
+    background-image: url("assets/images/bg-about.jpg");
 }
 
 .about-new-hero-container {
@@ -2409,49 +2414,6 @@ h2 .title-with-highlight {
     color: white;
 }
 
-.kegiatan-new-hero-section {
-    display: flex;
-    align-items: center;
-    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--dark-bg) 100%);
-    position: relative;
-    overflow: hidden;
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    box-sizing: border-box;
-    padding: 100px 100px;
-}
-
-.kegiatan-new-hero-section::before {
-    content: "";
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 75%;
-    background-image: url("assets/images/bg-kegiatan.jpg");
-    background-size: cover;
-    background-position: center right;
-    background-repeat: no-repeat;
-    opacity: 0.5;
-    z-index: 1;
-    mask-image: linear-gradient(
-        to right,
-        transparent 0%,
-        rgba(0, 0, 0, 0.3) 25%,
-        rgba(0, 0, 0, 0.6) 50%,
-        rgba(0, 0, 0, 0.8) 75%,
-        rgba(0, 0, 0, 1) 100%
-    );
-    -webkit-mask-image: linear-gradient(
-        to right,
-        transparent 0%,
-        rgba(0, 0, 0, 0.3) 25%,
-        rgba(0, 0, 0, 0.6) 50%,
-        rgba(0, 0, 0, 0.8) 75%,
-        rgba(0, 0, 0, 1) 100%
-    );
-}
-
 /* ==========================================================================
    New Page: Tentang HMTI (Redesigned) - Responsive
    ========================================================================== */
@@ -2583,6 +2545,7 @@ h2 .title-with-highlight {
             transparent 70%
         );
         bottom: -100px;
+        background-position: center;
     }
 
     .sejarah-new-container {

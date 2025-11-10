@@ -6,7 +6,7 @@ get_header();
 ?>
 
 <!-- Hero Section -->
-<section class="kegiatan-new-hero-section">
+<section class="about-new-hero-section">
     <div class="about-new-hero-container">
         <div class="about-new-hero-left">
             <h1 class="about-new-hero-headline">
@@ -26,103 +26,142 @@ get_header();
 </section>
 
 <!-- Kalender Kegiatan Section -->
-<section class="py-16 px-6 lg:px-24 bg-white" id="kalender-section">
-    <div class="mb-12">
-        <h2 class="font-title text-4xl lg:text-5xl font-bold text-dark-bg mb-4">
-            <span class="title-with-highlight">
-                <span class="highlight-text highlight">Kalender</span>
-                <span class="highlight-bar primary"></span>
-            </span>
-            Kegiatan
-        </h2>
-        <p class="font-body font-medium text-lg text-gray-600">Jadwal kegiatan HMTI bulan ini</p>
-    </div>
-
-    <!-- Calendar Grid -->
-    <div class="bg-white rounded-2xl shadow-lg p-5" id="calendar-widget">
-        <?php
-        // Get all events from both post types
-        // Query Program Unggulan
-        $program_unggulan_query = new WP_Query([
-            'post_type' => 'program_unggulan',
-            'posts_per_page' => -1,
-            'meta_key' => '_program_unggulan_tanggal',
-            'orderby' => 'meta_value',
-            'order' => 'ASC'
-        ]);
-
-        // Query Acara Terbuka
-        $acara_terbuka_query = new WP_Query([
-            'post_type' => 'acara_terbuka',
-            'posts_per_page' => -1,
-            'meta_key' => '_acara_terbuka_tanggal',
-            'orderby' => 'meta_value',
-            'order' => 'ASC'
-        ]);
-
-        $all_events = [];
-
-        // Add Program Unggulan events
-        if ($program_unggulan_query->have_posts()) {
-            while ($program_unggulan_query->have_posts()) {
-                $program_unggulan_query->the_post();
-                $tanggal = get_post_meta(get_the_ID(), '_program_unggulan_tanggal', true);
-                if ($tanggal) {
-                    $all_events[] = [
-                        'date' => $tanggal,
-                        'title' => get_the_title()
-                    ];
-                }
-            }
-            wp_reset_postdata();
-        }
-
-        // Add Acara Terbuka events
-        if ($acara_terbuka_query->have_posts()) {
-            while ($acara_terbuka_query->have_posts()) {
-                $acara_terbuka_query->the_post();
-                $tanggal = get_post_meta(get_the_ID(), '_acara_terbuka_tanggal', true);
-                if ($tanggal) {
-                    $all_events[] = [
-                        'date' => $tanggal,
-                        'title' => get_the_title()
-                    ];
-                }
-            }
-            wp_reset_postdata();
-        }
-        ?>
-
-        <!-- Calendar Header -->
-        <div class="flex justify-between items-center mb-6">
-            <h3 class="font-title text-2xl font-bold text-dark-bg" id="calendar-month-year"></h3>
-            <div class="flex gap-2">
-                <button id="calendar-prev-btn"
-                    class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-body font-medium transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                </button>
-                <button id="calendar-next-btn"
-                    class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-body font-medium transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </button>
-            </div>
+<section class="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-24 bg-gradient-to-b from-gray-50 to-white"
+    id="kalender-section">
+    <div class="container mx-auto">
+        <!-- Section Header -->
+        <div class="text-center mb-8 sm:mb-12 lg:mb-16">
+            <h2 class="font-title text-3xl sm:text-4xl lg:text-5xl font-bold text-dark-bg mb-4">
+                <span class="title-with-highlight">
+                    <span class="highlight-text highlight">Kalender</span>
+                    <span class="highlight-bar primary"></span>
+                </span>
+                Kegiatan HMTI
+            </h2>
+            <p class="font-body font-medium text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
+                Pantau dan catat semua kegiatan HMTI yang akan datang
+            </p>
         </div>
 
-        <!-- Calendar Grid -->
-        <div class="grid grid-cols-7 gap-2" id="calendar-grid">
-            <!-- Day Headers -->
-            <div class="text-center font-body font-bold text-gray-600 py-3">Minggu</div>
-            <div class="text-center font-body font-bold text-gray-600 py-3">Senin</div>
-            <div class="text-center font-body font-bold text-gray-600 py-3">Selasa</div>
-            <div class="text-center font-body font-bold text-gray-600 py-3">Rabu</div>
-            <div class="text-center font-body font-bold text-gray-600 py-3">Kamis</div>
-            <div class="text-center font-body font-bold text-gray-600 py-3">Jumat</div>
-            <div class="text-center font-body font-bold text-gray-600 py-3">Sabtu</div>
-            <!-- Calendar cells will be generated by JavaScript -->
+        <!-- Calendar Widget -->
+        <div class="bg-white rounded-2xl sm:rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 border border-gray-100"
+            id="calendar-widget">
+            <?php
+            // Get all events from both post types
+            // Query Program Unggulan
+            $program_unggulan_query = new WP_Query([
+                'post_type' => 'program_unggulan',
+                'posts_per_page' => -1,
+                'meta_key' => '_program_unggulan_tanggal',
+                'orderby' => 'meta_value',
+                'order' => 'ASC'
+            ]);
+
+            // Query Acara Terbuka
+            $acara_terbuka_query = new WP_Query([
+                'post_type' => 'acara_terbuka',
+                'posts_per_page' => -1,
+                'meta_key' => '_acara_terbuka_tanggal',
+                'orderby' => 'meta_value',
+                'order' => 'ASC'
+            ]);
+
+            $all_events = [];
+
+            // Add Program Unggulan events
+            if ($program_unggulan_query->have_posts()) {
+                while ($program_unggulan_query->have_posts()) {
+                    $program_unggulan_query->the_post();
+                    $tanggal = get_post_meta(get_the_ID(), '_program_unggulan_tanggal', true);
+                    if ($tanggal) {
+                        $all_events[] = [
+                            'date' => $tanggal,
+                            'title' => get_the_title()
+                        ];
+                    }
+                }
+                wp_reset_postdata();
+            }
+
+            // Add Acara Terbuka events
+            if ($acara_terbuka_query->have_posts()) {
+                while ($acara_terbuka_query->have_posts()) {
+                    $acara_terbuka_query->the_post();
+                    $tanggal = get_post_meta(get_the_ID(), '_acara_terbuka_tanggal', true);
+                    if ($tanggal) {
+                        $all_events[] = [
+                            'date' => $tanggal,
+                            'title' => get_the_title()
+                        ];
+                    }
+                }
+                wp_reset_postdata();
+            }
+            ?>
+
+            <!-- Calendar Header -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
+                <h3 class="font-title text-xl sm:text-2xl lg:text-3xl font-bold text-dark-bg" id="calendar-month-year">
+                </h3>
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button id="calendar-prev-btn"
+                        class="flex-1 sm:flex-none px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 hover:bg-primary hover:text-white rounded-lg sm:rounded-xl font-body font-medium transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 mx-auto" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <button id="calendar-today-btn"
+                        class="flex-1 sm:flex-none px-3 py-2 sm:px-4 sm:py-2 bg-primary text-white hover:bg-primary-dark rounded-lg sm:rounded-xl font-body font-semibold text-xs sm:text-sm transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md">
+                        Hari Ini
+                    </button>
+                    <button id="calendar-next-btn"
+                        class="flex-1 sm:flex-none px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 hover:bg-primary hover:text-white rounded-lg sm:rounded-xl font-body font-medium transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 mx-auto" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Calendar Grid -->
+            <div class="overflow-x-auto -mx-4 sm:mx-0">
+                <div class="min-w-[640px] px-4 sm:px-0">
+                    <div class="grid grid-cols-7 gap-1 sm:gap-2" id="calendar-grid">
+                        <!-- Day Headers -->
+                        <div
+                            class="text-center font-body font-bold text-gray-700 py-2 sm:py-3 text-xs sm:text-sm bg-gray-50 rounded-t-lg">
+                            Min</div>
+                        <div
+                            class="text-center font-body font-bold text-gray-700 py-2 sm:py-3 text-xs sm:text-sm bg-gray-50 rounded-t-lg">
+                            Sen</div>
+                        <div
+                            class="text-center font-body font-bold text-gray-700 py-2 sm:py-3 text-xs sm:text-sm bg-gray-50 rounded-t-lg">
+                            Sel</div>
+                        <div
+                            class="text-center font-body font-bold text-gray-700 py-2 sm:py-3 text-xs sm:text-sm bg-gray-50 rounded-t-lg">
+                            Rab</div>
+                        <div
+                            class="text-center font-body font-bold text-gray-700 py-2 sm:py-3 text-xs sm:text-sm bg-gray-50 rounded-t-lg">
+                            Kam</div>
+                        <div
+                            class="text-center font-body font-bold text-gray-700 py-2 sm:py-3 text-xs sm:text-sm bg-gray-50 rounded-t-lg">
+                            Jum</div>
+                        <div
+                            class="text-center font-body font-bold text-gray-700 py-2 sm:py-3 text-xs sm:text-sm bg-gray-50 rounded-t-lg">
+                            Sab</div>
+                        <!-- Calendar cells will be generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Legend -->
+            <div class="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-gray-200">
+                <div id="month-events-list" class="space-y-3">
+                    <!-- Events will be populated by JavaScript -->
+                </div>
+            </div>
         </div>
     </div>
 
@@ -131,7 +170,7 @@ get_header();
         const calendarEvents = <?php echo json_encode($all_events); ?>;
 
         // Current month and year
-        let currentMonth = new Date().getMonth(); // 0-11
+        let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
 
         // Month names in Indonesian
@@ -140,11 +179,42 @@ get_header();
             'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
         ];
 
+        // Color palette for events
+        const eventColors = [
+            'bg-blue-500',
+            'bg-green-500',
+            'bg-yellow-500',
+            'bg-red-500',
+            'bg-purple-500',
+            'bg-pink-500',
+            'bg-indigo-500',
+            'bg-orange-500',
+            'bg-teal-500',
+            'bg-cyan-500'
+        ];
+
+        // Map to store event colors
+        const eventColorMap = new Map();
+
+        // Function to get consistent color for an event
+        function getEventColor(eventTitle) {
+            if (!eventColorMap.has(eventTitle)) {
+                // Use hash to get consistent color for same event
+                let hash = 0;
+                for (let i = 0; i < eventTitle.length; i++) {
+                    hash = eventTitle.charCodeAt(i) + ((hash << 5) - hash);
+                }
+                const colorIndex = Math.abs(hash) % eventColors.length;
+                eventColorMap.set(eventTitle, eventColors[colorIndex]);
+            }
+            return eventColorMap.get(eventTitle);
+        }
+
         function renderCalendar() {
             const firstDay = new Date(currentYear, currentMonth, 1);
             const lastDay = new Date(currentYear, currentMonth + 1, 0);
             const daysInMonth = lastDay.getDate();
-            const startingDayOfWeek = firstDay.getDay(); // 0 = Sunday
+            const startingDayOfWeek = firstDay.getDay();
 
             // Update month/year display
             document.getElementById('calendar-month-year').textContent =
@@ -156,13 +226,14 @@ get_header();
             grid.innerHTML = '';
             dayHeaders.forEach(header => grid.appendChild(header));
 
-            // Get today's date for comparison
+            // Get today's date
             const today = new Date();
             const isCurrentMonth = (currentMonth === today.getMonth() && currentYear === today.getFullYear());
             const todayDate = today.getDate();
 
             // Get events for this month
             const monthEvents = {};
+            const eventsWithDates = [];
             calendarEvents.forEach(event => {
                 const eventDate = new Date(event.date);
                 if (eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear) {
@@ -170,14 +241,29 @@ get_header();
                     if (!monthEvents[day]) {
                         monthEvents[day] = [];
                     }
-                    monthEvents[day].push(event.title);
+                    monthEvents[day].push({
+                        title: event.title,
+                        color: getEventColor(event.title)
+                    });
+                    eventsWithDates.push({
+                        day: day,
+                        date: eventDate,
+                        title: event.title,
+                        color: getEventColor(event.title)
+                    });
                 }
             });
+
+            // Sort events by date
+            eventsWithDates.sort((a, b) => a.date - b.date);
+
+            // Update month events list
+            updateMonthEventsList(eventsWithDates);
 
             // Add empty cells before first day
             for (let i = 0; i < startingDayOfWeek; i++) {
                 const emptyCell = document.createElement('div');
-                emptyCell.className = 'p-2 bg-gray-50 rounded-lg min-h-24';
+                emptyCell.className = 'p-2 sm:p-3 bg-gray-50 rounded-lg min-h-[80px] sm:min-h-[100px]';
                 grid.appendChild(emptyCell);
             }
 
@@ -187,27 +273,53 @@ get_header();
                 const hasEvent = monthEvents[day] && monthEvents[day].length > 0;
 
                 const dayCell = document.createElement('div');
-                dayCell.className = `p-2 rounded-lg ${isToday ? 'bg-primary text-white' : 'bg-gray-50'} ${hasEvent ? 'ring-2 ring-secondary' : ''} hover:bg-gray-100 transition-colors cursor-pointer min-h-24`;
+                dayCell.className = `p-2 sm:p-3 rounded-lg ${isToday ? 'bg-primary text-white shadow-lg scale-105' : 'bg-white hover:bg-gray-50'} ${hasEvent ? 'ring-2 ring-secondary ring-offset-1' : 'border border-gray-200'} transition-all duration-300 cursor-pointer min-h-[80px] sm:min-h-[100px] flex flex-col`;
 
                 const dayNumber = document.createElement('div');
-                dayNumber.className = `font-body font-bold ${isToday ? 'text-white' : 'text-gray-700'} mb-1`;
+                dayNumber.className = `font-body font-bold text-sm sm:text-base ${isToday ? 'text-white' : 'text-gray-700'} mb-1`;
                 dayNumber.textContent = day;
                 dayCell.appendChild(dayNumber);
 
                 if (hasEvent) {
-                    monthEvents[day].forEach(title => {
-                        const eventTitle = document.createElement('div');
-                        eventTitle.className = `font-body text-sm font-medium ${isToday ? 'text-white' : 'text-gray-600'} mb-1 line-clamp-2 leading-tight`;
-                        eventTitle.textContent = title;
-                        dayCell.appendChild(eventTitle);
-                    });
+                    // Show dot indicator for events - use first event's color
+                    const eventDot = document.createElement('div');
+                    const dotColor = isToday ? 'bg-white' : monthEvents[day][0].color;
+                    eventDot.className = `w-2 h-2 rounded-full ${dotColor} mt-1`;
+                    dayCell.appendChild(eventDot);
                 }
 
                 grid.appendChild(dayCell);
             }
         }
 
-        // Navigation buttons
+        function updateMonthEventsList(eventsWithDates) {
+            const listContainer = document.getElementById('month-events-list');
+
+            if (eventsWithDates.length === 0) {
+                listContainer.innerHTML = `
+                    <p class="font-body text-gray-500 text-sm text-center py-4">Tidak ada kegiatan di bulan ini</p>
+                `;
+                return;
+            }
+
+            listContainer.innerHTML = '';
+            eventsWithDates.forEach(event => {
+                const eventItem = document.createElement('div');
+                eventItem.className = 'flex items-start gap-2 font-body text-sm sm:text-base text-gray-700';
+
+                // Date dot indicator with event color
+                const dot = document.createElement('div');
+                dot.className = `flex-shrink-0 w-2 h-2 rounded-full ${event.color} mt-1.5`;
+
+                const eventText = document.createElement('p');
+                eventText.className = 'flex-1';
+                eventText.innerHTML = `<span class="font-semibold">${event.day} ${monthNames[currentMonth]} ${currentYear}:</span> ${event.title}`;
+
+                eventItem.appendChild(dot);
+                eventItem.appendChild(eventText);
+                listContainer.appendChild(eventItem);
+            });
+        }        // Navigation buttons
         document.getElementById('calendar-prev-btn').addEventListener('click', function () {
             currentMonth--;
             if (currentMonth < 0) {
@@ -226,31 +338,53 @@ get_header();
             renderCalendar();
         });
 
+        // Today button
+        const todayBtn = document.getElementById('calendar-today-btn');
+        if (todayBtn) {
+            todayBtn.addEventListener('click', function () {
+                const today = new Date();
+                currentMonth = today.getMonth();
+                currentYear = today.getFullYear();
+                renderCalendar();
+            });
+        }
+
         // Initial render
         renderCalendar();
+
+        // Re-render on window resize to adjust event display
+        let resizeTimeout;
+        window.addEventListener('resize', function () {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(renderCalendar, 250);
+        });
     </script>
 </section>
 
 <!-- Program Kerja Unggulan Section -->
-<section class="py-16 bg-dark-bg relative overflow-hidden">
+<section class="py-12 sm:py-16 lg:py-20 bg-dark-bg relative overflow-hidden">
     <!-- Decorative elements -->
-    <div class="absolute top-[-50px] left-[-50px] w-[500px] h-[500px] opacity-20 pointer-events-none z-0"
+    <div class="absolute top-[-50px] left-[-50px] w-[300px] h-[300px] sm:w-[500px] sm:h-[500px] opacity-10 pointer-events-none z-0"
         style="background-image: url('<?php echo get_template_directory_uri(); ?>/assets/images/elements/1.png'); background-size: contain; background-repeat: no-repeat;">
     </div>
-    <div class="absolute bottom-[-50px] right-[-50px] w-[500px] h-[500px] opacity-20 pointer-events-none z-0 rotate-180"
+    <div class="absolute bottom-[-50px] right-[-50px] w-[300px] h-[300px] sm:w-[500px] sm:h-[500px] opacity-10 pointer-events-none z-0 rotate-180"
         style="background-image: url('<?php echo get_template_directory_uri(); ?>/assets/images/elements/1.png'); background-size: contain; background-repeat: no-repeat;">
     </div>
 
-    <div class="container mx-auto px-6 lg:px-24 relative z-10">
-        <div class="mb-12">
-            <h2 class="font-title text-4xl lg:text-5xl font-bold text-white mb-4">
-                Program Kerja
+    <div class="container mx-auto px-4 sm:px-6 lg:px-24 relative z-10">
+        <!-- Section Header -->
+        <div class="text-center mb-8 sm:mb-12 lg:mb-16">
+
+            <h2 class="font-title text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                 <span class="title-with-highlight">
-                    <span class="highlight-text highlight"> Unggulan</span>
+                    <span class="highlight-text highlight">Program Kerja </span>
                     <span class="highlight-bar secondary"></span>
                 </span>
+                HMTI
             </h2>
-            <p class="font-body font-medium text-lg text-gray-300">Program-program besar HMTI yang menjadi andalan</p>
+            <p class="font-body font-medium text-base sm:text-lg text-gray-300 max-w-2xl mx-auto">
+                Program-program strategis dan berdampak besar untuk kemajuan HMTI
+            </p>
         </div>
 
         <?php
@@ -262,267 +396,582 @@ get_header();
         ]);
 
         if ($featured_programs->have_posts()):
-            $counter = 0;
-            while ($featured_programs->have_posts()):
-                $featured_programs->the_post();
-                $counter++;
-                $tanggal = get_post_meta(get_the_ID(), '_program_unggulan_tanggal', true);
-                $lokasi = get_post_meta(get_the_ID(), '_program_unggulan_lokasi', true);
+            ?>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 p-5" id="programs-container">
+                <?php
+                $program_counter = 0;
+                while ($featured_programs->have_posts()):
+                    $featured_programs->the_post();
+                    $program_counter++;
+                    $tanggal = get_post_meta(get_the_ID(), '_program_unggulan_tanggal', true);
+                    $lokasi = get_post_meta(get_the_ID(), '_program_unggulan_lokasi', true);
+                    $deskripsi = get_post_meta(get_the_ID(), '_program_unggulan_deskripsi', true);
 
-                // Determine status based on date
-                $status = '';
-                if ($tanggal) {
-                    $event_date = strtotime($tanggal);
-                    $today = strtotime(date('Y-m-d'));
+                    // Determine status based on date
+                    $status = '';
+                    if ($tanggal) {
+                        $event_date = strtotime($tanggal);
+                        $today = strtotime(date('Y-m-d'));
 
-                    if ($event_date == $today) {
-                        $status = 'berlangsung';
-                    } elseif ($event_date > $today) {
-                        $status = 'mendatang';
-                    } else {
-                        $status = 'selesai';
+                        if ($event_date == $today) {
+                            $status = 'berlangsung';
+                        } elseif ($event_date > $today) {
+                            $status = 'mendatang';
+                        } else {
+                            $status = 'selesai';
+                        }
                     }
-                }
-
-                // Alternate layout
-                $reverse = $counter % 2 == 0;
-                ?>
-                <div
-                    class="mb-12 bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden border border-gray-700/50">
-                    <div class="grid lg:grid-cols-2 gap-0">
-                        <div class="<?php echo $reverse ? 'lg:order-2' : ''; ?> relative h-64 lg:h-auto">
+                    ?>
+                    <div class="program-card bg-gray-800/50 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden group transform lg:hover:-translate-y-1 border border-gray-700/50"
+                        data-program-id="<?php echo $program_counter; ?>">
+                        <div class="relative w-full overflow-hidden" style="aspect-ratio: 16/9;">
                             <?php if (has_post_thumbnail()): ?>
-                                <?php the_post_thumbnail('large', ['class' => 'w-full h-full object-cover']); ?>
+                                <?php the_post_thumbnail('medium', ['class' => 'absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700']); ?>
                             <?php else: ?>
                                 <div
-                                    class="w-full h-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                                    <svg class="w-24 h-24 text-white opacity-50" fill="none" stroke="currentColor"
+                                    class="absolute inset-0 w-full h-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                                    <svg class="w-12 h-12 sm:w-16 sm:h-16 text-white opacity-50" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
                                 </div>
                             <?php endif; ?>
-                            <?php if ($status == 'berlangsung'): ?>
-                                <div
-                                    class="absolute top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-full font-body font-bold text-sm">
-                                    Sedang Berlangsung
-                                </div>
-                            <?php elseif ($status == 'mendatang'): ?>
-                                <div
-                                    class="absolute top-4 right-4 bg-primary text-white px-4 py-2 rounded-full font-body font-bold text-sm">
-                                    Akan Datang
-                                </div>
-                            <?php elseif ($status == 'selesai'): ?>
-                                <div
-                                    class="absolute top-4 right-4 bg-gray-500 text-white px-4 py-2 rounded-full font-body font-bold text-sm">
-                                    Selesai
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                        <div class="p-8 lg:p-12 flex flex-col justify-center">
-                            <h3 class="font-title text-4xl lg:text-5xl font-bold text-white mb-4">
-                                <?php the_title(); ?>
-                            </h3>
-                            <div class="flex flex-wrap gap-4 mb-6 text-gray-300 font-body font-medium">
-                                <?php if ($tanggal): ?>
-                                    <div class="flex items-center gap-2">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                        <span><?php echo date('d F Y', strtotime($tanggal)); ?></span>
-                                    </div>
-                                <?php endif; ?>
-                                <?php if ($lokasi): ?>
-                                    <div class="flex items-center gap-2">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        </svg>
-                                        <span><?php echo esc_html($lokasi); ?></span>
-                                    </div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+
+                            <!-- Status Badge -->
+                            <div class="absolute top-3 right-3">
+                                <?php if ($status == 'berlangsung'): ?>
+                                    <span
+                                        class="bg-gradient-to-r from-green-500 to-green-600 text-white px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-body font-bold shadow-lg backdrop-blur-sm">
+                                        Berlangsung
+                                    </span>
+                                <?php elseif ($status == 'mendatang'): ?>
+                                    <span
+                                        class="bg-gradient-to-r from-primary to-blue-600 text-white px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-body font-bold shadow-lg backdrop-blur-sm">
+                                        Akan Datang
+                                    </span>
+                                <?php else: ?>
+                                    <span
+                                        class="bg-gradient-to-r from-gray-500 to-gray-600 text-white px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-body font-bold shadow-lg backdrop-blur-sm">
+                                        Selesai
+                                    </span>
                                 <?php endif; ?>
                             </div>
-                            <?php
-                            $deskripsi = get_post_meta(get_the_ID(), '_program_unggulan_deskripsi', true);
-                            if ($deskripsi):
-                                ?>
-                                <div class="font-body font-medium text-gray-300 mb-6 leading-relaxed">
-                                    <?php echo esc_html($deskripsi); ?>
-                                </div>
-                            <?php endif; ?>
+
+                            <!-- Category Badge -->
                             <?php
                             $categories = get_the_category();
                             if (!empty($categories)):
                                 ?>
-                                <div class="flex flex-wrap gap-2 mb-6">
-                                    <?php foreach ($categories as $cat): ?>
-                                        <span
-                                            class="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm font-body font-medium border border-primary/30">
-                                            <?php echo esc_html($cat->name); ?>
-                                        </span>
-                                    <?php endforeach; ?>
+                                <div class="absolute top-3 left-3">
+                                    <span
+                                        class="bg-secondary text-dark-bg px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-body font-bold uppercase shadow-lg backdrop-blur-sm">
+                                        <?php echo esc_html($categories[0]->name); ?>
+                                    </span>
                                 </div>
                             <?php endif; ?>
                         </div>
+
+                        <div class="p-3 sm:p-4 lg:p-6">
+                            <h3
+                                class="font-title text-sm sm:text-lg lg:text-xl font-bold text-white mb-2 sm:mb-3 lg:mb-4 line-clamp-2 leading-tight min-h-[2.5rem] sm:min-h-[3.5rem]">
+                                <?php the_title(); ?>
+                            </h3>
+
+                            <!-- Details Section - Hidden on mobile until expanded -->
+                            <div class="program-details" data-program-details="<?php echo $program_counter; ?>">
+                                <div class="space-y-2 mb-3 sm:mb-4">
+                                    <?php if ($tanggal): ?>
+                                        <div class="flex items-center gap-2 text-gray-300 font-body font-medium text-xs sm:text-sm">
+                                            <svg class="w-4 h-4 flex-shrink-0 text-secondary" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                            <span class="truncate"><?php echo date('d F Y', strtotime($tanggal)); ?></span>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if ($lokasi): ?>
+                                        <div class="flex items-start gap-2 text-gray-300 font-body font-medium text-xs sm:text-sm">
+                                            <svg class="w-4 h-4 flex-shrink-0 text-secondary mt-0.5" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            </svg>
+                                            <span class="line-clamp-2"><?php echo esc_html($lokasi); ?></span>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+
+                                <?php if ($deskripsi): ?>
+                                    <p
+                                        class="font-body font-medium text-gray-300 text-xs sm:text-sm mb-3 sm:mb-4 lg:mb-5 line-clamp-3 leading-relaxed">
+                                        <?php echo esc_html($deskripsi); ?>
+                                    </p>
+                                <?php endif; ?>
+
+                                <?php
+                                $categories = get_the_category();
+                                if (!empty($categories)):
+                                    ?>
+                                    <div class="program-action-btn flex flex-wrap gap-2">
+                                        <?php foreach ($categories as $cat): ?>
+                                            <span
+                                                class="px-3 py-1 bg-primary/20 text-secondary border border-primary/30 rounded-full text-xs font-body font-medium">
+                                                <?php echo esc_html($cat->name); ?>
+                                            </span>
+                                        <?php endforeach; ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Toggle Button - Only visible on mobile -->
+                            <button
+                                class="toggle-program-btn lg:hidden w-full inline-flex items-center justify-center gap-2 bg-gray-700/50 hover:bg-gray-600/50 text-white font-body font-semibold px-4 py-2 rounded-lg transition-all duration-300 text-xs sm:text-sm border border-gray-600/50"
+                                data-toggle-program="<?php echo $program_counter; ?>"
+                                onclick="toggleProgramDetails(<?php echo $program_counter; ?>)">
+                                <span class="toggle-text">Lihat Detail</span>
+                                <svg class="w-4 h-4 toggle-icon transition-transform duration-300" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
+                    <?php
+                endwhile;
+                wp_reset_postdata();
+                ?>
+            </div>
+        <?php else: ?>
+            <div
+                class="text-center py-12 sm:py-16 lg:py-20 bg-gray-800/50 backdrop-blur-sm rounded-2xl sm:rounded-3xl border-2 border-dashed border-gray-600">
+                <div class="max-w-md mx-auto px-4">
+                    <div
+                        class="w-16 h-16 sm:w-20 sm:h-20 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                        <svg class="w-8 h-8 sm:w-10 sm:h-10 text-secondary" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <h3 class="font-title text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3">Belum Ada Program</h3>
+                    <p class="font-body font-medium text-gray-300 text-sm sm:text-base mb-2">Belum ada program unggulan yang
+                        ditampilkan.</p>
+                    <p class="font-body text-gray-400 text-xs sm:text-sm">Pantau terus untuk informasi program mendatang! 🚀
+                    </p>
                 </div>
-                <?php
-            endwhile;
-            wp_reset_postdata();
-        else:
-            ?>
-            <div class="text-center py-12 bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700/50">
-                <p class="font-body font-medium text-gray-400">Belum ada program unggulan yang ditampilkan.</p>
             </div>
         <?php endif; ?>
     </div>
 </section>
 
 <!-- Pendaftaran Acara Section -->
-<section id="acara-terbuka" class="py-16 px-6 lg:px-24 bg-white">
-    <div class="mb-12">
-        <h2 class="font-title text-4xl lg:text-5xl font-bold text-dark-bg mb-4">
-            Acara
-            <span class="title-with-highlight">
-                <span class="highlight-text highlight"> Terbuka</span>
-                <span class="highlight-bar primary"></span>
-            </span>
-        </h2>
-        <p class="font-body font-medium text-lg text-gray-600">Daftar sekarang untuk mengikuti acara HMTI</p>
-    </div>
+<section id="acara-terbuka"
+    class="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-24 bg-gradient-to-b from-white to-gray-50">
+    <div class="container mx-auto">
+        <!-- Section Header -->
+        <div class="text-center mb-8 sm:mb-12 lg:mb-16">
 
-    <?php
-    $open_events = new WP_Query([
-        'post_type' => 'acara_terbuka',
-        'posts_per_page' => -1,
-        'meta_query' => [
-            [
-                'key' => '_acara_terbuka_tanggal',
-                'value' => date('Y-m-d'),
-                'compare' => '>=',
-                'type' => 'DATE'
-            ]
-        ],
-        'orderby' => 'meta_value',
-        'meta_key' => '_acara_terbuka_tanggal',
-        'order' => 'ASC'
-    ]);
-
-    if ($open_events->have_posts()):
-        ?>
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <?php
-            while ($open_events->have_posts()):
-                $open_events->the_post();
-                $tanggal = get_post_meta(get_the_ID(), '_acara_terbuka_tanggal', true);
-                $lokasi = get_post_meta(get_the_ID(), '_acara_terbuka_lokasi', true);
-                $kategori = get_post_meta(get_the_ID(), '_acara_terbuka_kategori', true);
-                $link = get_post_meta(get_the_ID(), '_acara_terbuka_link', true);
-                $is_pendaftaran = get_post_meta(get_the_ID(), '_acara_terbuka_is_pendaftaran', true);
-                $deskripsi = get_post_meta(get_the_ID(), '_acara_terbuka_deskripsi', true);
-
-                // Determine status based on date
-                $status = '';
-                if ($tanggal) {
-                    $event_date = strtotime($tanggal);
-                    $today = strtotime(date('Y-m-d'));
-
-                    if ($event_date == $today) {
-                        $status = 'berlangsung';
-                    } elseif ($event_date > $today) {
-                        $status = 'mendatang';
-                    } else {
-                        $status = 'selesai';
-                    }
-                }
-                ?>
-                <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
-                    <div class="relative h-48 overflow-hidden">
-                        <?php if (has_post_thumbnail()): ?>
-                            <?php the_post_thumbnail('medium', ['class' => 'w-full h-full object-cover group-hover:scale-110 transition-transform duration-500']); ?>
-                        <?php else: ?>
-                            <div class="w-full h-full bg-gradient-to-br from-primary to-secondary"></div>
-                        <?php endif; ?>
-                        <div class="absolute top-4 right-4">
-                            <?php if ($status == 'berlangsung'): ?>
-                                <span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-body font-bold">
-                                    Berlangsung
-                                </span>
-                            <?php else: ?>
-                                <span class="bg-primary text-white px-3 py-1 rounded-full text-xs font-body font-bold">
-                                    Akan Datang
-                                </span>
-                            <?php endif; ?>
-                        </div>
-                        <!-- Kategori Badge -->
-                        <?php if ($kategori): ?>
-                            <div class="absolute top-4 left-4">
-                                <span
-                                    class="bg-secondary text-dark-bg px-3 py-1 rounded-full text-xs font-body font-bold uppercase">
-                                    <?php echo esc_html($kategori); ?>
-                                </span>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-title text-xl font-bold text-dark-bg mb-3 line-clamp-2">
-                            <?php the_title(); ?>
-                        </h3>
-                        <?php if ($tanggal): ?>
-                            <div class="flex items-center gap-2 text-gray-600 font-body font-medium text-sm mb-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                                <span><?php echo date('d F Y', strtotime($tanggal)); ?></span>
-                            </div>
-                        <?php endif; ?>
-                        <?php if ($lokasi): ?>
-                            <div class="flex items-center gap-2 text-gray-600 font-body font-medium text-sm mb-4">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                </svg>
-                                <span class="line-clamp-1"><?php echo esc_html($lokasi); ?></span>
-                            </div>
-                        <?php endif; ?>
-                        <?php if ($deskripsi): ?>
-                            <p class="font-body font-medium text-gray-600 text-sm mb-4 line-clamp-3">
-                                <?php echo esc_html($deskripsi); ?>
-                            </p>
-                        <?php endif; ?>
-                        <?php if ($link): ?>
-                            <a href="<?php echo esc_url($link); ?>" target="_blank"
-                                class="inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-white font-body font-bold px-6 py-3 rounded-full transition-colors duration-300 w-full justify-center">
-                                <span><?php echo $is_pendaftaran ? 'Daftar Sekarang' : 'Lihat Detail'; ?></span>
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                                </svg>
-                            </a>
-                        <?php endif; ?>
-                    </div>
-                </div>
-                <?php
-            endwhile;
-            wp_reset_postdata();
-            ?>
-        </div>
-    <?php else: ?>
-        <div class="text-center py-12 bg-gray-50 rounded-2xl">
-            <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <p class="font-body font-medium text-gray-500 text-lg">Belum ada acara yang dibuka untuk saat ini.</p>
-            <p class="font-body font-medium text-gray-400 text-sm mt-2">Pantau terus untuk informasi acara mendatang!
+            <h2 class="font-title text-3xl sm:text-4xl lg:text-5xl font-bold text-dark-bg mb-4">
+                <span class="title-with-highlight">
+                    <span class="highlight-text highlight">Event </span>
+                    <span class="highlight-bar primary"></span>
+                </span>
+                HMTI
+            </h2>
+            <p class="font-body font-medium text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
+                Ikuti berbagai acara menarik yang diselenggarakan oleh HMTI
             </p>
         </div>
-    <?php endif; ?>
+
+        <?php
+        $open_events = new WP_Query([
+            'post_type' => 'acara_terbuka',
+            'posts_per_page' => -1,
+            'meta_query' => [
+                [
+                    'key' => '_acara_terbuka_tanggal',
+                    'value' => date('Y-m-d'),
+                    'compare' => '>=',
+                    'type' => 'DATE'
+                ]
+            ],
+            'orderby' => 'meta_value',
+            'meta_key' => '_acara_terbuka_tanggal',
+            'order' => 'ASC'
+        ]);
+
+        if ($open_events->have_posts()):
+            ?>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 p-5" id="events-container">
+                <?php
+                $event_counter = 0;
+                while ($open_events->have_posts()):
+                    $open_events->the_post();
+                    $event_counter++;
+                    $tanggal = get_post_meta(get_the_ID(), '_acara_terbuka_tanggal', true);
+                    $lokasi = get_post_meta(get_the_ID(), '_acara_terbuka_lokasi', true);
+                    $kategori = get_post_meta(get_the_ID(), '_acara_terbuka_kategori', true);
+                    $link = get_post_meta(get_the_ID(), '_acara_terbuka_link', true);
+                    $is_pendaftaran = get_post_meta(get_the_ID(), '_acara_terbuka_is_pendaftaran', true);
+                    $deskripsi = get_post_meta(get_the_ID(), '_acara_terbuka_deskripsi', true);
+
+                    // Determine status based on date
+                    $status = '';
+                    if ($tanggal) {
+                        $event_date = strtotime($tanggal);
+                        $today = strtotime(date('Y-m-d'));
+
+                        if ($event_date == $today) {
+                            $status = 'berlangsung';
+                        } elseif ($event_date > $today) {
+                            $status = 'mendatang';
+                        } else {
+                            $status = 'selesai';
+                        }
+                    }
+                    ?>
+                    <div class="event-card bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden group transform lg:hover:-translate-y-1"
+                        data-event-id="<?php echo $event_counter; ?>">
+                        <div class="relative w-full overflow-hidden" style="aspect-ratio: 16/9;">
+                            <?php if (has_post_thumbnail()): ?>
+                                <?php the_post_thumbnail('medium', ['class' => 'absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700']); ?>
+                            <?php else: ?>
+                                <div
+                                    class="absolute inset-0 w-full h-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                                    <svg class="w-12 h-12 sm:w-16 sm:h-16 text-white opacity-50" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                                    </svg>
+                                </div>
+                            <?php endif; ?>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+
+                            <!-- Status Badge -->
+                            <div class="absolute top-3 right-3">
+                                <?php if ($status == 'berlangsung'): ?>
+                                    <span
+                                        class="bg-gradient-to-r from-green-500 to-green-600 text-white px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-body font-bold shadow-lg backdrop-blur-sm">
+                                        Berlangsung
+                                    </span>
+                                <?php else: ?>
+                                    <span
+                                        class="bg-gradient-to-r from-primary to-blue-600 text-white px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-body font-bold shadow-lg backdrop-blur-sm">
+                                        Akan Datang
+                                    </span>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Kategori Badge -->
+                            <?php if ($kategori): ?>
+                                <div class="absolute top-3 left-3">
+                                    <span
+                                        class="bg-secondary text-dark-bg px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-body font-bold uppercase shadow-lg backdrop-blur-sm">
+                                        <?php echo esc_html($kategori); ?>
+                                    </span>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="p-3 sm:p-4 lg:p-6">
+                            <h3
+                                class="font-title text-sm sm:text-lg lg:text-xl font-bold text-dark-bg mb-2 sm:mb-3 lg:mb-4 line-clamp-2 leading-tight min-h-[2.5rem] sm:min-h-[3.5rem]">
+                                <?php the_title(); ?>
+                            </h3>
+
+                            <!-- Details Section - Hidden on mobile until expanded -->
+                            <div class="event-details" data-event-details="<?php echo $event_counter; ?>">
+                                <div class="space-y-2 mb-3 sm:mb-4">
+                                    <?php if ($tanggal): ?>
+                                        <div class="flex items-center gap-2 text-gray-600 font-body font-medium text-xs sm:text-sm">
+                                            <svg class="w-4 h-4 flex-shrink-0 text-primary" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                            <span class="truncate"><?php echo date('d F Y', strtotime($tanggal)); ?></span>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if ($lokasi): ?>
+                                        <div class="flex items-start gap-2 text-gray-600 font-body font-medium text-xs sm:text-sm">
+                                            <svg class="w-4 h-4 flex-shrink-0 text-primary mt-0.5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            </svg>
+                                            <span class="line-clamp-2"><?php echo esc_html($lokasi); ?></span>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+
+                                <?php if ($deskripsi): ?>
+                                    <p
+                                        class="font-body font-medium text-gray-600 text-xs sm:text-sm mb-3 sm:mb-4 lg:mb-5 line-clamp-3 leading-relaxed">
+                                        <?php echo esc_html($deskripsi); ?>
+                                    </p>
+                                <?php endif; ?>
+
+                                <?php if ($link): ?>
+                                    <a href="<?php echo esc_url($link); ?>" target="_blank"
+                                        class="event-action-btn inline-flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-blue-600 hover:from-primary-dark hover:to-blue-700 text-white font-body font-bold px-4 sm:px-5 lg:px-6 py-2 sm:py-2.5 lg:py-3 rounded-full transition-all duration-300 w-full shadow-lg hover:shadow-xl transform hover:scale-105 text-xs sm:text-sm lg:text-base">
+                                        <span><?php echo $is_pendaftaran ? 'Daftar Sekarang' : 'Lihat Detail'; ?></span>
+                                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                        </svg>
+                                    </a>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Toggle Button - Only visible on mobile -->
+                            <button
+                                class="toggle-details-btn lg:hidden w-full inline-flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-dark-bg font-body font-semibold px-4 py-2 rounded-lg transition-all duration-300 text-xs sm:text-sm"
+                                data-toggle-event="<?php echo $event_counter; ?>"
+                                onclick="toggleEventDetails(<?php echo $event_counter; ?>)">
+                                <span class="toggle-text">Lihat Detail</span>
+                                <svg class="w-4 h-4 toggle-icon transition-transform duration-300" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <?php
+                endwhile;
+                wp_reset_postdata();
+                ?>
+            </div>
+        <?php else: ?>
+            <div
+                class="text-center py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-gray-50 to-white rounded-2xl sm:rounded-3xl border-2 border-dashed border-gray-300">
+                <div class="max-w-md mx-auto px-4">
+                    <div
+                        class="w-16 h-16 sm:w-20 sm:h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                        <svg class="w-8 h-8 sm:w-10 sm:h-10 text-primary" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <h3 class="font-title text-xl sm:text-2xl font-bold text-dark-bg mb-2 sm:mb-3">Belum Ada Acara</h3>
+                    <p class="font-body font-medium text-gray-600 text-sm sm:text-base mb-2">Belum ada acara yang dibuka
+                        untuk saat ini.</p>
+                    <p class="font-body text-gray-500 text-xs sm:text-sm">Pantau terus untuk informasi acara mendatang! 🚀
+                    </p>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
 </section>
+
+<style>
+    /* Program card responsive styles */
+    @media (max-width: 1023px) {
+        .program-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .program-card.expanded {
+            grid-column: 1 / -1;
+            z-index: 10;
+        }
+
+        .program-details {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .program-card.expanded .program-details {
+            max-height: 1000px;
+            opacity: 1;
+            margin-bottom: 0.75rem;
+        }
+
+        .toggle-program-btn {
+            display: flex;
+        }
+
+        .program-card.expanded .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .program-action-btn {
+            display: none;
+        }
+
+        .program-card.expanded .program-action-btn {
+            display: flex;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .program-details {
+            max-height: none;
+            opacity: 1;
+            overflow: visible;
+        }
+
+        .toggle-program-btn {
+            display: none !important;
+        }
+
+        .program-action-btn {
+            display: flex;
+        }
+    }
+
+    /* Event card responsive styles */
+    @media (max-width: 1023px) {
+        .event-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .event-card.expanded {
+            grid-column: 1 / -1;
+            z-index: 10;
+        }
+
+        .event-details {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .event-card.expanded .event-details {
+            max-height: 1000px;
+            opacity: 1;
+            margin-bottom: 0.75rem;
+        }
+
+        .toggle-details-btn {
+            display: flex;
+        }
+
+        .event-card.expanded .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .event-action-btn {
+            display: none;
+        }
+
+        .event-card.expanded .event-action-btn {
+            display: inline-flex;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .event-details {
+            max-height: none;
+            opacity: 1;
+            overflow: visible;
+        }
+
+        .toggle-details-btn {
+            display: none !important;
+        }
+
+        .event-action-btn {
+            display: inline-flex;
+        }
+    }
+</style>
+
+<script>
+    function toggleProgramDetails(programId) {
+        const card = document.querySelector(`[data-program-id="${programId}"]`);
+        const toggleBtn = card.querySelector(`[data-toggle-program="${programId}"]`);
+        const toggleText = toggleBtn.querySelector('.toggle-text');
+        const isExpanded = card.classList.contains('expanded');
+
+        // Close all other expanded cards first (optional)
+        if (!isExpanded) {
+            const allCards = document.querySelectorAll('.program-card.expanded');
+            allCards.forEach(otherCard => {
+                if (otherCard !== card) {
+                    otherCard.classList.remove('expanded');
+                    const otherBtn = otherCard.querySelector('.toggle-program-btn');
+                    const otherText = otherBtn.querySelector('.toggle-text');
+                    otherText.textContent = 'Lihat Detail';
+                }
+            });
+        }
+
+        // Toggle current card
+        card.classList.toggle('expanded');
+
+        // Update button text
+        if (card.classList.contains('expanded')) {
+            toggleText.textContent = 'Sembunyikan';
+        } else {
+            toggleText.textContent = 'Lihat Detail';
+        }
+    }
+
+    function toggleEventDetails(eventId) {
+        const card = document.querySelector(`[data-event-id="${eventId}"]`);
+        const toggleBtn = card.querySelector(`[data-toggle-event="${eventId}"]`);
+        const toggleText = toggleBtn.querySelector('.toggle-text');
+        const isExpanded = card.classList.contains('expanded');
+
+        // Close all other expanded cards first (optional)
+        if (!isExpanded) {
+            const allCards = document.querySelectorAll('.event-card.expanded');
+            allCards.forEach(otherCard => {
+                if (otherCard !== card) {
+                    otherCard.classList.remove('expanded');
+                    const otherBtn = otherCard.querySelector('.toggle-details-btn');
+                    const otherText = otherBtn.querySelector('.toggle-text');
+                    otherText.textContent = 'Lihat Detail';
+                }
+            });
+        }
+
+        // Toggle current card
+        card.classList.toggle('expanded');
+
+        // Update button text
+        if (card.classList.contains('expanded')) {
+            toggleText.textContent = 'Sembunyikan';
+        } else {
+            toggleText.textContent = 'Lihat Detail';
+        }
+    }
+
+    // Close expanded cards when window is resized to desktop size
+    window.addEventListener('resize', function () {
+        if (window.innerWidth >= 1024) {
+            // Close program cards
+            const expandedPrograms = document.querySelectorAll('.program-card.expanded');
+            expandedPrograms.forEach(card => {
+                card.classList.remove('expanded');
+                const btn = card.querySelector('.toggle-program-btn');
+                if (btn) {
+                    const text = btn.querySelector('.toggle-text');
+                    text.textContent = 'Lihat Detail';
+                }
+            });
+
+            // Close event cards
+            const expandedCards = document.querySelectorAll('.event-card.expanded');
+            expandedCards.forEach(card => {
+                card.classList.remove('expanded');
+                const btn = card.querySelector('.toggle-details-btn');
+                if (btn) {
+                    const text = btn.querySelector('.toggle-text');
+                    text.textContent = 'Lihat Detail';
+                }
+            });
+        }
+    });
+</script>
 
 <?php get_footer(); ?>
