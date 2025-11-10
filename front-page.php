@@ -110,7 +110,7 @@
                     <span class="highlight-bar primary"></span>
                 </span>
             </h2>
-            <p class="news-categories">ARTIKEL / TIPS & TRIK / PRESTASI / DLL</p>
+            <p class="news-categories">BERITA / ARTIKEL / INFORMASI / PRESTASI</p>
 
         </div>
         <div class="news-articles-wrapper">
@@ -177,6 +177,8 @@
             endif;
             ?>
         </div>
+    </div>
+    <div class="flex justify-center px-4 sm:px-6 lg:px-8 mt-6 sm:mt-8">
         <a href="<?php echo home_url('/berita-publikasi'); ?>" class="view-more-button">
             <span>Lihat Selengkapnya</span>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -328,12 +330,12 @@
                         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/30"></div>
 
                         <!-- Content Overlay -->
-                        <div class="absolute inset-0 p-4 md:p-6 lg:p-8 xl:p-10 flex flex-col justify-end text-white">
+                        <div class="absolute inset-0 p-3 sm:p-4 md:p-6 lg:p-8 xl:p-10 flex flex-col justify-end text-white">
                             <!-- Kategori Badge -->
                             <?php if ($kategori): ?>
-                                <div class="mb-2 sm:mb-3">
+                                <div class="mb-1.5 sm:mb-2">
                                     <span
-                                        class="inline-block bg-secondary text-dark-bg px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-xs sm:text-sm font-body font-bold uppercase tracking-wide">
+                                        class="inline-block bg-secondary text-dark-bg px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-xs font-body font-bold uppercase tracking-wide">
                                         <?php echo esc_html($kategori); ?>
                                     </span>
                                 </div>
@@ -341,16 +343,16 @@
 
                             <!-- Title -->
                             <h3
-                                class="font-title text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2 sm:mb-3 lg:mb-4 leading-tight">
+                                class="font-title text-base sm:text-xl md:text-2xl lg:text-4xl xl:text-5xl font-bold mb-1.5 sm:mb-2 lg:mb-4 leading-tight">
                                 <?php the_title(); ?>
                             </h3>
 
                             <!-- Meta Info -->
                             <div
-                                class="flex flex-wrap gap-2 sm:gap-3 md:gap-4 lg:gap-6 mb-3 sm:mb-4 text-xs sm:text-sm lg:text-base">
+                                class="flex flex-wrap gap-1.5 sm:gap-2 md:gap-4 lg:gap-6 mb-2 sm:mb-3 text-[10px] sm:text-xs lg:text-base">
                                 <?php if ($tanggal): ?>
-                                    <div class="flex items-center gap-1.5 sm:gap-2">
-                                        <svg class="w-4 h-4 sm:w-5 sm:h-5 shrink-0" fill="none" stroke="currentColor"
+                                    <div class="flex items-center gap-1 sm:gap-1.5">
+                                        <svg class="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 shrink-0" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -360,8 +362,8 @@
                                     </div>
                                 <?php endif; ?>
                                 <?php if ($lokasi): ?>
-                                    <div class="flex items-center gap-1.5 sm:gap-2">
-                                        <svg class="w-4 h-4 sm:w-5 sm:h-5 shrink-0" fill="none" stroke="currentColor"
+                                    <div class="flex items-center gap-1 sm:gap-1.5">
+                                        <svg class="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 shrink-0" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -383,9 +385,9 @@
                             <?php if ($link): ?>
                                 <div>
                                     <a href="<?php echo esc_url($link); ?>" target="_blank"
-                                        class="inline-flex items-center gap-2 sm:gap-3 bg-white hover:bg-gray-100 text-dark-bg font-body font-bold px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 lg:py-4 rounded-full text-sm sm:text-base transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                                        class="inline-flex items-center gap-1.5 sm:gap-2 lg:gap-3 bg-white hover:bg-gray-100 text-dark-bg font-body font-bold px-3 py-2 sm:px-4 sm:py-2.5 lg:px-8 lg:py-4 rounded-full text-xs sm:text-sm lg:text-base transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                                         <span><?php echo $is_pendaftaran ? 'Daftar Sekarang' : 'Lihat Detail'; ?></span>
-                                        <svg class="w-4 h-4 sm:w-5 sm:h-5 shrink-0" fill="none" stroke="currentColor"
+                                        <svg class="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 shrink-0" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -397,10 +399,9 @@
                     </div>
                 </div>
             </div>
-            <div class="flex justify-center px-4 sm:px-6 lg:px-8">
-                <a href="<?php echo home_url('/program-kegiatan#acara-terbuka'); ?>" class="view-more-button-event">
-                    <span class="hidden sm:inline">Lihat Semua Acara</span>
-                    <span class="sm:hidden">Lihat Semua</span>
+            <div class="event flex justify-center px-4 sm:px-6 lg:px-8">
+                <a href="<?php echo home_url('/program-kegiatan#acara-terbuka'); ?>" class="view-more-button">
+                    <span>Lihat Selengkapnya</span>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="12" cy="12" r="12" fill="#3498DB" />
                         <path d="M10.5 16.5L15 12L10.5 7.5" stroke="white" stroke-width="2" stroke-linecap="round"
@@ -414,7 +415,7 @@
     else:
         ?>
         <!-- No Upcoming Events -->
-        <div class="p-4 sm:p-6 lg:p-8">
+        <div class="px-4 sm:px-6 lg:px-18">
             <h2 class="font-title text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold text-dark-bg mb-6 sm:mb-8">
                 Acara
                 <span class="title-with-highlight">

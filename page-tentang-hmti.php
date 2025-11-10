@@ -50,80 +50,98 @@ get_header();
 
 <!-- Visi & Misi Section -->
 <section class="visimisi-new-section">
+    <!-- Kabinet Section (dalam Visi & Misi) -->
+    <div class="sejarah-new-container" style="padding-bottom: 80px;">
+        <div class="sejarah-new-logo">
+            <?php
+            $kabinet_logo = get_theme_mod('kabinet_logo');
+            if ($kabinet_logo): ?>
+                <img src="<?php echo esc_url($kabinet_logo); ?>" alt="Logo Kabinet HMTI">
+            <?php else: ?>
+                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/logo.png" alt="Logo Kabinet HMTI">
+            <?php endif; ?>
+        </div>
+        <div class="sejarah-new-text">
+            <h3 class="visimisi-new-label" style="margin-bottom: 30px;">
+                <?php echo esc_html(get_theme_mod('kabinet_title', 'Kabinet')); ?>
+            </h3>
+            <div class="visimisi-new-right" style="padding: 0;">
+                <p><?php echo nl2br(esc_html(get_theme_mod('kabinet_description', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'))); ?>
+                </p>
+            </div>
+        </div>
+    </div>
     <div class="visimisi-new-container">
 
         <?php
-        // Query untuk mengambil data Visi & Misi dari Custom Post Type
-        $visimisi_query = new WP_Query([
-            'post_type' => 'visimisi',
-            'posts_per_page' => 1,
-        ]);
+        // Ambil data Visi & Misi dari Customizer
+        $visi = get_theme_mod('visimisi_visi', 'Menjadi organisasi mahasiswa yang unggul, inovatif, dan berkarakter dalam mengembangkan potensi mahasiswa di bidang teknologi informasi.');
+        $misi = get_theme_mod('visimisi_misi', "Meningkatkan kualitas akademik dan non-akademik mahasiswa\nMengembangkan jiwa kepemimpinan dan kewirausahaan\nMembangun networking dengan berbagai pihak\nMenciptakan program kerja yang bermanfaat");
+        ?>
 
-        if ($visimisi_query->have_posts()):
-            while ($visimisi_query->have_posts()):
-                $visimisi_query->the_post();
-                $visi = get_post_meta(get_the_ID(), '_visimisi_visi', true);
-                $misi = get_post_meta(get_the_ID(), '_visimisi_misi', true);
+        <!-- Visi -->
+        <?php if ($visi): ?>
+            <div class="visimisi-new-item">
+                <div class="visimisi-new-left">
+                    <h3 class="visimisi-new-label">Visi</h3>
+                </div>
+                <div class="visimisi-new-right">
+                    <p><?php echo nl2br(esc_html($visi)); ?></p>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <!-- Misi -->
+        <?php if ($misi):
+            // Split misi by newlines and filter empty lines
+            $misi_lines = array_filter(array_map('trim', explode("\n", $misi)));
+
+            if (!empty($misi_lines)):
                 ?>
-
-                <!-- Visi -->
-                <?php if ($visi): ?>
-                    <div class="visimisi-new-item">
-                        <div class="visimisi-new-left">
-                            <h3 class="visimisi-new-label">Visi</h3>
-                        </div>
-                        <div class="visimisi-new-right">
-                            <p><?php echo nl2br(esc_html($visi)); ?></p>
-                        </div>
+                <div class="visimisi-new-item">
+                    <div class="visimisi-new-left">
+                        <h3 class="visimisi-new-label">Misi</h3>
                     </div>
-                <?php endif; ?>
-
-                <!-- Misi -->
-                <?php if ($misi):
-                    // Split misi by newlines and filter empty lines
-                    $misi_lines = array_filter(array_map('trim', explode("\n", $misi)));
-
-                    if (!empty($misi_lines)):
-                        ?>
-                        <div class="visimisi-new-item">
-                            <div class="visimisi-new-left">
-                                <h3 class="visimisi-new-label">Misi</h3>
-                            </div>
-                            <div class="visimisi-new-right">
-                                <ol class="visimisi-list">
-                                    <?php foreach ($misi_lines as $misi_item): ?>
-                                        <li><?php echo esc_html($misi_item); ?></li>
-                                    <?php endforeach; ?>
-                                </ol>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-                <?php endif; ?>
-
-                <?php
-            endwhile;
-            wp_reset_postdata();
-        else:
-            ?>
-            <p style="text-align: center; width: 100%; color: #999; padding: 40px 20px;">Belum ada data Visi & Misi. Silakan
-                tambahkan di menu Visi & Misi di dashboard WordPress.</p>
+                    <div class="visimisi-new-right">
+                        <ol class="visimisi-list">
+                            <?php foreach ($misi_lines as $misi_item): ?>
+                                <li><?php echo esc_html($misi_item); ?></li>
+                            <?php endforeach; ?>
+                        </ol>
+                    </div>
+                </div>
+            <?php endif; ?>
         <?php endif; ?>
 
     </div>
+
+
 </section>
 
 <!-- Pengurus HMTI Section -->
 <section class="py-16 px-6 lg:px-24 circuit-bg">
     <div class="container mx-auto">
         <div class="text-center mb-12">
-            <h2 class="font-title text-4xl lg:text-5xl font-bold text-dark-bg mb-4">
-                Kepemimpinan dan
+            <h2 class="font-title text-2xl sm:text-4xl lg:text-5xl font-bold text-dark-bg mb-4">
+                <?php
+                $pengurus_title = get_theme_mod('pengurus_title', 'Kepemimpinan dan Struktur Kami');
+                // Split title untuk highlight kata terakhir
+                $title_parts = explode(' ', $pengurus_title);
+                $last_words = array_slice($title_parts, -2); // ambil 2 kata terakhir
+                $first_words = array_slice($title_parts, 0, -2); // ambil sisanya
+                
+                if (!empty($first_words)) {
+                    echo implode(' ', $first_words) . ' ';
+                }
+                ?>
                 <span class="title-with-highlight">
-                    <span class="highlight-text highlight">Struktur Kami</span>
+                    <span class="highlight-text highlight"><?php echo implode(' ', $last_words); ?></span>
                     <span class="highlight-bar primary"></span>
                 </span>
             </h2>
-            <p class="font-body font-medium text-lg text-gray-600 mb-8">Tim pengurus HMTI periode 2024/2025</p>
+            <p class="font-body font-medium text-base lg:text-lg text-gray-600 mb-8">
+                <?php echo esc_html(get_theme_mod('pengurus_subtitle', 'Tim pengurus HMTI periode 2024/2025')); ?>
+            </p>
 
             <?php
             // Get all unique divisi from database
@@ -181,7 +199,7 @@ get_header();
                         data-divisi="<?php echo esc_attr($divisi); ?>"
                         style="<?php echo ($divisi !== $default_divisi) ? 'display: none;' : ''; ?>">
                         <div
-                            class="relative overflow-hidden rounded-t-lg bg-gradient-to-br from-primary/10 to-secondary/10 aspect-square">
+                            class="relative overflow-hidden rounded-t-lg bg-gradient-to-br from-primary/10 to-secondary/10 aspect-[3/4]">
                             <?php if (has_post_thumbnail()): ?>
                                 <?php the_post_thumbnail('medium', ['class' => 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-500']); ?>
                             <?php else: ?>
@@ -195,11 +213,13 @@ get_header();
                                 </div>
                             <?php endif; ?>
                         </div>
-                        <div class="bg-white p-3 rounded-b-lg shadow-md">
-                            <h4 class="font-title text-lg font-bold text-dark-bg mb-1 line-clamp-2">
+                        <div class="bg-white p-2 rounded-b-lg shadow-md">
+                            <h4
+                                class="pengurus-nama font-title font-bold text-dark-bg mb-1 overflow-hidden whitespace-nowrap text-ellipsis">
                                 <?php the_title(); ?>
                             </h4>
-                            <p class="font-body font-semibold text-primary text-base leading-tight line-clamp-2">
+                            <p
+                                class="pengurus-jabatan font-body font-semibold text-primary leading-tight overflow-hidden whitespace-nowrap text-ellipsis">
                                 <?php echo esc_html($jabatan); ?>
                             </p>
                         </div>
@@ -256,7 +276,74 @@ get_header();
     .pengurus-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Responsive font sizes based on card width */
+    .pengurus-nama {
+        font-size: 1.125rem; /* 18px default */
+    }
+    
+    .pengurus-jabatan {
+        font-size: 1rem; /* 16px default */
+    }
+    
+    /* xl breakpoint: 5 cards (w-1/5) */
+    @media (min-width: 1280px) {
+        .pengurus-nama {
+            font-size: 1rem; /* 16px */
+        }
+        .pengurus-jabatan {
+            font-size: 0.875rem; /* 14px */
+        }
+    }
+    
+    /* lg breakpoint: 4 cards (w-1/4) */
+    @media (min-width: 1024px) and (max-width: 1279px) {
+        .pengurus-nama {
+            font-size: 0.9375rem; /* 15px */
+        }
+        .pengurus-jabatan {
+            font-size: 0.8125rem; /* 13px */
+        }
+    }
+    
+    /* md breakpoint: 3 cards (w-1/3) */
+    @media (min-width: 768px) and (max-width: 1023px) {
+        .pengurus-nama {
+            font-size: 1rem; /* 16px */
+        }
+        .pengurus-jabatan {
+            font-size: 0.875rem; /* 14px */
+        }
+    }
+    
+    /* mobile: 2 cards (w-1/2) */
+    @media (max-width: 767px) {
+        .pengurus-nama {
+            font-size: 0.75rem; /* 12px */
+        }
+        .pengurus-jabatan {
+            font-size: 0.625rem; /* 10px */
+        }
+    }
+    
+    /* very small mobile */
+    @media (max-width: 480px) {
+        .pengurus-nama {
+            font-size: 0.625rem; /* 10px */
+        }
+        .pengurus-jabatan {
+            font-size: 0.625rem; /* 10px */
+        }
+    }
         
+    @media (max-width: 350px) {
+        .pengurus-nama {
+            font-size: 0.5625rem; /* 9px */
+        }
+        .pengurus-jabatan {
+            font-size: 0.5625rem; /* 9px */
+        }
     }
 `;
     document.head.appendChild(style);

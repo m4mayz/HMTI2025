@@ -807,9 +807,13 @@ h2 .title-with-highlight {
     margin: 20px 0;
 }
 
-.news-grid .view-more-button {
+.news-section .view-more-button {
     color: var(--font-color);
     align-self: center;
+}
+
+.event .view-more-button {
+    color: var(--font-color);
 }
 
 .news-title-block .view-more-button:hover {
@@ -1005,7 +1009,7 @@ h2 .title-with-highlight {
     background-image: url("assets/images/elements/2.png");
     background-size: contain;
     background-repeat: no-repeat;
-    opacity: 0.3;
+    opacity: 0.1;
     pointer-events: none;
     z-index: 0;
 }
@@ -1020,7 +1024,7 @@ h2 .title-with-highlight {
     background-image: url("assets/images/elements/2.png");
     background-size: contain;
     background-repeat: no-repeat;
-    opacity: 0.3;
+    opacity: 0.1;
     pointer-events: none;
     z-index: 0;
     transform: rotate(180deg);
@@ -1048,7 +1052,7 @@ h2 .title-with-highlight {
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 250px);
     gap: 0;
-    margin-bottom: 50px;
+    margin-bottom: 15px;
     position: relative;
 }
 
@@ -2541,6 +2545,7 @@ h2 .title-with-highlight {
 
     .about-new-hero-section {
         padding: 80px 40px;
+        min-height: 700px;
     }
 
     .about-new-hero-container {
@@ -2577,6 +2582,7 @@ h2 .title-with-highlight {
             rgba(0, 0, 0, 0.3) 40%,
             transparent 70%
         );
+        bottom: -100px;
     }
 
     .sejarah-new-container {
@@ -2974,6 +2980,10 @@ h2 .title-with-highlight {
         padding: 120px 20px 60px;
     }
 
+    .about-new-hero-section {
+        min-height: 600px;
+    }
+
     .about-hero-title {
         font-size: 56px;
     }
@@ -3232,6 +3242,7 @@ h2 .title-with-highlight {
     .greeting-section-title {
         font-size: 48px;
         margin-bottom: 50px;
+        text-align: center;
     }
 
     .greeting-items-wrapper {
@@ -3361,6 +3372,21 @@ h2 .title-with-highlight {
 }
 
 @media (max-width: 480px) {
+    .news-section-title {
+        font-size: 24px;
+    }
+
+    .view-more-button {
+        font-size: 14px;
+    }
+
+    .view-more-button svg {
+        padding: 4px 0px;
+    }
+
+    .sejarah-new-text {
+        font-size: 17px;
+    }
     /* News Section */
     .news-articles-wrapper {
         flex-direction: column;
@@ -3485,10 +3511,11 @@ h2 .title-with-highlight {
         padding: 40px 20px;
     }
     .gallery-section-title {
-        font-size: 32px;
+        font-size: 24px;
     }
     .about-new-hero-section {
         padding: 60px 15px;
+        min-height: 450px;
     }
 
     .about-new-hero-container {
@@ -3683,7 +3710,7 @@ h2 .title-with-highlight {
     }
 
     .greeting-section-title {
-        font-size: 32px;
+        font-size: 24px;
         margin-bottom: 40px;
     }
 
@@ -3701,7 +3728,7 @@ h2 .title-with-highlight {
     }
 
     .greeting-name {
-        font-size: 24px;
+        font-size: 20px;
     }
 
     .greeting-position {
