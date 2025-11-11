@@ -349,4 +349,98 @@ get_header();
     document.head.appendChild(style);
 </script>
 
+<!-- Intersection Observer Animation Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Add animation class to elements that should animate
+        const animateElements = document.querySelectorAll('.sejarah-new-container, .visimisi-new-item, .pengurus-card');
+
+        animateElements.forEach((el) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+        });
+
+        // Create intersection observer
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    // Add delay based on index for staggered animation
+                    const delay = entry.target.dataset.index ? parseInt(entry.target.dataset.index) * 100 : 0;
+
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, delay);
+
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe sejarah section
+        document.querySelectorAll('.sejarah-new-container').forEach((el, index) => {
+            el.dataset.index = index;
+            observer.observe(el);
+        });
+
+        // Observe visi misi items
+        document.querySelectorAll('.visimisi-new-item').forEach((el, index) => {
+            el.dataset.index = index;
+            observer.observe(el);
+        });
+
+        // Observe pengurus cards with staggered delay
+        const visiblePengurusCards = Array.from(document.querySelectorAll('.pengurus-card')).filter(
+            card => card.style.display !== 'none'
+        );
+
+        visiblePengurusCards.forEach((el, index) => {
+            el.dataset.index = index;
+            observer.observe(el);
+        });
+
+        // Re-observe cards when divisi filter changes
+        const filterSelect = document.getElementById('divisi-filter');
+        if (filterSelect) {
+            const originalChangeHandler = filterSelect.onchange;
+            filterSelect.addEventListener('change', function () {
+                // Reset all cards animation
+                document.querySelectorAll('.pengurus-card').forEach((card) => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(30px)';
+                    observer.unobserve(card);
+                });
+
+                // After a short delay, observe visible cards again
+                setTimeout(() => {
+                    const newVisibleCards = Array.from(document.querySelectorAll('.pengurus-card')).filter(
+                        card => card.style.display !== 'none'
+                    );
+
+                    newVisibleCards.forEach((el, index) => {
+                        el.dataset.index = index;
+                        observer.observe(el);
+                    });
+                }, 50);
+            });
+        }
+
+        // Observe section titles
+        const titles = document.querySelectorAll('.about-new-hero-headline, .visimisi-new-label');
+        titles.forEach((title, index) => {
+            title.style.opacity = '0';
+            title.style.transform = 'translateY(20px)';
+            title.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            title.dataset.index = index;
+            observer.observe(title);
+        });
+    });
+</script>
+
 <?php get_footer(); ?>

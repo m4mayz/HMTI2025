@@ -439,4 +439,72 @@
     ?>
 </section>
 
+<!-- Intersection Observer Animation Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Add animation class to elements that should animate
+        const animateElements = document.querySelectorAll('.greeting-item, .news-article-card, .gallery-item, .event-banner-wrapper');
+
+        animateElements.forEach((el, index) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+        });
+
+        // Create intersection observer
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    // Add delay based on index for staggered animation
+                    const delay = entry.target.dataset.index ? parseInt(entry.target.dataset.index) * 100 : 0;
+
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, delay);
+
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe greeting items with staggered delay
+        document.querySelectorAll('.greeting-item').forEach((el, index) => {
+            el.dataset.index = index;
+            observer.observe(el);
+        });
+
+        // Observe news cards with staggered delay
+        document.querySelectorAll('.news-article-card').forEach((el, index) => {
+            el.dataset.index = index;
+            observer.observe(el);
+        });
+
+        // Observe gallery items with staggered delay
+        document.querySelectorAll('.gallery-item').forEach((el, index) => {
+            el.dataset.index = index;
+            observer.observe(el);
+        });
+
+        // Observe event banner
+        document.querySelectorAll('.event-banner-wrapper').forEach((el) => {
+            observer.observe(el);
+        });
+
+        // Observe section titles
+        const titles = document.querySelectorAll('.greeting-section-title, .news-section-title, .gallery-section-title');
+        titles.forEach((title) => {
+            title.style.opacity = '0';
+            title.style.transform = 'translateY(20px)';
+            title.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(title);
+        });
+    });
+</script>
+
 <?php get_footer(); ?>

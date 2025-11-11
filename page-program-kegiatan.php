@@ -560,7 +560,7 @@ get_header();
                     <h3 class="font-title text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3">Belum Ada Program</h3>
                     <p class="font-body font-medium text-gray-300 text-sm sm:text-base mb-2">Belum ada program unggulan yang
                         ditampilkan.</p>
-                    <p class="font-body text-gray-400 text-xs sm:text-sm">Pantau terus untuk informasi program mendatang! 🚀
+                    <p class="font-body text-gray-400 text-xs sm:text-sm">Pantau terus untuk informasi program mendatang!
                     </p>
                 </div>
             </div>
@@ -971,6 +971,85 @@ get_header();
                 }
             });
         }
+    });
+</script>
+
+<!-- Intersection Observer Animation Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Add animation class to elements that should animate
+        const animateElements = document.querySelectorAll('.program-card, .event-card, #calendar-widget');
+
+        animateElements.forEach((el) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+        });
+
+        // Create intersection observer
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    // Add delay based on index for staggered animation
+                    const delay = entry.target.dataset.index ? parseInt(entry.target.dataset.index) * 100 : 0;
+
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, delay);
+
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe calendar widget
+        const calendarWidget = document.getElementById('calendar-widget');
+        if (calendarWidget) {
+            observer.observe(calendarWidget);
+        }
+
+        // Observe program cards with staggered delay
+        document.querySelectorAll('.program-card').forEach((el, index) => {
+            el.dataset.index = index;
+            observer.observe(el);
+        });
+
+        // Observe event cards with staggered delay
+        document.querySelectorAll('.event-card').forEach((el, index) => {
+            el.dataset.index = index;
+            observer.observe(el);
+        });
+
+        // Observe section titles and headers
+        const titles = document.querySelectorAll('.about-new-hero-headline, h2.font-title');
+        titles.forEach((title, index) => {
+            title.style.opacity = '0';
+            title.style.transform = 'translateY(20px)';
+            title.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            title.dataset.index = index;
+            observer.observe(title);
+        });
+
+        // Re-animate cards when they're expanded on mobile (optional enhancement)
+        const expandButtons = document.querySelectorAll('.toggle-program-btn, .toggle-details-btn');
+        expandButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const card = this.closest('.program-card, .event-card');
+                if (card && card.classList.contains('expanded')) {
+                    // Add a subtle animation when expanding
+                    card.style.transform = 'translateY(0) scale(1.02)';
+                    setTimeout(() => {
+                        card.style.transform = 'translateY(0) scale(1)';
+                    }, 300);
+                }
+            });
+        });
     });
 </script>
 
