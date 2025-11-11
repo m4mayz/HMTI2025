@@ -81,7 +81,10 @@
                                 fill="currentColor"></path>
                         </g>
                     </svg>
-                    <a href="https://wa.me/6285720951798" target="_blank">+62 857-2095-1798</a>
+                    <a href="https://wa.me/<?php echo esc_attr(get_theme_mod('contact_whatsapp', '6285720951798')); ?>"
+                        target="_blank">
+                        <?php echo esc_html(get_theme_mod('contact_whatsapp_display', '+62 857-2095-1798')); ?>
+                    </a>
                 </div>
             </div>
 

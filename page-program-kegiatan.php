@@ -761,7 +761,7 @@ get_header();
                     <h3 class="font-title text-xl sm:text-2xl font-bold text-dark-bg mb-2 sm:mb-3">Belum Ada Acara</h3>
                     <p class="font-body font-medium text-gray-600 text-sm sm:text-base mb-2">Belum ada acara yang dibuka
                         untuk saat ini.</p>
-                    <p class="font-body text-gray-500 text-xs sm:text-sm">Pantau terus untuk informasi acara mendatang! 🚀
+                    <p class="font-body text-gray-500 text-xs sm:text-sm">Pantau terus untuk informasi acara mendatang!
                     </p>
                 </div>
             </div>

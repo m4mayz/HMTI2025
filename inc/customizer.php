@@ -185,6 +185,34 @@ function hmti_customize_register($wp_customize)
         'description' => 'Setiap baris akan menjadi satu poin misi dengan nomor urut.',
     ]);
 
+    // 6. WhatsApp Contact
+    $wp_customize->add_section('hmti_whatsapp_section', [
+        'title' => 'WhatsApp HUMAS (Footer)',
+        'panel' => 'hmti_homepage_panel',
+    ]);
+
+    // WhatsApp Number
+    $wp_customize->add_setting('contact_whatsapp', [
+        'default' => '6285720951798',
+    ]);
+    $wp_customize->add_control('contact_whatsapp', [
+        'label' => 'Nomor WhatsApp',
+        'section' => 'hmti_whatsapp_section',
+        'type' => 'text',
+        'description' => 'Format: 62xxxxxxxxxxx (tanpa tanda + atau spasi)',
+    ]);
+
+    // WhatsApp Display (untuk ditampilkan)
+    $wp_customize->add_setting('contact_whatsapp_display', [
+        'default' => '+62 857-2095-1798',
+    ]);
+    $wp_customize->add_control('contact_whatsapp_display', [
+        'label' => 'Nomor WhatsApp (Tampilan)',
+        'section' => 'hmti_whatsapp_section',
+        'type' => 'text',
+        'description' => 'Format untuk ditampilkan di website (contoh: +62 857-2095-1798)',
+    ]);
+
 
 }
 add_action('customize_register', 'hmti_customize_register');
