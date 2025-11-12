@@ -627,6 +627,364 @@ function hmti_handle_delete_all_pengurus()
 }
 add_action('admin_post_hmti_delete_all_pengurus', 'hmti_handle_delete_all_pengurus');
 
+// =====================================================
+// AGENDA KALENDER CUSTOM POST TYPE
+// =====================================================
+
+// Register Custom Post Type untuk Agenda Kalender
+function hmti_register_agenda_kalender_post_type()
+{
+    $labels = array(
+        'name' => 'Agenda Kalender',
+        'singular_name' => 'Agenda',
+        'menu_name' => 'Agenda Kalender',
+        'add_new' => 'Tambah Agenda',
+        'add_new_item' => 'Tambah Agenda Baru',
+        'edit_item' => 'Edit Agenda',
+        'new_item' => 'Agenda Baru',
+        'view_item' => 'Lihat Agenda',
+        'search_items' => 'Cari Agenda',
+        'not_found' => 'Agenda tidak ditemukan',
+        'not_found_in_trash' => 'Tidak ada agenda di trash',
+    );
+
+    $args = array(
+        'labels' => $labels,
+        'public' => false,
+        'has_archive' => false,
+        'publicly_queryable' => false,
+        'show_ui' => true,
+        'show_in_menu' => true,
+        'menu_icon' => 'dashicons-calendar-alt',
+        'supports' => array('title'),
+        'rewrite' => false,
+        'menu_position' => 25,
+    );
+
+    register_post_type('agenda_kalender', $args);
+}
+add_action('init', 'hmti_register_agenda_kalender_post_type');
+
+// Add Meta Box untuk Tanggal Agenda
+function hmti_add_agenda_kalender_meta_boxes()
+{
+    add_meta_box(
+        'agenda_kalender_details',
+        'Detail Agenda',
+        'hmti_agenda_kalender_details_callback',
+        'agenda_kalender',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'hmti_add_agenda_kalender_meta_boxes');
+
+function hmti_agenda_kalender_details_callback($post)
+{
+    wp_nonce_field('hmti_save_agenda_kalender_data', 'hmti_agenda_kalender_nonce');
+    $tanggal = get_post_meta($post->ID, '_agenda_kalender_tanggal', true);
+
+    echo '<p><label><strong>Tanggal Agenda:</strong></label></p>';
+    echo '<input type="date" name="agenda_kalender_tanggal" value="' . esc_attr($tanggal) . '" class="widefat" required>';
+    echo '<p class="description">Tanggal agenda akan ditampilkan di kalender pada halaman Program & Kegiatan.</p>';
+}
+
+function hmti_save_agenda_kalender_meta($post_id)
+{
+    if (!isset($_POST['hmti_agenda_kalender_nonce']) || !wp_verify_nonce($_POST['hmti_agenda_kalender_nonce'], 'hmti_save_agenda_kalender_data')) {
+        return;
+    }
+
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    if (isset($_POST['agenda_kalender_tanggal'])) {
+        update_post_meta($post_id, '_agenda_kalender_tanggal', sanitize_text_field($_POST['agenda_kalender_tanggal']));
+    }
+}
+add_action('save_post_agenda_kalender', 'hmti_save_agenda_kalender_meta');
+
+// Add custom admin page for import agenda
+function hmti_add_agenda_import_page()
+{
+    add_submenu_page(
+        'edit.php?post_type=agenda_kalender',
+        'Import Agenda',
+        'Import Agenda',
+        'manage_options',
+        'hmti-import-agenda',
+        'hmti_render_import_agenda_page'
+    );
+}
+add_action('admin_menu', 'hmti_add_agenda_import_page');
+
+// Render import page for agenda
+function hmti_render_import_agenda_page()
+{
+    ?>
+    <div class="wrap">
+        <h1>Import Agenda Kalender - Cara Cepat Menambah Banyak Agenda</h1>
+
+        <?php if (isset($_GET['success'])): ?>
+            <div class="notice notice-success is-dismissible">
+                <p><strong>Berhasil!</strong> <?php echo intval($_GET['success']); ?> agenda telah ditambahkan.</p>
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($_GET['deleted'])): ?>
+            <div class="notice notice-success is-dismissible">
+                <p><strong>Berhasil!</strong> <?php echo intval($_GET['deleted']); ?> agenda telah dihapus permanen.</p>
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($_GET['error'])): ?>
+            <div class="notice notice-error is-dismissible">
+                <p><strong>Error:</strong> <?php echo esc_html($_GET['error']); ?></p>
+            </div>
+        <?php endif; ?>
+
+        <div class="card" style="max-width: 900px; margin-top: 20px;">
+            <h2>📥 Import dari CSV/Excel</h2>
+            <p>Upload file CSV atau Excel dengan format: <strong>Nama Agenda, Tanggal (YYYY-MM-DD)</strong></p>
+
+            <!-- Download Template Button -->
+            <p>
+                <a href="<?php echo admin_url('admin-post.php?action=download_agenda_template'); ?>"
+                    class="button button-secondary">
+                    📄 Download Template CSV
+                </a>
+                <span style="margin-left: 10px; color: #666;">
+                    Download template kosong untuk diisi
+                </span>
+            </p>
+
+            <form method="post" enctype="multipart/form-data" action="<?php echo admin_url('admin-post.php'); ?>">
+                <?php wp_nonce_field('hmti_import_agenda', 'hmti_import_agenda_nonce'); ?>
+                <input type="hidden" name="action" value="hmti_import_agenda">
+
+                <table class="form-table">
+                    <tr>
+                        <th scope="row">
+                            <label for="agenda_csv">File CSV/Excel</label>
+                        </th>
+                        <td>
+                            <input type="file" name="agenda_csv" id="agenda_csv" accept=".csv,.xlsx,.xls" required>
+                            <p class="description">
+                                Format: Nama Agenda, Tanggal (YYYY-MM-DD)<br>
+                                Contoh: Rapat Koordinasi, 2025-12-25
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
+                <?php submit_button('Import Agenda'); ?>
+            </form>
+        </div>
+
+        <div class="card" style="max-width: 900px; margin-top: 20px;">
+            <h2>📋 Contoh Format CSV</h2>
+            <pre style="background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto;">Nama Agenda,Tanggal
+    Rapat Koordinasi Divisi,2025-12-25
+    Workshop Web Development,2025-12-30
+    Seminar Teknologi AI,2026-01-15</pre>
+            <p class="description">
+                <strong>Tips:</strong> Pastikan format tanggal adalah YYYY-MM-DD (contoh: 2025-12-25)
+            </p>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="card" style="max-width: 900px; margin-top: 20px; border-color: #dc3232;">
+            <h2 style="color: #dc3232;">⚠️ Danger Zone - Hapus Semua Agenda</h2>
+            <p style="color: #666;">
+                <strong>Peringatan:</strong> Tindakan ini akan menghapus <strong>SEMUA</strong> agenda kalender yang ada.
+            </p>
+
+            <?php
+            $agenda_count = wp_count_posts('agenda_kalender');
+            $total_agenda = $agenda_count->publish + $agenda_count->draft;
+            ?>
+
+            <div style="background: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                <p style="margin: 0; color: #856404;">
+                    📊 Total agenda saat ini: <strong><?php echo $total_agenda; ?> agenda</strong>
+                </p>
+            </div>
+
+            <form method="post" action="<?php echo admin_url('admin-post.php'); ?>"
+                onsubmit="return confirm('⚠️ KONFIRMASI HAPUS SEMUA AGENDA\n\nAnda akan menghapus <?php echo $total_agenda; ?> agenda.\n\nTindakan ini TIDAK DAPAT DIBATALKAN!\n\nKlik OK untuk HAPUS atau Cancel untuk BATALKAN.');">
+                <?php wp_nonce_field('hmti_delete_all_agenda', 'hmti_delete_all_agenda_nonce'); ?>
+                <input type="hidden" name="action" value="hmti_delete_all_agenda">
+
+                <p>
+                    <label style="display: block; margin-bottom: 10px;">
+                        <input type="checkbox" id="confirm-delete-agenda" required>
+                        <strong>Saya mengerti bahwa tindakan ini tidak dapat dibatalkan</strong>
+                    </label>
+                </p>
+
+                <button type="submit" class="button button-primary" style="background: #dc3232; border-color: #dc3232;">
+                    🗑️ Hapus Semua Agenda (<?php echo $total_agenda; ?>)
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .card {
+            background: #fff;
+            border: 1px solid #ccd0d4;
+            border-radius: 4px;
+            padding: 20px;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+    <?php
+}
+
+// Download template CSV for agenda
+function hmti_download_agenda_template()
+{
+    if (!current_user_can('manage_options')) {
+        wp_die('Unauthorized');
+    }
+
+    $filename = 'template-import-agenda.csv';
+
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename=' . $filename);
+
+    $output = fopen('php://output', 'w');
+
+    // Add BOM for Excel UTF-8 compatibility
+    fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+    // Header row
+    fputcsv($output, array('Nama Agenda', 'Tanggal'));
+
+    // Example rows
+    fputcsv($output, array('Rapat Koordinasi Divisi', '2025-12-25'));
+    fputcsv($output, array('Workshop Web Development', '2025-12-30'));
+    fputcsv($output, array('Seminar Teknologi AI', '2026-01-15'));
+
+    fclose($output);
+    exit;
+}
+add_action('admin_post_download_agenda_template', 'hmti_download_agenda_template');
+
+// Handle CSV import for agenda
+function hmti_handle_import_agenda()
+{
+    if (!current_user_can('manage_options')) {
+        wp_die('Unauthorized');
+    }
+
+    if (!isset($_POST['hmti_import_agenda_nonce']) || !wp_verify_nonce($_POST['hmti_import_agenda_nonce'], 'hmti_import_agenda')) {
+        wp_die('Nonce verification failed');
+    }
+
+    if (!isset($_FILES['agenda_csv']) || $_FILES['agenda_csv']['error'] !== UPLOAD_ERR_OK) {
+        wp_redirect(admin_url('edit.php?post_type=agenda_kalender&page=hmti-import-agenda&error=' . urlencode('File upload failed')));
+        exit;
+    }
+
+    $file = $_FILES['agenda_csv']['tmp_name'];
+    $handle = fopen($file, 'r');
+
+    if ($handle === false) {
+        wp_redirect(admin_url('edit.php?post_type=agenda_kalender&page=hmti-import-agenda&error=' . urlencode('Cannot read file')));
+        exit;
+    }
+
+    $count = 0;
+    $row_number = 0;
+
+    while (($data = fgetcsv($handle, 1000, ',')) !== false) {
+        $row_number++;
+
+        // Skip header row if exists
+        if ($row_number === 1 && (strtolower($data[0]) === 'nama agenda' || strtolower($data[0]) === 'nama')) {
+            continue;
+        }
+
+        // Skip empty rows
+        if (empty($data[0])) {
+            continue;
+        }
+
+        $nama_agenda = sanitize_text_field($data[0]);
+        $tanggal = isset($data[1]) ? sanitize_text_field($data[1]) : '';
+
+        // Validate date format
+        if (empty($tanggal) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $tanggal)) {
+            continue; // Skip invalid dates
+        }
+
+        // Create post
+        $post_id = wp_insert_post(array(
+            'post_title' => $nama_agenda,
+            'post_type' => 'agenda_kalender',
+            'post_status' => 'publish'
+        ));
+
+        if ($post_id) {
+            update_post_meta($post_id, '_agenda_kalender_tanggal', $tanggal);
+            $count++;
+        }
+    }
+
+    fclose($handle);
+
+    wp_redirect(admin_url('edit.php?post_type=agenda_kalender&page=hmti-import-agenda&success=' . $count));
+    exit;
+}
+add_action('admin_post_hmti_import_agenda', 'hmti_handle_import_agenda');
+
+// Handle delete all agenda
+function hmti_handle_delete_all_agenda()
+{
+    if (!current_user_can('manage_options')) {
+        wp_die('Unauthorized');
+    }
+
+    if (!isset($_POST['hmti_delete_all_agenda_nonce']) || !wp_verify_nonce($_POST['hmti_delete_all_agenda_nonce'], 'hmti_delete_all_agenda')) {
+        wp_die('Nonce verification failed');
+    }
+
+    // Get all agenda posts
+    $args = array(
+        'post_type' => 'agenda_kalender',
+        'posts_per_page' => -1,
+        'post_status' => 'any',
+        'fields' => 'ids'
+    );
+
+    $agenda_ids = get_posts($args);
+    $count = 0;
+
+    // Delete each agenda permanently
+    foreach ($agenda_ids as $post_id) {
+        $deleted = wp_delete_post($post_id, true);
+        if ($deleted) {
+            $count++;
+        }
+    }
+
+    wp_redirect(admin_url('edit.php?post_type=agenda_kalender&page=hmti-import-agenda&deleted=' . $count));
+    exit;
+}
+add_action('admin_post_hmti_delete_all_agenda', 'hmti_handle_delete_all_agenda');
+
 
 // Register Custom Post Type untuk Program Unggulan
 function hmti_register_program_unggulan_post_type()

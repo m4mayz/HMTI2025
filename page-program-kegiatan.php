@@ -28,139 +28,160 @@ get_header();
 <!-- Kalender Kegiatan Section -->
 <section class="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-24 bg-gradient-to-b from-gray-50 to-white"
     id="kalender-section">
-    <div class="container mx-auto">
-        <!-- Section Header -->
-        <div class="text-center mb-8 sm:mb-12 lg:mb-16">
-            <h2 class="font-title text-3xl sm:text-4xl lg:text-5xl font-bold text-dark-bg mb-4">
-                <span class="title-with-highlight">
-                    <span class="highlight-text highlight">Kalender</span>
-                    <span class="highlight-bar primary"></span>
-                </span>
-                Kegiatan HMTI
-            </h2>
-            <p class="font-body font-medium text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
-                Pantau dan catat semua kegiatan HMTI yang akan datang
-            </p>
+    <!-- Section Header -->
+    <div class="text-center mb-8 sm:mb-12 lg:mb-16">
+        <h2 class="font-title text-3xl sm:text-4xl lg:text-5xl font-bold text-dark-bg mb-4">
+            <span class="title-with-highlight">
+                <span class="highlight-text highlight">Kalender</span>
+                <span class="highlight-bar primary"></span>
+            </span>
+            Kegiatan HMTI
+        </h2>
+        <p class="font-body font-medium text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
+            Pantau dan catat semua kegiatan HMTI yang akan datang
+        </p>
+    </div>
+
+    <!-- Calendar Widget -->
+    <div class="bg-white rounded-2xl sm:rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 border border-gray-100"
+        id="calendar-widget">
+        <?php
+        // Get all events from all sources
+        
+        // Query Program Unggulan
+        $program_unggulan_query = new WP_Query([
+            'post_type' => 'program_unggulan',
+            'posts_per_page' => -1,
+            'meta_key' => '_program_unggulan_tanggal',
+            'orderby' => 'meta_value',
+            'order' => 'ASC'
+        ]);
+
+        // Query Acara Terbuka
+        $acara_terbuka_query = new WP_Query([
+            'post_type' => 'acara_terbuka',
+            'posts_per_page' => -1,
+            'meta_key' => '_acara_terbuka_tanggal',
+            'orderby' => 'meta_value',
+            'order' => 'ASC'
+        ]);
+
+        // Query Agenda Kalender
+        $agenda_kalender_query = new WP_Query([
+            'post_type' => 'agenda_kalender',
+            'posts_per_page' => -1,
+            'meta_key' => '_agenda_kalender_tanggal',
+            'orderby' => 'meta_value',
+            'order' => 'ASC'
+        ]);
+
+        $all_events = [];
+
+        // Add Program Unggulan events
+        if ($program_unggulan_query->have_posts()) {
+            while ($program_unggulan_query->have_posts()) {
+                $program_unggulan_query->the_post();
+                $tanggal = get_post_meta(get_the_ID(), '_program_unggulan_tanggal', true);
+                if ($tanggal) {
+                    $all_events[] = [
+                        'date' => $tanggal,
+                        'title' => get_the_title()
+                    ];
+                }
+            }
+            wp_reset_postdata();
+        }
+
+        // Add Acara Terbuka events
+        if ($acara_terbuka_query->have_posts()) {
+            while ($acara_terbuka_query->have_posts()) {
+                $acara_terbuka_query->the_post();
+                $tanggal = get_post_meta(get_the_ID(), '_acara_terbuka_tanggal', true);
+                if ($tanggal) {
+                    $all_events[] = [
+                        'date' => $tanggal,
+                        'title' => get_the_title()
+                    ];
+                }
+            }
+            wp_reset_postdata();
+        }
+
+        // Add Agenda Kalender events
+        if ($agenda_kalender_query->have_posts()) {
+            while ($agenda_kalender_query->have_posts()) {
+                $agenda_kalender_query->the_post();
+                $tanggal = get_post_meta(get_the_ID(), '_agenda_kalender_tanggal', true);
+                if ($tanggal) {
+                    $all_events[] = [
+                        'date' => $tanggal,
+                        'title' => get_the_title()
+                    ];
+                }
+            }
+            wp_reset_postdata();
+        }
+        ?>
+
+        <!-- Calendar Header -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
+            <h3 class="font-title text-xl sm:text-2xl lg:text-3xl font-bold text-dark-bg" id="calendar-month-year">
+            </h3>
+            <div class="flex gap-2 w-full sm:w-auto">
+                <button id="calendar-prev-btn"
+                    class="flex-1 sm:flex-none px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 hover:bg-primary hover:text-white rounded-lg sm:rounded-xl font-body font-medium transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <button id="calendar-today-btn"
+                    class="flex-1 sm:flex-none px-3 py-2 sm:px-4 sm:py-2 bg-primary text-white hover:bg-primary-dark rounded-lg sm:rounded-xl font-body font-semibold text-xs sm:text-sm transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md">
+                    Hari Ini
+                </button>
+                <button id="calendar-next-btn"
+                    class="flex-1 sm:flex-none px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 hover:bg-primary hover:text-white rounded-lg sm:rounded-xl font-body font-medium transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
         </div>
 
-        <!-- Calendar Widget -->
-        <div class="bg-white rounded-2xl sm:rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 border border-gray-100"
-            id="calendar-widget">
-            <?php
-            // Get all events from both post types
-            // Query Program Unggulan
-            $program_unggulan_query = new WP_Query([
-                'post_type' => 'program_unggulan',
-                'posts_per_page' => -1,
-                'meta_key' => '_program_unggulan_tanggal',
-                'orderby' => 'meta_value',
-                'order' => 'ASC'
-            ]);
-
-            // Query Acara Terbuka
-            $acara_terbuka_query = new WP_Query([
-                'post_type' => 'acara_terbuka',
-                'posts_per_page' => -1,
-                'meta_key' => '_acara_terbuka_tanggal',
-                'orderby' => 'meta_value',
-                'order' => 'ASC'
-            ]);
-
-            $all_events = [];
-
-            // Add Program Unggulan events
-            if ($program_unggulan_query->have_posts()) {
-                while ($program_unggulan_query->have_posts()) {
-                    $program_unggulan_query->the_post();
-                    $tanggal = get_post_meta(get_the_ID(), '_program_unggulan_tanggal', true);
-                    if ($tanggal) {
-                        $all_events[] = [
-                            'date' => $tanggal,
-                            'title' => get_the_title()
-                        ];
-                    }
-                }
-                wp_reset_postdata();
-            }
-
-            // Add Acara Terbuka events
-            if ($acara_terbuka_query->have_posts()) {
-                while ($acara_terbuka_query->have_posts()) {
-                    $acara_terbuka_query->the_post();
-                    $tanggal = get_post_meta(get_the_ID(), '_acara_terbuka_tanggal', true);
-                    if ($tanggal) {
-                        $all_events[] = [
-                            'date' => $tanggal,
-                            'title' => get_the_title()
-                        ];
-                    }
-                }
-                wp_reset_postdata();
-            }
-            ?>
-
-            <!-- Calendar Header -->
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
-                <h3 class="font-title text-xl sm:text-2xl lg:text-3xl font-bold text-dark-bg" id="calendar-month-year">
-                </h3>
-                <div class="flex gap-2 w-full sm:w-auto">
-                    <button id="calendar-prev-btn"
-                        class="flex-1 sm:flex-none px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 hover:bg-primary hover:text-white rounded-lg sm:rounded-xl font-body font-medium transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5 mx-auto" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </button>
-                    <button id="calendar-today-btn"
-                        class="flex-1 sm:flex-none px-3 py-2 sm:px-4 sm:py-2 bg-primary text-white hover:bg-primary-dark rounded-lg sm:rounded-xl font-body font-semibold text-xs sm:text-sm transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md">
-                        Hari Ini
-                    </button>
-                    <button id="calendar-next-btn"
-                        class="flex-1 sm:flex-none px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 hover:bg-primary hover:text-white rounded-lg sm:rounded-xl font-body font-medium transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5 mx-auto" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
+        <!-- Calendar Grid -->
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+            <div class="min-w-[640px] px-4 sm:px-0">
+                <div class="grid grid-cols-7 gap-1 sm:gap-2 m-2" id="calendar-grid">
+                    <!-- Day Headers -->
+                    <div
+                        class="text-center font-body font-bold text-gray-700 py-2 sm:py-3 text-xs sm:text-sm bg-gray-50 rounded-t-lg">
+                        Min</div>
+                    <div
+                        class="text-center font-body font-bold text-gray-700 py-2 sm:py-3 text-xs sm:text-sm bg-gray-50 rounded-t-lg">
+                        Sen</div>
+                    <div
+                        class="text-center font-body font-bold text-gray-700 py-2 sm:py-3 text-xs sm:text-sm bg-gray-50 rounded-t-lg">
+                        Sel</div>
+                    <div
+                        class="text-center font-body font-bold text-gray-700 py-2 sm:py-3 text-xs sm:text-sm bg-gray-50 rounded-t-lg">
+                        Rab</div>
+                    <div
+                        class="text-center font-body font-bold text-gray-700 py-2 sm:py-3 text-xs sm:text-sm bg-gray-50 rounded-t-lg">
+                        Kam</div>
+                    <div
+                        class="text-center font-body font-bold text-gray-700 py-2 sm:py-3 text-xs sm:text-sm bg-gray-50 rounded-t-lg">
+                        Jum</div>
+                    <div
+                        class="text-center font-body font-bold text-gray-700 py-2 sm:py-3 text-xs sm:text-sm bg-gray-50 rounded-t-lg">
+                        Sab</div>
+                    <!-- Calendar cells will be generated by JavaScript -->
                 </div>
             </div>
+        </div>
 
-            <!-- Calendar Grid -->
-            <div class="overflow-x-auto -mx-4 sm:mx-0">
-                <div class="min-w-[640px] px-4 sm:px-0">
-                    <div class="grid grid-cols-7 gap-1 sm:gap-2" id="calendar-grid">
-                        <!-- Day Headers -->
-                        <div
-                            class="text-center font-body font-bold text-gray-700 py-2 sm:py-3 text-xs sm:text-sm bg-gray-50 rounded-t-lg">
-                            Min</div>
-                        <div
-                            class="text-center font-body font-bold text-gray-700 py-2 sm:py-3 text-xs sm:text-sm bg-gray-50 rounded-t-lg">
-                            Sen</div>
-                        <div
-                            class="text-center font-body font-bold text-gray-700 py-2 sm:py-3 text-xs sm:text-sm bg-gray-50 rounded-t-lg">
-                            Sel</div>
-                        <div
-                            class="text-center font-body font-bold text-gray-700 py-2 sm:py-3 text-xs sm:text-sm bg-gray-50 rounded-t-lg">
-                            Rab</div>
-                        <div
-                            class="text-center font-body font-bold text-gray-700 py-2 sm:py-3 text-xs sm:text-sm bg-gray-50 rounded-t-lg">
-                            Kam</div>
-                        <div
-                            class="text-center font-body font-bold text-gray-700 py-2 sm:py-3 text-xs sm:text-sm bg-gray-50 rounded-t-lg">
-                            Jum</div>
-                        <div
-                            class="text-center font-body font-bold text-gray-700 py-2 sm:py-3 text-xs sm:text-sm bg-gray-50 rounded-t-lg">
-                            Sab</div>
-                        <!-- Calendar cells will be generated by JavaScript -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Event Legend -->
-            <div class="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-gray-200">
-                <div id="month-events-list" class="space-y-3">
-                    <!-- Events will be populated by JavaScript -->
-                </div>
+        <!-- Event Legend -->
+        <div class="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-gray-200">
+            <div id="month-events-list" class="space-y-3">
+                <!-- Events will be populated by JavaScript -->
             </div>
         </div>
     </div>
