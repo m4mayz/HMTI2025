@@ -206,14 +206,21 @@
 
         <div class="gallery-grid">
             <?php
-            // Get all images first
+            // Query hanya untuk images yang ditandai untuk galeri
             $all_images = new WP_Query([
                 'post_type' => 'attachment',
                 'post_mime_type' => 'image',
                 'post_status' => 'inherit',
                 'posts_per_page' => 50, // Get more to filter from
                 'orderby' => 'date',
-                'order' => 'DESC'
+                'order' => 'DESC',
+                'meta_query' => [
+                    [
+                        'key' => '_show_in_gallery',
+                        'value' => '1',
+                        'compare' => '='
+                    ]
+                ]
             ]);
 
             $landscape_images = [];
@@ -257,7 +264,7 @@
                 endforeach;
             else:
                 ?>
-                <p class="no-gallery">Belum ada foto landscape di galeri.</p>
+                <p class="no-gallery">Belum ada foto landscape yang ditandai untuk galeri.</p>
                 <?php
             endif;
             ?>
