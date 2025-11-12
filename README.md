@@ -32,8 +32,8 @@
 ### 🎨 Palet Warna
 
 ```css
---primary-color: #3498db    /* Biru */
---primary-dark: #2f7db2     /* Biru Gelap */
+--primary-color: #2851cb    /* Biru */
+--primary-dark: #162b6c     /* Biru Gelap */
 --secondary-color: #c9cc2e  /* Kuning/Lime */
 --dark-bg: #222             /* Background Gelap */
 ```
@@ -431,8 +431,8 @@ Halaman ini akan menampilkan:
 
 :root {
     /* Ubah warna sesuai keinginan */
-    --primary-color: #3498db; /* Warna utama */
-    --primary-dark: #2f7db2; /* Warna utama gelap */
+    --primary-color: #2851cb; /* Warna utama */
+    --primary-dark: #162b6c; /* Warna utama gelap */
     --secondary-color: #c9cc2e; /* Warna sekunder */
     --dark-bg: #222; /* Background gelap */
     --light-text: #f4f4f4; /* Teks terang */
@@ -449,8 +449,8 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                primary: "#3498db",
-                "primary-dark": "#2f7db2",
+                primary: "#2851cb",
+                "primary-dark": "#162b6c",
                 secondary: "#c9cc2e",
                 // Tambah warna custom lainnya
             },
@@ -562,7 +562,7 @@ a {
 
 /* Contoh: Custom button */
 .custom-button {
-    background: linear-gradient(to right, #3498db, #2f7db2);
+    background: linear-gradient(to right, #2851cb, #162b6c);
     padding: 1rem 2rem;
     border-radius: 9999px;
 }

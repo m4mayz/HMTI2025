@@ -7,8 +7,8 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                primary: "#3498db",
-                "primary-dark": "#2f7db2",
+                primary: "#2851cb",
+                "primary-dark": "#162b6c",
                 secondary: "#c9cc2e",
                 "secondary-dark": "#b0b32e",
                 "dark-bg": "#222",
@@ -26,12 +26,12 @@ module.exports = {
         themes: [
             {
                 hmti: {
-                    primary: "#3498db",
+                    primary: "#2851cb",
                     secondary: "#c9cc2e",
-                    accent: "#2f7db2",
+                    accent: "#162b6c",
                     neutral: "#222",
                     "base-100": "#ffffff",
-                    info: "#3498db",
+                    info: "#2851cb",
                     success: "#36d399",
                     warning: "#fbbd23",
                     error: "#f87272",

@@ -233,7 +233,7 @@ foreach ($categories_to_display as $cat_slug):
                 <a href="<?php echo get_category_link($cat_obj->term_id); ?>" class="view-more-button">
                     <span class="font-body font-bold text-lg text-dark-bg">Lihat Semua</span>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="12" fill="#3498DB" />
+                        <circle cx="12" cy="12" r="12" fill="#2851cb" />
                         <path d="M10.5 16.5L15 12L10.5 7.5" stroke="white" stroke-width="2" stroke-linecap="round"
                             stroke-linejoin="round" />
                     </svg>
