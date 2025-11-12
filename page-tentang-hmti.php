@@ -33,15 +33,16 @@ get_header();
             <img src="<?php echo get_template_directory_uri(); ?>/assets/images/logo.png" alt="Logo HMTI">
         </div>
         <div class="sejarah-new-text">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                fugiat nulla pariatur.</p>
+            <p>Himpunan Mahasiswa Teknik Informatika (HMTI) Universitas Nusa Putra merupakan organisasi yang mewadahi
+                para mahasiswa Teknik Informatika yang sadar akan hak dan kewajibannya sebagai unit kegiatan kampus yang
+                berusaha memberikan darma bhaktinya untuk mewujudkan nilai-nilai keilmuan demi terwujudnya mahasiswa
+                yang cerdas, adil dan berjiwa pemimpin.
+            </p>
 
-            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
-                laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
-                laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae
-                vitae dicta sunt explicabo.</p>
+            <p>HMTI merupakan pecahan dari HIMTISI (Himpunan Mahasiswa Teknik Informatika dan Sistem Informasi) hingga
+                pada akhirnya berpisah dengan SI dan terbentuklah HMTI pada tanggal 25 September 2013 oleh angkatan
+                pertama mahasiswa Teknik Informatika.
+            </p>
 
 
         </div>
