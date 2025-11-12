@@ -5,7 +5,7 @@ if (have_posts()):
     while (have_posts()):
         the_post();
         ?>
-        <main class="w-full bg-gray-50">
+        <main class="w-full bg-white">
             <!-- Hero Section with Featured Image -->
             <?php if (has_post_thumbnail()): ?>
                 <div
@@ -16,11 +16,11 @@ if (have_posts()):
             <?php endif; ?>
 
             <div class="container mx-auto pb-4 px-4 sm:px-6 lg:px-24 -mt-20 sm:-mt-32 lg:-mt-40 relative z-10">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-5">
                     <!-- Main Content -->
                     <article class="lg:col-span-8">
                         <!-- Content Card -->
-                        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                        <div class="bg-white overflow-hidden">
                             <!-- Category Badge -->
                             <div class="px-4 sm:px-6 lg:px-10 pt-6 sm:pt-8 lg:pt-10">
                                 <?php
@@ -41,7 +41,7 @@ if (have_posts()):
 
                                 <!-- Post Title -->
                                 <h1
-                                    class="font-title text-2xl sm:text-3xl lg:text-5xl font-bold leading-tight text-dark-bg mb-4 sm:mb-6 wrap-break-word">
+                                    class="font-body text-2xl sm:text-3xl lg:text-5xl font-bold leading-tight text-dark-bg mb-4 sm:mb-6 wrap-break-word">
                                     <?php the_title(); ?>
                                 </h1>
 
@@ -145,18 +145,15 @@ if (have_posts()):
 
                             <!-- Post Content -->
                             <div class="px-4 sm:px-6 lg:px-10 py-6 sm:py-8 lg:py-10">
-                                <div
-                                    class="prose prose-sm sm:prose-base lg:prose-lg max-w-none font-body text-gray-700 leading-relaxed post-content">
+                                <div class="post-content font-body text-gray-700 leading-relaxed">
                                     <?php the_content(); ?>
                                 </div>
-                            </div>
-
-                            <!-- Tags -->
+                            </div> <!-- Tags -->
                             <?php
                             $tags = get_the_tags();
                             if ($tags):
                                 ?>
-                                <div class="px-4 sm:px-6 lg:px-10 pb-6 sm:pb-8 lg:pb-10 border-t border-gray-100">
+                                <div class="px-4 sm:px-6 lg:px-10 pb-6 sm:pb-8 lg:pb-10 border-t border-gray-300">
                                     <div class="flex flex-wrap gap-2 pt-6">
                                         <span class="text-gray-600 font-body font-semibold text-sm">Tags:</span>
                                         <?php foreach ($tags as $tag): ?>
@@ -186,7 +183,7 @@ if (have_posts()):
 
                                 if ($related_posts->have_posts()): ?>
                                     <div class="bg-gradient-to-br from-primary/5 to-secondary/5 px-4 sm:px-6 lg:px-10 py-6 sm:py-8">
-                                        <h3 class="font-title text-xl sm:text-2xl font-bold text-dark-bg mb-4 sm:mb-6">
+                                        <h3 class="font-body text-xl sm:text-2xl font-bold text-dark-bg mb-4 sm:mb-6">
                                             Artikel Terkait
                                         </h3>
                                         <div class="grid grid-cols-1 gap-4">
@@ -221,105 +218,76 @@ if (have_posts()):
                     </article>
 
                     <!-- Sidebar -->
-                    <aside class="lg:col-span-4">
-                        <div class="lg:sticky lg:top-24 space-y-6">
-                            <!-- Latest Posts Widget -->
-                            <div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
-                                <h2
-                                    class="font-title text-xl sm:text-2xl lg:text-3xl font-bold text-dark-bg mb-4 sm:mb-6 pb-4 border-b-2 border-primary">
-                                    Berita Terbaru
-                                </h2>
+                    <aside class="bg-white mt-10 p-4 sm:p-6 lg:col-span-4 lg:sticky lg:top-20 lg:right-0">
+                        <!-- Latest Posts Widget -->
+                        <h2
+                            class="font-body text-xl sm:text-2xl lg:text-3xl font-bold text-dark-bg mb-4 sm:mb-6 pb-4 border-b-2 border-primary">
+                            Berita Terbaru
+                        </h2>
 
-                                <div class="space-y-4 sm:space-y-6">
-                                    <?php
-                                    $latest_posts = new WP_Query([
-                                        'post_type' => 'post',
-                                        'posts_per_page' => 5,
-                                        'post__not_in' => [get_the_ID()],
-                                        'orderby' => 'date',
-                                        'order' => 'DESC'
-                                    ]);
+                        <div class="space-y-4 sm:space-y-6">
+                            <?php
+                            $latest_posts = new WP_Query([
+                                'post_type' => 'post',
+                                'posts_per_page' => 5,
+                                'post__not_in' => [get_the_ID()],
+                                'orderby' => 'date',
+                                'order' => 'DESC'
+                            ]);
 
-                                    if ($latest_posts->have_posts()):
-                                        $counter = 0;
-                                        while ($latest_posts->have_posts()):
-                                            $latest_posts->the_post();
-                                            $counter++;
-                                            $sidebar_categories = get_the_category();
-                                            ?>
-                                            <article
-                                                class="group <?php echo $counter < 5 ? 'pb-4 sm:pb-6 border-b border-gray-100' : ''; ?>">
-                                                <a href="<?php the_permalink(); ?>" class="block">
-                                                    <div class="flex gap-3 sm:gap-4">
-                                                        <?php if (has_post_thumbnail()): ?>
-                                                            <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden flex-shrink-0">
-                                                                <?php the_post_thumbnail('thumbnail', ['class' => 'w-full h-full object-cover group-hover:scale-110 transition-transform duration-300']); ?>
-                                                            </div>
-                                                        <?php else: ?>
-                                                            <div
-                                                                class="w-20 h-20 sm:w-24 sm:h-24 rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center flex-shrink-0">
-                                                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor"
-                                                                    viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                                </svg>
-                                                            </div>
-                                                        <?php endif; ?>
-
-                                                        <div class="flex-1 min-w-0">
-                                                            <?php if (!empty($sidebar_categories)): ?>
-                                                                <span
-                                                                    class="inline-block text-[10px] sm:text-xs font-bold text-primary uppercase mb-1">
-                                                                    <?php echo esc_html($sidebar_categories[0]->name); ?>
-                                                                </span>
-                                                            <?php endif; ?>
-                                                            <h3
-                                                                class="font-title text-sm sm:text-base font-semibold text-dark-bg group-hover:text-primary transition-colors leading-tight line-clamp-2 mb-2">
-                                                                <?php the_title(); ?>
-                                                            </h3>
-                                                            <div class="flex items-center gap-2 text-xs text-gray-500">
-                                                                <svg class="w-3 h-3" fill="none" stroke="currentColor"
-                                                                    viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                                        stroke-width="2"
-                                                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                                </svg>
-                                                                <span><?php echo human_time_diff(get_the_time('U'), current_time('timestamp')) . ' lalu'; ?></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </article>
-                                            <?php
-                                        endwhile;
-                                        wp_reset_postdata();
-                                    endif;
+                            if ($latest_posts->have_posts()):
+                                $counter = 0;
+                                while ($latest_posts->have_posts()):
+                                    $latest_posts->the_post();
+                                    $counter++;
+                                    $sidebar_categories = get_the_category();
                                     ?>
-                                </div>
-                            </div>
+                                    <article class="group <?php echo $counter < 5 ? 'pb-4 sm:pb-6 border-b border-gray-300' : ''; ?>">
+                                        <a href="<?php the_permalink(); ?>" class="block">
+                                            <div class="flex gap-3 sm:gap-4">
+                                                <?php if (has_post_thumbnail()): ?>
+                                                    <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden flex-shrink-0">
+                                                        <?php the_post_thumbnail('thumbnail', ['class' => 'w-full h-full object-cover group-hover:scale-110 transition-transform duration-300']); ?>
+                                                    </div>
+                                                <?php else: ?>
+                                                    <div
+                                                        class="w-20 h-20 sm:w-24 sm:h-24 rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center flex-shrink-0">
+                                                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                        </svg>
+                                                    </div>
+                                                <?php endif; ?>
 
-                            <!-- Categories Widget -->
-                            <div class="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl shadow-lg p-4 sm:p-6">
-                                <h3 class="font-title text-xl sm:text-2xl font-bold text-dark-bg mb-4">
-                                    Kategori
-                                </h3>
-                                <div class="flex flex-wrap gap-2">
-                                    <?php
-                                    $all_categories = get_categories([
-                                        'taxonomy' => 'category',
-                                        'hide_empty' => true,
-                                        'number' => 10
-                                    ]);
-                                    foreach ($all_categories as $cat):
-                                        ?>
-                                        <a href="<?php echo get_category_link($cat->term_id); ?>"
-                                            class="inline-block bg-white hover:bg-primary hover:text-white text-gray-700 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-body font-semibold transition-all duration-300 shadow-sm hover:shadow-md">
-                                            <?php echo esc_html($cat->name); ?>
-                                            <span class="text-[10px] opacity-70">(<?php echo $cat->count; ?>)</span>
+                                                <div class="flex-1 min-w-0">
+                                                    <?php if (!empty($sidebar_categories)): ?>
+                                                        <span
+                                                            class="inline-block text-[10px] sm:text-xs lg:text-sm font-bold text-primary uppercase mb-1">
+                                                            <?php echo esc_html($sidebar_categories[0]->name); ?>
+                                                        </span>
+                                                    <?php endif; ?>
+                                                    <h3
+                                                        class="font-body text-sm sm:text-base lg:text-lg font-bold text-dark-bg group-hover:text-primary transition-colors leading-tight line-clamp-2 mb-2">
+                                                        <?php the_title(); ?>
+                                                    </h3>
+                                                    <div class="flex items-center gap-2 text-xs lg:text-sm font-medium text-gray-500">
+                                                        <svg class="w-3 h-3 lg:w-4 lg:h-4" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                        </svg>
+                                                        <span><?php echo human_time_diff(get_the_time('U'), current_time('timestamp')) . ' lalu'; ?></span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </a>
-                                    <?php endforeach; ?>
-                                </div>
-                            </div>
+                                    </article>
+                                    <?php
+                                endwhile;
+                                wp_reset_postdata();
+                            endif;
+                            ?>
                         </div>
                     </aside>
                 </div>
@@ -327,6 +295,529 @@ if (have_posts()):
 
 
         </main>
+
+        <!-- Custom CSS for WordPress Editor Content -->
+        <style>
+            /* Post Content Formatting */
+            .post-content {
+                font-size: 1rem;
+                line-height: 1.7;
+                font-weight: 500;
+            }
+
+            @media (min-width: 640px) {
+                .post-content {
+                    font-size: 1.0625rem;
+                    line-height: 1.7;
+                }
+            }
+
+            @media (min-width: 1024px) {
+                .post-content {
+                    font-size: 1.25rem;
+                    line-height: 1.7;
+                }
+            }
+
+            /* Headings */
+            .post-content h1,
+            .post-content h2,
+            .post-content h3,
+            .post-content h4,
+            .post-content h5,
+            .post-content h6 {
+                font-family: var(--font-body);
+                font-weight: 700;
+                color: var(--dark-bg);
+                /* margin-top: 1rem; */
+                line-height: 1.3;
+            }
+
+            .post-content h1 {
+                font-size: 28px;
+            }
+
+            .post-content h2 {
+                font-size: 24px;
+                position: relative;
+                padding-left: 40px;
+                margin-bottom: 1rem;
+                margin-top: 1.2rem;
+            }
+
+            .post-content h2::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 20px;
+                height: 20px;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%233498db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71'/%3E%3Cpath d='M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71'/%3E%3C/svg%3E");
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+            }
+
+            .post-content h3 {
+                font-size: 20px;
+                margin-bottom: 0.5rem;
+            }
+
+            .post-content h4 {
+                font-size: 18px;
+            }
+
+            .post-content h5 {
+                font-size: 16px;
+            }
+
+            .post-content h6 {
+                font-size: 14px;
+            }
+
+            /* Responsive Headings - Tablet */
+            @media (min-width: 640px) {
+                .post-content h1 {
+                    font-size: 36px;
+                }
+
+                .post-content h2 {
+                    font-size: 30px;
+                }
+
+                .post-content h2::before {
+                    width: 22px;
+                    height: 22px;
+                }
+
+                .post-content h3 {
+                    font-size: 24px;
+                }
+
+                .post-content h4 {
+                    font-size: 20px;
+                }
+
+                .post-content h5 {
+                    font-size: 18px;
+                }
+
+                .post-content h6 {
+                    font-size: 16px;
+                }
+            }
+
+            /* Responsive Headings - Desktop */
+            @media (min-width: 1024px) {
+                .post-content h1 {
+                    font-size: 48px;
+                }
+
+                .post-content h2 {
+                    font-size: 36px;
+                }
+
+                .post-content h2::before {
+                    width: 24px;
+                    height: 24px;
+                }
+
+                .post-content h3 {
+                    font-size: 28px;
+                }
+
+                .post-content h4 {
+                    font-size: 22px;
+                }
+
+                .post-content h5 {
+                    font-size: 18px;
+                }
+
+                .post-content h6 {
+                    font-size: 16px;
+                }
+            }
+
+            /* Paragraphs */
+            .post-content p {
+                margin-bottom: 1.25rem;
+                color: #374151;
+                font-weight: 500;
+            }
+
+            /* Links */
+            .post-content a {
+                color: var(--primary-color);
+                text-decoration: underline;
+                font-weight: 500;
+                transition: all 0.3s ease;
+            }
+
+            .post-content a:hover {
+                color: var(--primary-dark);
+                text-decoration: none;
+            }
+
+            /* Lists */
+            .post-content ul,
+            .post-content ol {
+                margin-bottom: 1.25rem;
+                padding-left: 2rem;
+            }
+
+            .post-content ul {
+                list-style-type: disc;
+            }
+
+            .post-content ol {
+                list-style-type: decimal;
+            }
+
+            .post-content li {
+                margin-bottom: 0.5rem;
+                color: #374151;
+                font-weight: 500;
+            }
+
+            .post-content li::marker {
+                color: var(--primary-color);
+            }
+
+            .post-content ul ul,
+            .post-content ol ol,
+            .post-content ul ol,
+            .post-content ol ul {
+                margin-top: 0.5rem;
+                margin-bottom: 0.5rem;
+            }
+
+            /* Blockquotes */
+            .post-content blockquote {
+                border-left: 4px solid var(--primary-color);
+                padding-left: 1.5rem;
+                margin: 1.5rem 0;
+                font-style: italic;
+                color: #4b5563;
+                background: linear-gradient(to right, rgba(52, 152, 219, 0.05), transparent);
+                padding: 1rem 1.5rem;
+                border-radius: 0.5rem;
+            }
+
+            .post-content blockquote p {
+                margin-bottom: 0.5rem;
+            }
+
+            .post-content blockquote cite {
+                display: block;
+                margin-top: 0.5rem;
+                font-size: 0.875rem;
+                color: #6b7280;
+                font-style: normal;
+            }
+
+            /* Images */
+            .post-content img {
+                max-width: 100%;
+                height: auto;
+                border-radius: 0.75rem;
+                margin: 1.5rem 0;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            }
+
+            .post-content figure {
+                margin: 1.5rem 0;
+            }
+
+            .post-content figcaption {
+                text-align: center;
+                font-size: 0.875rem;
+                color: #6b7280;
+                margin-top: 0.5rem;
+                font-style: italic;
+            }
+
+            /* WordPress alignment classes */
+            .post-content .alignleft {
+                float: left;
+                margin-right: 1.5rem;
+                margin-bottom: 1rem;
+                max-width: 50%;
+            }
+
+            .post-content .alignright {
+                float: right;
+                margin-left: 1.5rem;
+                margin-bottom: 1rem;
+                max-width: 50%;
+            }
+
+            .post-content .aligncenter {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .post-content .alignwide {
+                max-width: 100%;
+            }
+
+            .post-content .alignfull {
+                max-width: 100vw;
+                width: 100vw;
+                margin-left: calc(50% - 50vw);
+            }
+
+            /* Tables */
+            .post-content table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 1.5rem 0;
+                overflow-x: auto;
+                display: block;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+                border-radius: 0.5rem;
+            }
+
+            .post-content table thead {
+                background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+                color: white;
+            }
+
+            .post-content table th {
+                padding: 0.75rem 1rem;
+                text-align: left;
+                font-weight: 600;
+                font-size: 0.875rem;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+
+            .post-content table td {
+                padding: 0.75rem 1rem;
+                border-bottom: 1px solid #e5e7eb;
+                color: #374151;
+                font-weight: 500;
+            }
+
+            .post-content table tbody tr:hover {
+                background-color: rgba(52, 152, 219, 0.05);
+            }
+
+            .post-content table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+            /* Code */
+            .post-content code {
+                background-color: #f3f4f6;
+                padding: 0.25rem 0.5rem;
+                border-radius: 0.25rem;
+                font-family: 'Courier New', Courier, monospace;
+                font-size: 0.875em;
+                color: #dc2626;
+            }
+
+            .post-content pre {
+                background-color: #1f2937;
+                color: #f3f4f6;
+                padding: 1.5rem;
+                border-radius: 0.5rem;
+                overflow-x: auto;
+                margin: 1.5rem 0;
+                line-height: 1.6;
+            }
+
+            .post-content pre code {
+                background-color: transparent;
+                padding: 0;
+                color: #f3f4f6;
+                font-size: 0.875rem;
+            }
+
+            /* Horizontal Rule */
+            .post-content hr {
+                border: none;
+                border-top: 2px solid #e5e7eb;
+                margin: 2rem 0;
+            }
+
+            /* Strong and Emphasis */
+            .post-content strong,
+            .post-content b {
+                font-weight: 700;
+                color: var(--dark-bg);
+            }
+
+            .post-content em,
+            .post-content i {
+                font-style: italic;
+            }
+
+            /* WordPress Embeds (Video, iframe) */
+            .post-content iframe,
+            .post-content embed,
+            .post-content object {
+                max-width: 100%;
+                margin: 1.5rem 0;
+                border-radius: 0.75rem;
+            }
+
+            .post-content .wp-block-embed {
+                margin: 1.5rem 0;
+            }
+
+            .post-content .wp-block-embed iframe {
+                width: 100%;
+                aspect-ratio: 16/9;
+            }
+
+            /* WordPress Buttons */
+            .post-content .wp-block-button {
+                margin: 1.5rem 0;
+            }
+
+            .post-content .wp-block-button__link {
+                display: inline-block;
+                padding: 0.75rem 1.5rem;
+                background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+                color: white;
+                text-decoration: none;
+                border-radius: 9999px;
+                font-weight: 600;
+                transition: all 0.3s ease;
+            }
+
+            .post-content .wp-block-button__link:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+            }
+
+            /* WordPress Columns */
+            .post-content .wp-block-columns {
+                display: grid;
+                gap: 1.5rem;
+                margin: 1.5rem 0;
+            }
+
+            @media (min-width: 768px) {
+                .post-content .wp-block-columns {
+                    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+                }
+            }
+
+            /* WordPress Gallery */
+            .post-content .wp-block-gallery {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 1rem;
+                margin: 1.5rem 0;
+            }
+
+            .post-content .wp-block-gallery img {
+                margin: 0;
+            }
+
+            /* WordPress Cover Block */
+            .post-content .wp-block-cover {
+                margin: 1.5rem 0;
+                border-radius: 0.75rem;
+                overflow: hidden;
+            }
+
+            /* Captions */
+            .post-content .wp-caption {
+                max-width: 100%;
+                margin: 1.5rem 0;
+            }
+
+            .post-content .wp-caption-text {
+                text-align: center;
+                font-size: 0.875rem;
+                color: #6b7280;
+                margin-top: 0.5rem;
+                font-style: italic;
+            }
+
+            /* Clearfix for floated images */
+            .post-content::after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+
+            /* Responsive tables on mobile */
+            @media (max-width: 640px) {
+                .post-content table {
+                    font-size: 0.875rem;
+                }
+
+                .post-content table th,
+                .post-content table td {
+                    padding: 0.5rem;
+                }
+            }
+
+            /* Mark/Highlight */
+            .post-content mark {
+                background-color: #fef3c7;
+                padding: 0.125rem 0.25rem;
+                border-radius: 0.25rem;
+            }
+
+            /* Subscript and Superscript */
+            .post-content sub,
+            .post-content sup {
+                font-size: 0.75em;
+                line-height: 0;
+                position: relative;
+                vertical-align: baseline;
+            }
+
+            .post-content sup {
+                top: -0.5em;
+            }
+
+            .post-content sub {
+                bottom: -0.25em;
+            }
+
+            /* Definition Lists */
+            .post-content dl {
+                margin: 1.5rem 0;
+            }
+
+            .post-content dt {
+                font-weight: 700;
+                color: var(--dark-bg);
+                margin-top: 1rem;
+            }
+
+            .post-content dd {
+                margin-left: 2rem;
+                margin-bottom: 0.5rem;
+                color: #374151;
+                font-weight: 500;
+            }
+
+            /* Address */
+            .post-content address {
+                font-style: normal;
+                margin: 1.5rem 0;
+                padding: 1rem;
+                background-color: #f9fafb;
+                border-left: 4px solid var(--primary-color);
+                border-radius: 0.5rem;
+            }
+
+            /* Abbreviation */
+            .post-content abbr[title] {
+                text-decoration: underline dotted;
+                cursor: help;
+                border-bottom: 1px dotted currentColor;
+            }
+        </style>
 
         <script>
             function copyToClipboard(button, text) {
