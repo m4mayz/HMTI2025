@@ -111,12 +111,28 @@ get_header();
         if ($agenda_kalender_query->have_posts()) {
             while ($agenda_kalender_query->have_posts()) {
                 $agenda_kalender_query->the_post();
-                $tanggal = get_post_meta(get_the_ID(), '_agenda_kalender_tanggal', true);
-                if ($tanggal) {
-                    $all_events[] = [
-                        'date' => $tanggal,
-                        'title' => get_the_title()
-                    ];
+
+                // Get multiple dates
+                $tanggal_list = get_post_meta(get_the_ID(), '_agenda_kalender_tanggal_list', true);
+
+                // Backward compatibility: check old single date field if list is empty
+                if (empty($tanggal_list)) {
+                    $tanggal = get_post_meta(get_the_ID(), '_agenda_kalender_tanggal', true);
+                    if ($tanggal) {
+                        $tanggal_list = [$tanggal];
+                    }
+                }
+
+                // Add event for each date
+                if (!empty($tanggal_list) && is_array($tanggal_list)) {
+                    foreach ($tanggal_list as $tanggal) {
+                        if ($tanggal) {
+                            $all_events[] = [
+                                'date' => $tanggal,
+                                'title' => get_the_title()
+                            ];
+                        }
+                    }
                 }
             }
             wp_reset_postdata();
@@ -323,18 +339,49 @@ get_header();
                 return;
             }
 
-            listContainer.innerHTML = '';
+            // Group events by title to combine multiple dates
+            const groupedEvents = {};
             eventsWithDates.forEach(event => {
+                if (!groupedEvents[event.title]) {
+                    groupedEvents[event.title] = {
+                        title: event.title,
+                        color: event.color,
+                        dates: []
+                    };
+                }
+                groupedEvents[event.title].dates.push(event.day);
+            });
+
+            listContainer.innerHTML = '';
+
+            // Sort grouped events by first date
+            const sortedGroups = Object.values(groupedEvents).sort((a, b) => {
+                return Math.min(...a.dates) - Math.min(...b.dates);
+            });
+
+            sortedGroups.forEach(group => {
                 const eventItem = document.createElement('div');
                 eventItem.className = 'flex items-start gap-2 font-body text-sm sm:text-base text-gray-700';
 
                 // Date dot indicator with event color
                 const dot = document.createElement('div');
-                dot.className = `flex-shrink-0 w-2 h-2 rounded-full ${event.color} mt-1.5`;
+                dot.className = `flex-shrink-0 w-2 h-2 rounded-full ${group.color} mt-1.5`;
 
                 const eventText = document.createElement('p');
                 eventText.className = 'flex-1';
-                eventText.innerHTML = `<span class="font-semibold">${event.day} ${monthNames[currentMonth]} ${currentYear}:</span> ${event.title}`;
+
+                // Format dates
+                let dateDisplay = '';
+                if (group.dates.length === 1) {
+                    // Single date
+                    dateDisplay = `${group.dates[0]} ${monthNames[currentMonth]} ${currentYear}`;
+                } else {
+                    // Multiple dates - sort and display as comma-separated
+                    const sortedDates = group.dates.sort((a, b) => a - b);
+                    dateDisplay = `${sortedDates.join(', ')} ${monthNames[currentMonth]} ${currentYear}`;
+                }
+
+                eventText.innerHTML = `<span class="font-semibold">${dateDisplay}:</span> ${group.title}`;
 
                 eventItem.appendChild(dot);
                 eventItem.appendChild(eventText);
@@ -425,18 +472,20 @@ get_header();
                     $featured_programs->the_post();
                     $program_counter++;
                     $tanggal = get_post_meta(get_the_ID(), '_program_unggulan_tanggal', true);
+                    $tanggal_selesai = get_post_meta(get_the_ID(), '_program_unggulan_tanggal_selesai', true);
                     $lokasi = get_post_meta(get_the_ID(), '_program_unggulan_lokasi', true);
                     $deskripsi = get_post_meta(get_the_ID(), '_program_unggulan_deskripsi', true);
 
-                    // Determine status based on date
+                    // Determine status based on date range
                     $status = '';
                     if ($tanggal) {
-                        $event_date = strtotime($tanggal);
+                        $start_date = strtotime($tanggal);
+                        $end_date = $tanggal_selesai ? strtotime($tanggal_selesai) : $start_date;
                         $today = strtotime(date('Y-m-d'));
 
-                        if ($event_date == $today) {
+                        if ($today >= $start_date && $today <= $end_date) {
                             $status = 'berlangsung';
-                        } elseif ($event_date > $today) {
+                        } elseif ($today < $start_date) {
                             $status = 'mendatang';
                         } else {
                             $status = 'selesai';
@@ -460,25 +509,27 @@ get_header();
                             <?php endif; ?>
                             <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
 
-                            <!-- Status Badge -->
-                            <div class="absolute top-3 right-3">
-                                <?php if ($status == 'berlangsung'): ?>
-                                    <span
-                                        class="bg-gradient-to-r from-green-500 to-green-600 text-white px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-body font-bold shadow-lg backdrop-blur-sm">
-                                        Berlangsung
-                                    </span>
-                                <?php elseif ($status == 'mendatang'): ?>
-                                    <span
-                                        class="bg-gradient-to-r from-primary to-blue-600 text-white px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-body font-bold shadow-lg backdrop-blur-sm">
-                                        Akan Datang
-                                    </span>
-                                <?php else: ?>
-                                    <span
-                                        class="bg-gradient-to-r from-gray-500 to-gray-600 text-white px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-body font-bold shadow-lg backdrop-blur-sm">
-                                        Selesai
-                                    </span>
-                                <?php endif; ?>
-                            </div>
+                            <!-- Status Badge - Only show if date exists -->
+                            <?php if ($status): ?>
+                                <div class="absolute top-3 right-3">
+                                    <?php if ($status == 'berlangsung'): ?>
+                                        <span
+                                            class="bg-gradient-to-r from-green-500 to-green-600 text-white px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-body font-bold shadow-lg backdrop-blur-sm">
+                                            Berlangsung
+                                        </span>
+                                    <?php elseif ($status == 'mendatang'): ?>
+                                        <span
+                                            class="bg-gradient-to-r from-primary to-blue-600 text-white px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-body font-bold shadow-lg backdrop-blur-sm">
+                                            Akan Datang
+                                        </span>
+                                    <?php else: ?>
+                                        <span
+                                            class="bg-gradient-to-r from-gray-500 to-gray-600 text-white px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-body font-bold shadow-lg backdrop-blur-sm">
+                                            Selesai
+                                        </span>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
 
                             <!-- Category Badge -->
                             <?php
@@ -502,29 +553,38 @@ get_header();
 
                             <!-- Details Section - Hidden on mobile until expanded -->
                             <div class="program-details" data-program-details="<?php echo $program_counter; ?>">
-                                <div class="space-y-2 mb-3 sm:mb-4">
-                                    <?php if ($tanggal): ?>
-                                        <div class="flex items-center gap-2 text-gray-300 font-body font-medium text-xs sm:text-sm">
-                                            <svg class="w-4 h-4 flex-shrink-0 text-secondary" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                            <span class="truncate"><?php echo date('d F Y', strtotime($tanggal)); ?></span>
-                                        </div>
-                                    <?php endif; ?>
+                                <?php if ($tanggal || $lokasi): ?>
+                                    <div class="space-y-2 mb-3 sm:mb-4">
+                                        <?php if ($tanggal): ?>
+                                            <div class="flex items-center gap-2 text-gray-300 font-body font-medium text-xs sm:text-sm">
+                                                <svg class="w-4 h-4 flex-shrink-0 text-secondary" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                </svg>
+                                                <span class="truncate">
+                                                    <?php
+                                                    echo date('d F Y', strtotime($tanggal));
+                                                    if ($tanggal_selesai && $tanggal_selesai != $tanggal) {
+                                                        echo ' - ' . date('d F Y', strtotime($tanggal_selesai));
+                                                    }
+                                                    ?>
+                                                </span>
+                                            </div>
+                                        <?php endif; ?>
 
-                                    <?php if ($lokasi): ?>
-                                        <div class="flex items-start gap-2 text-gray-300 font-body font-medium text-xs sm:text-sm">
-                                            <svg class="w-4 h-4 flex-shrink-0 text-secondary mt-0.5" fill="none"
-                                                stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                            </svg>
-                                            <span class="line-clamp-2"><?php echo esc_html($lokasi); ?></span>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
+                                        <?php if ($lokasi): ?>
+                                            <div class="flex items-start gap-2 text-gray-300 font-body font-medium text-xs sm:text-sm">
+                                                <svg class="w-4 h-4 flex-shrink-0 text-secondary mt-0.5" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                </svg>
+                                                <span class="line-clamp-2"><?php echo esc_html($lokasi); ?></span>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
 
                                 <?php if ($deskripsi): ?>
                                     <p
@@ -634,21 +694,23 @@ get_header();
                     $open_events->the_post();
                     $event_counter++;
                     $tanggal = get_post_meta(get_the_ID(), '_acara_terbuka_tanggal', true);
+                    $tanggal_selesai = get_post_meta(get_the_ID(), '_acara_terbuka_tanggal_selesai', true);
                     $lokasi = get_post_meta(get_the_ID(), '_acara_terbuka_lokasi', true);
                     $kategori = get_post_meta(get_the_ID(), '_acara_terbuka_kategori', true);
                     $link = get_post_meta(get_the_ID(), '_acara_terbuka_link', true);
                     $is_pendaftaran = get_post_meta(get_the_ID(), '_acara_terbuka_is_pendaftaran', true);
                     $deskripsi = get_post_meta(get_the_ID(), '_acara_terbuka_deskripsi', true);
 
-                    // Determine status based on date
+                    // Determine status based on date range
                     $status = '';
                     if ($tanggal) {
-                        $event_date = strtotime($tanggal);
+                        $start_date = strtotime($tanggal);
+                        $end_date = $tanggal_selesai ? strtotime($tanggal_selesai) : $start_date;
                         $today = strtotime(date('Y-m-d'));
 
-                        if ($event_date == $today) {
+                        if ($today >= $start_date && $today <= $end_date) {
                             $status = 'berlangsung';
-                        } elseif ($event_date > $today) {
+                        } elseif ($today < $start_date) {
                             $status = 'mendatang';
                         } else {
                             $status = 'selesai';
@@ -672,20 +734,22 @@ get_header();
                             <?php endif; ?>
                             <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
 
-                            <!-- Status Badge -->
-                            <div class="absolute top-3 right-3">
-                                <?php if ($status == 'berlangsung'): ?>
-                                    <span
-                                        class="bg-gradient-to-r from-green-500 to-green-600 text-white px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-body font-bold shadow-lg backdrop-blur-sm">
-                                        Berlangsung
-                                    </span>
-                                <?php else: ?>
-                                    <span
-                                        class="bg-gradient-to-r from-primary to-blue-600 text-white px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-body font-bold shadow-lg backdrop-blur-sm">
-                                        Akan Datang
-                                    </span>
-                                <?php endif; ?>
-                            </div>
+                            <!-- Status Badge - Only show if date exists -->
+                            <?php if ($status): ?>
+                                <div class="absolute top-3 right-3">
+                                    <?php if ($status == 'berlangsung'): ?>
+                                        <span
+                                            class="bg-gradient-to-r from-green-500 to-green-600 text-white px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-body font-bold shadow-lg backdrop-blur-sm">
+                                            Berlangsung
+                                        </span>
+                                    <?php else: ?>
+                                        <span
+                                            class="bg-gradient-to-r from-primary to-blue-600 text-white px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-body font-bold shadow-lg backdrop-blur-sm">
+                                            Akan Datang
+                                        </span>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
 
                             <!-- Kategori Badge -->
                             <?php if ($kategori): ?>
@@ -706,29 +770,38 @@ get_header();
 
                             <!-- Details Section - Hidden on mobile until expanded -->
                             <div class="event-details" data-event-details="<?php echo $event_counter; ?>">
-                                <div class="space-y-2 mb-3 sm:mb-4">
-                                    <?php if ($tanggal): ?>
-                                        <div class="flex items-center gap-2 text-gray-600 font-body font-medium text-xs sm:text-sm">
-                                            <svg class="w-4 h-4 flex-shrink-0 text-primary" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                            <span class="truncate"><?php echo date('d F Y', strtotime($tanggal)); ?></span>
-                                        </div>
-                                    <?php endif; ?>
+                                <?php if ($tanggal || $lokasi): ?>
+                                    <div class="space-y-2 mb-3 sm:mb-4">
+                                        <?php if ($tanggal): ?>
+                                            <div class="flex items-center gap-2 text-gray-600 font-body font-medium text-xs sm:text-sm">
+                                                <svg class="w-4 h-4 flex-shrink-0 text-primary" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                </svg>
+                                                <span class="truncate">
+                                                    <?php
+                                                    echo date('d F Y', strtotime($tanggal));
+                                                    if ($tanggal_selesai && $tanggal_selesai != $tanggal) {
+                                                        echo ' - ' . date('d F Y', strtotime($tanggal_selesai));
+                                                    }
+                                                    ?>
+                                                </span>
+                                            </div>
+                                        <?php endif; ?>
 
-                                    <?php if ($lokasi): ?>
-                                        <div class="flex items-start gap-2 text-gray-600 font-body font-medium text-xs sm:text-sm">
-                                            <svg class="w-4 h-4 flex-shrink-0 text-primary mt-0.5" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                            </svg>
-                                            <span class="line-clamp-2"><?php echo esc_html($lokasi); ?></span>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
+                                        <?php if ($lokasi): ?>
+                                            <div class="flex items-start gap-2 text-gray-600 font-body font-medium text-xs sm:text-sm">
+                                                <svg class="w-4 h-4 flex-shrink-0 text-primary mt-0.5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                </svg>
+                                                <span class="line-clamp-2"><?php echo esc_html($lokasi); ?></span>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
 
                                 <?php if ($deskripsi): ?>
                                     <p

@@ -682,11 +682,62 @@ add_action('add_meta_boxes', 'hmti_add_agenda_kalender_meta_boxes');
 function hmti_agenda_kalender_details_callback($post)
 {
     wp_nonce_field('hmti_save_agenda_kalender_data', 'hmti_agenda_kalender_nonce');
-    $tanggal = get_post_meta($post->ID, '_agenda_kalender_tanggal', true);
 
+    // Get existing dates (stored as array)
+    $tanggal_list = get_post_meta($post->ID, '_agenda_kalender_tanggal_list', true);
+
+    // For backward compatibility, check old single date field
+    if (empty($tanggal_list)) {
+        $old_tanggal = get_post_meta($post->ID, '_agenda_kalender_tanggal', true);
+        if ($old_tanggal) {
+            $tanggal_list = [$old_tanggal];
+        } else {
+            $tanggal_list = [''];
+        }
+    }
+
+    // Ensure we have at least one empty field
+    if (empty($tanggal_list)) {
+        $tanggal_list = [''];
+    }
+
+    echo '<div id="agenda-dates-container">';
     echo '<p><label><strong>Tanggal Agenda:</strong></label></p>';
-    echo '<input type="date" name="agenda_kalender_tanggal" value="' . esc_attr($tanggal) . '" class="widefat" required>';
-    echo '<p class="description">Tanggal agenda akan ditampilkan di kalender pada halaman Program & Kegiatan.</p>';
+    echo '<p class="description" style="margin-bottom: 10px;">Anda dapat menambahkan beberapa tanggal untuk agenda yang sama.</p>';
+
+    foreach ($tanggal_list as $index => $tanggal) {
+        echo '<div class="agenda-date-row" style="margin-bottom: 10px; display: flex; gap: 10px; align-items: center;">';
+        echo '<input type="date" name="agenda_kalender_tanggal[]" value="' . esc_attr($tanggal) . '" class="widefat" style="flex: 1;">';
+        if ($index > 0) {
+            echo '<button type="button" class="button remove-date-btn" style="color: #dc3545;">Hapus</button>';
+        }
+        echo '</div>';
+    }
+
+    echo '</div>';
+    echo '<button type="button" id="add-date-btn" class="button button-secondary" style="margin-top: 10px;">+ Tambah Tanggal</button>';
+    echo '<p class="description" style="margin-top: 10px;">Agenda akan muncul di kalender untuk semua tanggal yang diisi.</p>';
+
+    // Add JavaScript for add/remove functionality
+    ?>
+    <script>
+        jQuery(document).ready(function ($) {
+            // Add new date field
+            $('#add-date-btn').on('click', function () {
+                var newRow = $('<div class="agenda-date-row" style="margin-bottom: 10px; display: flex; gap: 10px; align-items: center;">' +
+                    '<input type="date" name="agenda_kalender_tanggal[]" value="" class="widefat" style="flex: 1;">' +
+                    '<button type="button" class="button remove-date-btn" style="color: #dc3545;">Hapus</button>' +
+                    '</div>');
+                $('#agenda-dates-container').append(newRow);
+            });
+
+            // Remove date field
+            $(document).on('click', '.remove-date-btn', function () {
+                $(this).closest('.agenda-date-row').remove();
+            });
+        });
+    </script>
+    <?php
 }
 
 function hmti_save_agenda_kalender_meta($post_id)
@@ -703,8 +754,25 @@ function hmti_save_agenda_kalender_meta($post_id)
         return;
     }
 
-    if (isset($_POST['agenda_kalender_tanggal'])) {
-        update_post_meta($post_id, '_agenda_kalender_tanggal', sanitize_text_field($_POST['agenda_kalender_tanggal']));
+    // Save multiple dates
+    if (isset($_POST['agenda_kalender_tanggal']) && is_array($_POST['agenda_kalender_tanggal'])) {
+        $tanggal_list = array_map('sanitize_text_field', $_POST['agenda_kalender_tanggal']);
+        // Remove empty dates
+        $tanggal_list = array_filter($tanggal_list, function ($date) {
+            return !empty($date);
+        });
+        // Reindex array
+        $tanggal_list = array_values($tanggal_list);
+
+        // Save as array
+        update_post_meta($post_id, '_agenda_kalender_tanggal_list', $tanggal_list);
+
+        // For backward compatibility, save first date to old field
+        if (!empty($tanggal_list)) {
+            update_post_meta($post_id, '_agenda_kalender_tanggal', $tanggal_list[0]);
+        } else {
+            delete_post_meta($post_id, '_agenda_kalender_tanggal');
+        }
     }
 }
 add_action('save_post_agenda_kalender', 'hmti_save_agenda_kalender_meta');
@@ -751,6 +819,11 @@ function hmti_render_import_agenda_page()
         <div class="card" style="max-width: 900px; margin-top: 20px;">
             <h2>📥 Import dari CSV/Excel</h2>
             <p>Upload file CSV atau Excel dengan format: <strong>Nama Agenda, Tanggal (YYYY-MM-DD)</strong></p>
+            <p style="background: #e7f3ff; padding: 10px; border-left: 4px solid #2271b1; margin: 10px 0;">
+                <strong>✨ FITUR BARU:</strong> Anda bisa menambahkan <strong>beberapa tanggal</strong> untuk satu agenda!
+                Pisahkan tanggal dengan <code>;</code> (titik koma) atau <code>|</code> (pipe).<br>
+                Contoh: <code>2025-12-25;2025-12-26;2025-12-27</code>
+            </p>
 
             <!-- Download Template Button -->
             <p>
@@ -776,7 +849,8 @@ function hmti_render_import_agenda_page()
                             <input type="file" name="agenda_csv" id="agenda_csv" accept=".csv,.xlsx,.xls" required>
                             <p class="description">
                                 Format: Nama Agenda, Tanggal (YYYY-MM-DD)<br>
-                                Contoh: Rapat Koordinasi, 2025-12-25
+                                <strong>Single date:</strong> Rapat Koordinasi, 2025-12-25<br>
+                                <strong>Multiple dates:</strong> Workshop 3 Hari, 2025-12-25;2025-12-26;2025-12-27
                             </p>
                         </td>
                     </tr>
@@ -789,11 +863,14 @@ function hmti_render_import_agenda_page()
         <div class="card" style="max-width: 900px; margin-top: 20px;">
             <h2>📋 Contoh Format CSV</h2>
             <pre style="background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto;">Nama Agenda,Tanggal
-    Rapat Koordinasi Divisi,2025-12-25
-    Workshop Web Development,2025-12-30
-    Seminar Teknologi AI,2026-01-15</pre>
+    Rapat Koordinasi (1 hari),2025-12-25
+    Workshop Web Development (2 hari),2025-12-30;2025-12-31
+    Seminar Teknologi AI (3 hari),2026-01-15;2026-01-16;2026-01-17</pre>
             <p class="description">
-                <strong>Tips:</strong> Pastikan format tanggal adalah YYYY-MM-DD (contoh: 2025-12-25)
+                <strong>Tips:</strong>
+                • Format tanggal: YYYY-MM-DD (contoh: 2025-12-25)<br>
+                • Multiple tanggal: Pisahkan dengan <code>;</code> atau <code>|</code><br>
+                • Agenda akan muncul di kalender untuk semua tanggal yang diisi
             </p>
         </div>
 
@@ -870,12 +947,12 @@ function hmti_download_agenda_template()
     fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
     // Header row
-    fputcsv($output, array('Nama Agenda', 'Tanggal'));
+    fputcsv($output, array('Nama Agenda', 'Tanggal (pisahkan dengan ; untuk multiple)'));
 
-    // Example rows
+    // Example rows with single and multiple dates
     fputcsv($output, array('Rapat Koordinasi Divisi', '2025-12-25'));
-    fputcsv($output, array('Workshop Web Development', '2025-12-30'));
-    fputcsv($output, array('Seminar Teknologi AI', '2026-01-15'));
+    fputcsv($output, array('Workshop Web Development', '2025-12-30;2025-12-31'));
+    fputcsv($output, array('Seminar Teknologi AI', '2026-01-15;2026-01-16;2026-01-17'));
 
     fclose($output);
     exit;
@@ -923,11 +1000,27 @@ function hmti_handle_import_agenda()
         }
 
         $nama_agenda = sanitize_text_field($data[0]);
-        $tanggal = isset($data[1]) ? sanitize_text_field($data[1]) : '';
+        $tanggal_raw = isset($data[1]) ? sanitize_text_field($data[1]) : '';
 
-        // Validate date format
-        if (empty($tanggal) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $tanggal)) {
-            continue; // Skip invalid dates
+        if (empty($tanggal_raw)) {
+            continue; // Skip if no date provided
+        }
+
+        // Support multiple dates separated by semicolon or pipe
+        $tanggal_array = preg_split('/[;|]/', $tanggal_raw);
+        $tanggal_list = [];
+
+        foreach ($tanggal_array as $tanggal) {
+            $tanggal = trim($tanggal);
+            // Validate date format (YYYY-MM-DD)
+            if (!empty($tanggal) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $tanggal)) {
+                $tanggal_list[] = $tanggal;
+            }
+        }
+
+        // Skip if no valid dates
+        if (empty($tanggal_list)) {
+            continue;
         }
 
         // Create post
@@ -938,7 +1031,10 @@ function hmti_handle_import_agenda()
         ));
 
         if ($post_id) {
-            update_post_meta($post_id, '_agenda_kalender_tanggal', $tanggal);
+            // Save multiple dates
+            update_post_meta($post_id, '_agenda_kalender_tanggal_list', $tanggal_list);
+            // Backward compatibility: save first date
+            update_post_meta($post_id, '_agenda_kalender_tanggal', $tanggal_list[0]);
             $count++;
         }
     }
@@ -1036,12 +1132,17 @@ function hmti_program_unggulan_details_callback($post)
 {
     wp_nonce_field('hmti_save_program_unggulan_data', 'hmti_program_unggulan_nonce');
     $tanggal = get_post_meta($post->ID, '_program_unggulan_tanggal', true);
+    $tanggal_selesai = get_post_meta($post->ID, '_program_unggulan_tanggal_selesai', true);
     $lokasi = get_post_meta($post->ID, '_program_unggulan_lokasi', true);
     $deskripsi = get_post_meta($post->ID, '_program_unggulan_deskripsi', true);
 
-    echo '<p><label><strong>Tanggal Program:</strong></label></p>';
+    echo '<p><label><strong>Tanggal Mulai Program:</strong></label></p>';
     echo '<input type="date" name="program_unggulan_tanggal" value="' . esc_attr($tanggal) . '" class="widefat">';
-    echo '<p class="description">Status akan otomatis ditentukan berdasarkan tanggal (hari ini = berlangsung, sebelum = selesai, setelah = akan datang).</p>';
+    echo '<p class="description">Tanggal mulai program (opsional).</p>';
+
+    echo '<p style="margin-top:15px;"><label><strong>Tanggal Selesai Program:</strong></label></p>';
+    echo '<input type="date" name="program_unggulan_tanggal_selesai" value="' . esc_attr($tanggal_selesai) . '" class="widefat">';
+    echo '<p class="description">Tanggal selesai program (opsional). Jika diisi, status akan ditentukan dari rentang tanggal.</p>';
 
     echo '<p style="margin-top:15px;"><label><strong>Lokasi:</strong></label></p>';
     echo '<input type="text" name="program_unggulan_lokasi" value="' . esc_attr($lokasi) . '" class="widefat" placeholder="Contoh: Aula Kampus">';
@@ -1067,6 +1168,10 @@ function hmti_save_program_unggulan_meta($post_id)
 
     if (isset($_POST['program_unggulan_tanggal'])) {
         update_post_meta($post_id, '_program_unggulan_tanggal', sanitize_text_field($_POST['program_unggulan_tanggal']));
+    }
+
+    if (isset($_POST['program_unggulan_tanggal_selesai'])) {
+        update_post_meta($post_id, '_program_unggulan_tanggal_selesai', sanitize_text_field($_POST['program_unggulan_tanggal_selesai']));
     }
 
     if (isset($_POST['program_unggulan_lokasi'])) {
@@ -1130,6 +1235,7 @@ function hmti_acara_terbuka_details_callback($post)
 {
     wp_nonce_field('hmti_save_acara_terbuka_data', 'hmti_acara_terbuka_nonce');
     $tanggal = get_post_meta($post->ID, '_acara_terbuka_tanggal', true);
+    $tanggal_selesai = get_post_meta($post->ID, '_acara_terbuka_tanggal_selesai', true);
     $lokasi = get_post_meta($post->ID, '_acara_terbuka_lokasi', true);
     $kategori = get_post_meta($post->ID, '_acara_terbuka_kategori', true);
     $link = get_post_meta($post->ID, '_acara_terbuka_link', true);
@@ -1147,9 +1253,13 @@ function hmti_acara_terbuka_details_callback($post)
     echo '</select>';
     echo '<p class="description">Kategori acara wajib dipilih.</p>';
 
-    echo '<p style="margin-top:15px;"><label><strong>Tanggal Acara:</strong></label></p>';
+    echo '<p style="margin-top:15px;"><label><strong>Tanggal Mulai Acara:</strong></label></p>';
     echo '<input type="date" name="acara_terbuka_tanggal" value="' . esc_attr($tanggal) . '" class="widefat">';
-    echo '<p class="description">Status akan otomatis ditentukan berdasarkan tanggal (hari ini = berlangsung, sebelum = selesai, setelah = akan datang).</p>';
+    echo '<p class="description">Tanggal mulai acara (opsional).</p>';
+
+    echo '<p style="margin-top:15px;"><label><strong>Tanggal Selesai Acara:</strong></label></p>';
+    echo '<input type="date" name="acara_terbuka_tanggal_selesai" value="' . esc_attr($tanggal_selesai) . '" class="widefat">';
+    echo '<p class="description">Tanggal selesai acara (opsional). Jika diisi, status akan ditentukan dari rentang tanggal.</p>';
 
     echo '<p style="margin-top:15px;"><label><strong>Lokasi:</strong></label></p>';
     echo '<input type="text" name="acara_terbuka_lokasi" value="' . esc_attr($lokasi) . '" class="widefat" placeholder="Contoh: Aula Kampus">';
@@ -1188,6 +1298,10 @@ function hmti_save_acara_terbuka_meta($post_id)
 
     if (isset($_POST['acara_terbuka_tanggal'])) {
         update_post_meta($post_id, '_acara_terbuka_tanggal', sanitize_text_field($_POST['acara_terbuka_tanggal']));
+    }
+
+    if (isset($_POST['acara_terbuka_tanggal_selesai'])) {
+        update_post_meta($post_id, '_acara_terbuka_tanggal_selesai', sanitize_text_field($_POST['acara_terbuka_tanggal_selesai']));
     }
 
     if (isset($_POST['acara_terbuka_lokasi'])) {
