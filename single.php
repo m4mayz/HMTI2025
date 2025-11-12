@@ -49,15 +49,26 @@ if (have_posts()):
                                 <div class="flex flex-wrap items-center gap-3 sm:gap-4 pb-6 sm:pb-8 border-b border-gray-200">
                                     <!-- Author -->
                                     <div class="flex items-center gap-2">
-                                        <div
-                                            class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                                            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-primary" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                            </svg>
+                                        <?php
+                                        $author_id = get_the_author_meta('ID');
+                                        $author_avatar = get_avatar_url($author_id, ['size' => 96]);
+                                        ?>
+                                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden flex-shrink-0">
+                                            <?php if ($author_avatar): ?>
+                                                <img src="<?php echo esc_url($author_avatar); ?>"
+                                                    alt="<?php echo esc_attr(get_the_author()); ?>"
+                                                    class="w-full h-full object-cover">
+                                            <?php else: ?>
+                                                <div class="w-full h-full bg-primary/10 flex items-center justify-center">
+                                                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-primary" fill="none"
+                                                        stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                    </svg>
+                                                </div>
+                                            <?php endif; ?>
                                         </div>
-                                        <a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>"
+                                        <a href="<?php echo get_author_posts_url($author_id); ?>"
                                             class="text-gray-700 font-body font-semibold text-sm sm:text-base hover:text-primary transition-colors">
                                             <?php the_author(); ?>
                                         </a>
@@ -129,9 +140,13 @@ if (have_posts()):
                                 </div>
                             </div>
 
-                            <!-- Featured Image (if not already shown in hero) -->
-                            <?php if (!has_post_thumbnail()): ?>
-                                <div class="px-4 sm:px-6 lg:px-10">
+                            <!-- Featured Image -->
+                            <div class="px-4 sm:px-6 lg:px-10">
+                                <?php if (has_post_thumbnail()): ?>
+                                    <div class="w-full rounded-xl overflow-hidden">
+                                        <?php the_post_thumbnail('full', ['class' => 'w-full h-auto object-cover']); ?>
+                                    </div>
+                                <?php else: ?>
                                     <div
                                         class="w-full h-[200px] sm:h-[300px] lg:h-[400px] bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl flex items-center justify-center">
                                         <svg class="w-16 h-16 sm:w-20 sm:h-20 text-gray-300" fill="none" stroke="currentColor"
@@ -140,8 +155,8 @@ if (have_posts()):
                                                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                         </svg>
                                     </div>
-                                </div>
-                            <?php endif; ?>
+                                <?php endif; ?>
+                            </div>
 
                             <!-- Post Content -->
                             <div class="px-4 sm:px-6 lg:px-10 py-6 sm:py-8 lg:py-10">
@@ -464,7 +479,7 @@ if (have_posts()):
             .post-content ul,
             .post-content ol {
                 margin-bottom: 1.25rem;
-                padding-left: 2rem;
+                padding-left: 3rem;
             }
 
             .post-content ul {
@@ -483,6 +498,15 @@ if (have_posts()):
 
             .post-content li::marker {
                 color: var(--primary-color);
+            }
+
+            /* Paragraf di dalam list item - jarak lebih kecil */
+            .post-content li p {
+                margin-bottom: 0.5rem;
+            }
+
+            .post-content li p:last-child {
+                margin-bottom: 0;
             }
 
             .post-content ul ul,
