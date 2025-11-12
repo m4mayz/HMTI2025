@@ -9,7 +9,7 @@ if (have_posts()):
             <!-- Hero Section with Featured Image -->
             <?php if (has_post_thumbnail()): ?>
                 <div
-                    class="relative w-full h-[300px] sm:h-[400px] lg:h-[500px] overflow-hidden bg-gradient-to-b from-dark-bg to-gray-900">
+                    class="relative w-full h-[200px] sm:h-[250px] lg:h-[300px] overflow-hidden bg-gradient-to-b from-dark-bg to-gray-900">
                     <?php the_post_thumbnail('full', ['class' => 'w-full h-full object-cover opacity-40']); ?>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
                 </div>
@@ -68,10 +68,9 @@ if (have_posts()):
                                                 </div>
                                             <?php endif; ?>
                                         </div>
-                                        <a href="<?php echo get_author_posts_url($author_id); ?>"
-                                            class="text-gray-700 font-body font-semibold text-sm sm:text-base hover:text-primary transition-colors">
+                                        <span class="text-gray-700 font-body font-semibold text-sm sm:text-base">
                                             <?php the_author(); ?>
-                                        </a>
+                                        </span>
                                     </div>
 
                                     <!-- Date -->
@@ -357,7 +356,7 @@ if (have_posts()):
                 position: relative;
                 padding-left: 40px;
                 margin-bottom: 1rem;
-                margin-top: 1.2rem;
+                margin-top: 1.7rem;
             }
 
             .post-content h2::before {
