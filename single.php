@@ -478,7 +478,7 @@ if (have_posts()):
             .post-content ul,
             .post-content ol {
                 margin-bottom: 1.25rem;
-                padding-left: 3rem;
+                padding-left: 2rem;
             }
 
             .post-content ul {
