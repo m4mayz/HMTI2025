@@ -4,7 +4,7 @@
 if (have_posts()):
     while (have_posts()):
         the_post();
-        ?>
+?>
         <main class="w-full bg-white">
             <!-- Hero Section with Featured Image -->
             <?php if (has_post_thumbnail()): ?>
@@ -13,7 +13,8 @@ if (have_posts()):
                     <?php the_post_thumbnail('full', ['class' => 'w-full h-full object-cover opacity-40']); ?>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
                 </div>
-            <?php endif; ?>
+            <?php
+        endif; ?>
 
             <div class="container mx-auto pb-4 px-4 sm:px-6 lg:px-24 -mt-20 sm:-mt-32 lg:-mt-40 relative z-10">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-5">
@@ -24,9 +25,9 @@ if (have_posts()):
                             <!-- Category Badge -->
                             <div class="px-4 sm:px-6 lg:px-10 pt-6 sm:pt-8 lg:pt-10">
                                 <?php
-                                $categories = get_the_category();
-                                if (!empty($categories)):
-                                    ?>
+        $categories = get_the_category();
+        if (!empty($categories)):
+?>
                                     <div class="inline-flex items-center gap-2 mb-4">
                                         <span
                                             class="inline-block bg-primary text-white px-4 py-1.5 rounded-full text-xs sm:text-sm font-body font-bold uppercase tracking-wide">
@@ -37,7 +38,8 @@ if (have_posts()):
                                             <?php echo human_time_diff(get_the_time('U'), current_time('timestamp')) . ' yang lalu'; ?>
                                         </span>
                                     </div>
-                                <?php endif; ?>
+                                <?php
+        endif; ?>
 
                                 <!-- Post Title -->
                                 <h1
@@ -50,15 +52,16 @@ if (have_posts()):
                                     <!-- Author -->
                                     <div class="flex items-center gap-2">
                                         <?php
-                                        $author_id = get_the_author_meta('ID');
-                                        $author_avatar = get_avatar_url($author_id, ['size' => 96]);
-                                        ?>
+        $author_id = get_the_author_meta('ID');
+        $author_avatar = get_avatar_url($author_id, ['size' => 96]);
+?>
                                         <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden flex-shrink-0">
                                             <?php if ($author_avatar): ?>
                                                 <img src="<?php echo esc_url($author_avatar); ?>"
                                                     alt="<?php echo esc_attr(get_the_author()); ?>"
                                                     class="w-full h-full object-cover">
-                                            <?php else: ?>
+                                            <?php
+        else: ?>
                                                 <div class="w-full h-full bg-primary/10 flex items-center justify-center">
                                                     <svg class="w-4 h-4 sm:w-5 sm:h-5 text-primary" fill="none"
                                                         stroke="currentColor" viewBox="0 0 24 24">
@@ -66,7 +69,8 @@ if (have_posts()):
                                                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                                     </svg>
                                                 </div>
-                                            <?php endif; ?>
+                                            <?php
+        endif; ?>
                                         </div>
                                         <span class="text-gray-700 font-body font-semibold text-sm sm:text-base">
                                             <?php the_author(); ?>
@@ -145,7 +149,8 @@ if (have_posts()):
                                     <div class="w-full rounded-xl overflow-hidden">
                                         <?php the_post_thumbnail('full', ['class' => 'w-full h-auto object-cover']); ?>
                                     </div>
-                                <?php else: ?>
+                                <?php
+        else: ?>
                                     <div
                                         class="w-full h-[200px] sm:h-[300px] lg:h-[400px] bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl flex items-center justify-center">
                                         <svg class="w-16 h-16 sm:w-20 sm:h-20 text-gray-300" fill="none" stroke="currentColor"
@@ -154,19 +159,72 @@ if (have_posts()):
                                                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                         </svg>
                                     </div>
-                                <?php endif; ?>
+                                <?php
+        endif; ?>
                             </div>
 
                             <!-- Post Content -->
                             <div class="px-4 sm:px-6 lg:px-10 py-6 sm:py-8 lg:py-10">
+                                
+                                <!-- Ads: Top Article (Native Banner atau Banner 728x90 / 300x250) -->
+                                <!-- <div class="w-full mb-6 lg:mb-8 mt-4">
+                                    <div class="flex items-center gap-4 mb-3">
+                                        <hr class="flex-1 border-gray-200">
+                                        <span class="text-[10px] text-gray-400 font-medium uppercase tracking-widest">Advertisement</span>
+                                        <hr class="flex-1 border-gray-200">
+                                    </div>
+                                    <div class="flex justify-center overflow-hidden w-full">
+                                        <?php if (wp_is_mobile()): ?>
+                                            <script>
+                                              atOptions = {
+                                                'key' : '953bed35c7456ae65c430fed93ee527e',
+                                                'format' : 'iframe',
+                                                'height' : 250,
+                                                'width' : 300,
+                                                'params' : {}
+                                              };
+                                            </script>
+                                            <script src="https://www.highperformanceformat.com/953bed35c7456ae65c430fed93ee527e/invoke.js"></script>
+                                        <?php
+        else: ?>
+                                            <script>
+                                              atOptions = {
+                                                'key' : '8b9808b1dd09fc69cc1bb1548c742e09',
+                                                'format' : 'iframe',
+                                                'height' : 90,
+                                                'width' : 728,
+                                                'params' : {}
+                                              };
+                                            </script>
+                                            <script src="https://www.highperformanceformat.com/8b9808b1dd09fc69cc1bb1548c742e09/invoke.js"></script>
+                                        <?php
+        endif; ?>
+                                    </div>
+                                </div> -->
+
                                 <div class="post-content font-body text-gray-700 leading-relaxed">
                                     <?php the_content(); ?>
                                 </div>
+
+                                <!-- Ads: Bottom Article (Native Banner) -->
+                                <div class="w-full mt-8 lg:mt-10 mb-4">
+                                    <div class="flex items-center gap-4 mb-3">
+                                        <hr class="flex-1 border-gray-200">
+                                        <span class="text-[10px] text-gray-400 font-medium uppercase tracking-widest">Advertisement</span>
+                                        <hr class="flex-1 border-gray-200">
+                                    </div>
+                                    <div class="flex justify-center overflow-hidden w-full">
+                                        <!-- === AREA SCRIPT NATIVE BANNER === -->
+                                        <script async="async" data-cfasync="false" src="https://pl28943340.profitablecpmratenetwork.com/882bf61c886e6b979a1aec9298452729/invoke.js"></script>
+                                        <div id="container-882bf61c886e6b979a1aec9298452729"></div>
+                                    </div>
+                                </div>
+
                             </div> <!-- Tags -->
                             <?php
-                            $tags = get_the_tags();
-                            if ($tags):
-                                ?>
+        $tags = get_the_tags();
+        if ($tags):
+?>
                                 <div class="px-4 sm:px-6 lg:px-10 pb-6 sm:pb-8 lg:pb-10 border-t border-gray-300">
                                     <div class="flex flex-wrap gap-2 pt-6">
                                         <span class="text-gray-600 font-body font-semibold text-sm">Tags:</span>
@@ -175,41 +233,44 @@ if (have_posts()):
                                                 class="inline-block bg-gray-100 hover:bg-primary hover:text-white text-gray-700 px-3 py-1 rounded-full text-xs sm:text-sm font-body font-medium transition-all duration-300">
                                                 #<?php echo esc_html($tag->name); ?>
                                             </a>
-                                        <?php endforeach; ?>
+                                        <?php
+            endforeach; ?>
                                     </div>
                                 </div>
-                            <?php endif; ?>
+                            <?php
+        endif; ?>
 
                             <!-- Related Posts -->
                             <?php
-                            if ($tags) {
-                                $tag_ids = array();
-                                foreach ($tags as $tag) {
-                                    $tag_ids[] = $tag->term_id;
-                                }
+        if ($tags) {
+            $tag_ids = array();
+            foreach ($tags as $tag) {
+                $tag_ids[] = $tag->term_id;
+            }
 
-                                $related_posts = new WP_Query(array(
-                                    'tag__in' => $tag_ids,
-                                    'post__not_in' => array(get_the_ID()),
-                                    'posts_per_page' => 3,
-                                    'orderby' => 'rand'
-                                ));
+            $related_posts = new WP_Query(array(
+                'tag__in' => $tag_ids,
+                'post__not_in' => array(get_the_ID()),
+                'posts_per_page' => 3,
+                'orderby' => 'rand'
+            ));
 
-                                if ($related_posts->have_posts()): ?>
+            if ($related_posts->have_posts()): ?>
                                     <div class="bg-gradient-to-br from-primary/5 to-secondary/5 px-4 sm:px-6 lg:px-10 py-6 sm:py-8">
                                         <h3 class="font-body text-xl sm:text-2xl font-bold text-dark-bg mb-4 sm:mb-6">
                                             Artikel Terkait
                                         </h3>
                                         <div class="grid grid-cols-1 gap-4">
                                             <?php while ($related_posts->have_posts()):
-                                                $related_posts->the_post(); ?>
+                    $related_posts->the_post(); ?>
                                                 <a href="<?php the_permalink(); ?>"
                                                     class="flex gap-4 p-3 sm:p-4 bg-white rounded-lg hover:shadow-md transition-all duration-300 group">
                                                     <?php if (has_post_thumbnail()): ?>
                                                         <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden flex-shrink-0">
                                                             <?php the_post_thumbnail('thumbnail', ['class' => 'w-full h-full object-cover group-hover:scale-110 transition-transform duration-300']); ?>
                                                         </div>
-                                                    <?php endif; ?>
+                                                    <?php
+                    endif; ?>
                                                     <div class="flex-1 min-w-0">
                                                         <h4
                                                             class="font-body font-semibold text-sm sm:text-base text-dark-bg group-hover:text-primary transition-colors line-clamp-2 mb-2">
@@ -220,19 +281,23 @@ if (have_posts()):
                                                         </p>
                                                     </div>
                                                 </a>
-                                            <?php endwhile; ?>
+                                            <?php
+                endwhile; ?>
                                         </div>
                                     </div>
                                     <?php
-                                    wp_reset_postdata();
-                                endif;
-                            }
-                            ?>
+                wp_reset_postdata();
+            endif;
+        }
+?>
                         </div>
                     </article>
 
                     <!-- Sidebar -->
                     <aside class="bg-white mt-10 p-4 sm:p-6 lg:col-span-4 lg:sticky lg:top-20 lg:right-0">
+                        
+                        
+
                         <!-- Latest Posts Widget -->
                         <h2
                             class="font-body text-xl sm:text-2xl lg:text-3xl font-bold text-dark-bg mb-4 sm:mb-6 pb-4 border-b-2 border-primary">
@@ -241,21 +306,21 @@ if (have_posts()):
 
                         <div class="space-y-4 sm:space-y-6">
                             <?php
-                            $latest_posts = new WP_Query([
-                                'post_type' => 'post',
-                                'posts_per_page' => 5,
-                                'post__not_in' => [get_the_ID()],
-                                'orderby' => 'date',
-                                'order' => 'DESC'
-                            ]);
+        $latest_posts = new WP_Query([
+            'post_type' => 'post',
+            'posts_per_page' => 5,
+            'post__not_in' => [get_the_ID()],
+            'orderby' => 'date',
+            'order' => 'DESC'
+        ]);
 
-                            if ($latest_posts->have_posts()):
-                                $counter = 0;
-                                while ($latest_posts->have_posts()):
-                                    $latest_posts->the_post();
-                                    $counter++;
-                                    $sidebar_categories = get_the_category();
-                                    ?>
+        if ($latest_posts->have_posts()):
+            $counter = 0;
+            while ($latest_posts->have_posts()):
+                $latest_posts->the_post();
+                $counter++;
+                $sidebar_categories = get_the_category();
+?>
                                     <article class="group <?php echo $counter < 5 ? 'pb-4 sm:pb-6 border-b border-gray-300' : ''; ?>">
                                         <a href="<?php the_permalink(); ?>" class="block">
                                             <div class="flex gap-3 sm:gap-4">
@@ -263,7 +328,8 @@ if (have_posts()):
                                                     <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden flex-shrink-0">
                                                         <?php the_post_thumbnail('thumbnail', ['class' => 'w-full h-full object-cover group-hover:scale-110 transition-transform duration-300']); ?>
                                                     </div>
-                                                <?php else: ?>
+                                                <?php
+                else: ?>
                                                     <div
                                                         class="w-20 h-20 sm:w-24 sm:h-24 rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center flex-shrink-0">
                                                         <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor"
@@ -272,7 +338,8 @@ if (have_posts()):
                                                                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                         </svg>
                                                     </div>
-                                                <?php endif; ?>
+                                                <?php
+                endif; ?>
 
                                                 <div class="flex-1 min-w-0">
                                                     <?php if (!empty($sidebar_categories)): ?>
@@ -280,7 +347,8 @@ if (have_posts()):
                                                             class="inline-block text-[10px] sm:text-xs lg:text-sm font-bold text-primary uppercase mb-1">
                                                             <?php echo esc_html($sidebar_categories[0]->name); ?>
                                                         </span>
-                                                    <?php endif; ?>
+                                                    <?php
+                endif; ?>
                                                     <h3
                                                         class="font-body text-sm sm:text-base lg:text-lg font-bold text-dark-bg group-hover:text-primary transition-colors leading-tight line-clamp-2 mb-2">
                                                         <?php the_title(); ?>
@@ -298,10 +366,31 @@ if (have_posts()):
                                         </a>
                                     </article>
                                     <?php
-                                endwhile;
-                                wp_reset_postdata();
-                            endif;
-                            ?>
+            endwhile;
+            wp_reset_postdata();
+        endif;
+?>
+                        </div>
+                        <!-- Ads: Sidebar -->
+                        <div class="w-full mb-8 mt-4">
+                            <div class="flex items-center gap-3 mb-3">
+                                <hr class="flex-1 border-gray-200">
+                                <span class="text-[10px] text-gray-400 font-medium uppercase tracking-widest">Advertisement</span>
+                                <hr class="flex-1 border-gray-200">
+                            </div>
+                            <div class="flex justify-center overflow-hidden w-full">
+                                <!-- === AREA SCRIPT ADS SIDEBAR === -->
+                                <script>
+                                  atOptions = {
+                                    'key' : 'fad44e1d820ab247b7d2aa1b18e692ef',
+                                    'format' : 'iframe',
+                                    'height' : 300,
+                                    'width' : 160,
+                                    'params' : {}
+                                  };
+                                </script>
+                                <script src="https://www.highperformanceformat.com/fad44e1d820ab247b7d2aa1b18e692ef/invoke.js"></script>
+                            </div>
                         </div>
                     </aside>
                 </div>

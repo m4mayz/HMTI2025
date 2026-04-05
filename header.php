@@ -4,6 +4,8 @@
 <head>
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5873781882038560"
+        crossorigin="anonymous"></script>
     <?php wp_head(); // Hook penting, jangan dihapus ?>
 </head>
 
